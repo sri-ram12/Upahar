@@ -1,9 +1,6 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import { Sparkles, MessageSquare, Compass, ArrowRight, UtensilsCrossed } from "lucide-react";
-import WaterRippleEffect from "@/components/effects/WaterRippleEffect";
 
 export default function SensoryCTASection() {
   return (

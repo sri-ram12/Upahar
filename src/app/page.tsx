@@ -50,37 +50,37 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#FAF7F2] text-[#141210]">
-      {/* 1. Hero Section with Signature Realistic Water-Throw Stream Engine */}
+      {/* 1. Hero Section with Authentic Heritage Visuals */}
       <HeroSection storeStatus={storeStatus} />
 
       {/* 2. Menu Category Navigator */}
       <CategoryChips categories={categories} />
 
-      {/* 3. Dynamic Motion Flyer Showcase replacing circular inspector */}
+      {/* 3. Pinterest-Style Motion Flyer Showcase (Kinetic Typography, 360 Rotation, Floating Particles) */}
       <MotionFlyerShowcase items={foodItems} />
 
       {/* 4. Popular Food / Bestseller Dishes (Editorial Food Cards) */}
       <FeaturedSection items={foodItems} />
 
-      {/* 4. Chef's Signature Tava Craft Showcase with Plate Selector */}
+      {/* 5. Chef's Signature Tava Craft Showcase with Plate Selector */}
       <SignatureShowcase />
 
-      {/* 5. Special Daily Combos & Culinary Highlights Banner */}
+      {/* 6. Special Daily Combos & Culinary Highlights Banner */}
       <OffersBanner />
 
-      {/* 6. About Upahar: 4 Pillars of Freshness */}
+      {/* 7. About Upahar: 4 Pillars of Freshness */}
       <WhyChooseUs />
 
-      {/* 7. Owner Profile, Hotel Pics & Physical Menu Pic Showcase */}
+      {/* 8. Owner Profile, Hotel Pics & Physical Menu Pic Showcase */}
       <OwnerHotelShowcase />
 
-      {/* 8. Diner Reviews & Ratings */}
+      {/* 9. Diner Reviews & Ratings */}
       <CustomerReviews />
 
-      {/* 9. Location, Timings & Google Maps Embed */}
+      {/* 10. Location, Timings & Google Maps Embed */}
       <LocationSection settings={settings} storeStatus={storeStatus} />
 
-      {/* 10. Final Sensory Call-to-Action with Liquid Ripple */}
+      {/* 11. Final Sensory Call-to-Action */}
       <SensoryCTASection />
     </main>
   );
