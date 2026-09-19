@@ -9,7 +9,7 @@ export default function SensoryCTASection() {
   return (
     <section className="py-20 sm:py-28 bg-gradient-to-b from-[#141210] via-[#2B070E] to-[#141210] text-[#FAF7F2] relative overflow-hidden border-t border-[#D4AF37]/30">
       {/* Background Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest shadow-lg">

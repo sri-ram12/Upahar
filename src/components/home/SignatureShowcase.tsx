@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   MessageSquare,
 } from "lucide-react";
+
+interface Dish {
   id: string;
   name: string;
   tagline: string;
