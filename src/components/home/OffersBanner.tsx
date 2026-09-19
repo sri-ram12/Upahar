@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,18 +12,17 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  ExternalLink,
   CheckCircle2,
   Clock,
-  Pin,
   Utensils,
-  Share2,
+  Video,
 } from "lucide-react";
 
 export default function OffersBanner() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [activeVideoTab, setActiveVideoTab] = useState<"dosa" | "noodles" | "idly">("dosa");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Authentic Upahar Menu Combos matching exact tariff & categories
   const specials = [
@@ -62,41 +61,63 @@ export default function OffersBanner() {
     },
   ];
 
-  // Pinterest video ads showcase data
+  // 3 Animated Video Ads Showcase data (ready for 3 custom animated videos)
   const videoAds = {
     dosa: {
+      id: "dosa",
       title: "Cast-Iron Sizzling Ghee Karam Dosa",
-      pinUrl: "https://www.pinterest.com/pin/147211481558048276/",
-      tagline: "Golden Crepe • Melting Village Ghee • Garlic Podi",
+      tagline: "Golden Crepe • Melting Desi Ghee • Fiery Garlic Podi",
       image: "/ghee-karam-dosa.jpg",
+      videoUrl: "/videos/ghee-karam-dosa.mp4", // Ready for your 1st animated video
       duration: "0:15",
-      views: "24.8K Saves on Pinterest",
-      badge: "🔥 Trending Tava Reel",
+      badge: "🔥 Live Tava Action",
       price: "₹45 Only",
+      dishHighlight: "Roasted crisp on cast-iron tava with pure ghee & garlic karam",
     },
     noodles: {
+      id: "noodles",
       title: "High-Flame Wok Tossed Schezwan Noodles",
-      pinUrl: "https://www.pinterest.com/search/pins/?q=indian%20street%20food%20noodles%20video",
-      tagline: "Smoky Wok Char • Crunchy Veggies • Fiery Schezwan",
+      tagline: "Smoky Wok Char • Crunchy Garden Veggies • Spicy Glaze",
       image: "/veg-manchurian-noodles.jpg",
+      videoUrl: "/videos/wok-noodles.mp4", // Ready for your 2nd animated video
       duration: "0:20",
-      views: "18.2K Saves on Pinterest",
-      badge: "🥢 Street Food Action",
+      badge: "🥢 Wok Flame Sizzle",
       price: "₹60 / ₹90",
+      dishHighlight: "High-heat stir fried noodles with fresh veggies & garlic sauce",
     },
     idly: {
+      id: "idly",
       title: "Button Chitti Idly with Podi & Desi Ghee",
-      pinUrl: "https://www.pinterest.com/search/pins/?q=button%20idli%20ghee%20podi%20video",
-      tagline: "Steaming Soft • Roasted Podi Ghee Bath • Coconut Dip",
+      tagline: "Steaming Soft • Roasted Podi Ghee Bath • Fresh Chutneys",
       image: "/images/upahar_chitti_idly.jpg",
+      videoUrl: "/videos/chitti-idly.mp4", // Ready for your 3rd animated video
       duration: "0:12",
-      views: "31.5K Saves on Pinterest",
       badge: "✨ Upahar Exclusive",
       price: "₹40 Only",
+      dishHighlight: "Bite-sized mini idlis drenched in aromatic gunpowder and molten ghee",
     },
   };
 
   const currentVideo = videoAds[activeVideoTab];
+
+  // Handle Play/Pause toggle on active video
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Sync mute state with video element
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   return (
     <section className="py-16 sm:py-24 bg-gradient-to-br from-[#2B070E] via-[#3D0A13] to-[#1A0307] text-[#FAF7F2] relative overflow-hidden border-y border-[#D4AF37]/30">
@@ -123,23 +144,23 @@ export default function OffersBanner() {
         </div>
 
         {/* ======================================================== */}
-        {/* PINTEREST ANIMATED VIDEO AD SHOWCASE                     */}
+        {/* ANIMATED VIDEO ADS SHOWCASE                              */}
         {/* ======================================================== */}
-        <div className="mb-16 bg-gradient-to-r from-[#1E0409]/90 via-[#2E0710]/95 to-[#1A0307]/90 rounded-3xl border border-[#D4AF37]/40 p-5 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div className="mb-16 bg-gradient-to-r from-[#1E0409]/95 via-[#2E0710]/95 to-[#1A0307]/95 rounded-3xl border border-[#D4AF37]/40 p-5 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
           
-          {/* Pinterest Watermark Banner */}
+          {/* Header Banner */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10 mb-6">
-            <div className="flex items-center space-x-2.5">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#E60023] text-white font-black text-sm shadow-md">
-                P
-              </span>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] shadow-md">
+                <Video className="w-5 h-5 text-[#DFC17B]" />
+              </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-[#DFC17B] flex items-center gap-1.5">
-                  <span>Trending on Pinterest Video Ads</span>
-                  <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                <span className="text-xs font-bold uppercase tracking-widest text-[#DFC17B] flex items-center gap-2">
+                  <span>Live Kitchen Sizzle & Tava Action</span>
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
                 </span>
                 <p className="text-stone-300 text-xs font-medium">
-                  Watch sizzling cast-iron tawa & high-flame wok action in dynamic motion
+                  Watch our chefs prepare signature dishes fresh on cast-iron and high-flame wok
                 </p>
               </div>
             </div>
@@ -163,50 +184,64 @@ export default function OffersBanner() {
           </div>
 
           {/* Animated Video Ad Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left/Main: 9:16 Pinterest Style Video Ad Mockup / Player */}
+            {/* Left/Main: 9:16 Vertical Video Ad Showcase */}
             <div className="lg:col-span-6 flex justify-center">
               <div className="relative w-full max-w-[360px] aspect-[9/14] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/50 group bg-black">
                 
-                {/* Visual Background (Dynamic Animated Food Reel) */}
-                <Image
-                  src={currentVideo.image}
-                  alt={currentVideo.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 360px"
-                  className={`object-cover object-center transition-all duration-700 ease-out ${
-                    isPlaying ? "scale-105 filter brightness-95" : "scale-100 filter brightness-75"
-                  }`}
-                />
+                {/* Visual Video Element or Image Fallback */}
+                <div className="relative w-full h-full">
+                  <Image
+                    src={currentVideo.image}
+                    alt={currentVideo.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 360px"
+                    className={`object-cover object-center transition-all duration-700 ease-out ${
+                      isPlaying ? "scale-105 filter brightness-95" : "scale-100 filter brightness-75"
+                    }`}
+                  />
 
-                {/* Animated Steam & Vignette Shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none" />
+                  {/* HTML5 Video Layer (plays automatically when video file is loaded) */}
+                  <video
+                    ref={videoRef}
+                    key={currentVideo.videoUrl}
+                    src={currentVideo.videoUrl}
+                    autoPlay
+                    loop
+                    muted={isMuted}
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover z-10 opacity-0 data-[loaded=true]:opacity-100 transition-opacity duration-500"
+                    onLoadedData={(e) => {
+                      (e.target as HTMLElement).setAttribute("data-loaded", "true");
+                    }}
+                    onError={(e) => {
+                      (e.target as HTMLElement).setAttribute("data-loaded", "false");
+                    }}
+                  />
+                </div>
 
-                {/* Top Overlay: Pinterest Pin Badges */}
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
-                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-[11px] font-black text-amber-300 border border-amber-400/40 flex items-center gap-1.5 shadow-lg">
+                {/* Layered Vignette Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none z-20" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none z-20" />
+
+                {/* Top Overlay: Live Cooking Badges */}
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-30">
+                  <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-[11px] font-black text-amber-300 border border-amber-400/40 flex items-center gap-1.5 shadow-lg">
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                     {currentVideo.badge}
                   </span>
 
-                  <a
-                    href={currentVideo.pinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1 rounded-full bg-[#E60023] hover:bg-red-700 text-white text-[11px] font-bold flex items-center gap-1.5 transition shadow-lg"
-                  >
-                    <span>Save</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  <span className="px-3 py-1 rounded-full bg-[#580D1A]/90 border border-[#D4AF37]/40 text-[#DFC17B] text-[11px] font-bold shadow-lg">
+                    {currentVideo.duration}
+                  </span>
                 </div>
 
                 {/* Center Pulse Play / Pause Icon Button */}
-                <div className="absolute inset-0 flex items-center justify-center z-20">
+                <div className="absolute inset-0 flex items-center justify-center z-30">
                   <button
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="w-16 h-16 rounded-full bg-black/60 hover:bg-[#E60023] text-white border-2 border-white/80 flex items-center justify-center backdrop-blur-md transition-all duration-300 transform group-hover:scale-110 shadow-2xl"
+                    onClick={togglePlayPause}
+                    className="w-16 h-16 rounded-full bg-black/60 hover:bg-[#580D1A] text-white border-2 border-[#D4AF37] flex items-center justify-center backdrop-blur-md transition-all duration-300 transform group-hover:scale-110 shadow-2xl"
                     aria-label={isPlaying ? "Pause video" : "Play video"}
                   >
                     {isPlaying ? (
@@ -219,16 +254,16 @@ export default function OffersBanner() {
 
                 {/* Sizzle Steam Graphic Indicator */}
                 {isPlaying && (
-                  <div className="absolute bottom-28 left-6 z-20 flex items-center space-x-1.5 bg-black/60 px-3 py-1 rounded-full border border-white/20 backdrop-blur-sm">
+                  <div className="absolute bottom-28 left-6 z-30 flex items-center space-x-1.5 bg-black/70 px-3 py-1 rounded-full border border-amber-400/30 backdrop-blur-sm">
                     <Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                      Sizzling Now On Cast-Iron
+                      Sizzling Fresh Daily
                     </span>
                   </div>
                 )}
 
-                {/* Bottom Overlay: Video Ad Captions & Pinterest Footer */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
+                {/* Bottom Overlay: Video Ad Details */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-30 bg-gradient-to-t from-black via-black/85 to-transparent">
                   <span className="text-[11px] font-black uppercase tracking-widest text-[#DFC17B] block mb-1">
                     {currentVideo.tagline}
                   </span>
@@ -241,19 +276,14 @@ export default function OffersBanner() {
                       {currentVideo.price}
                     </span>
 
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setIsMuted(!isMuted)}
-                        className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition"
-                        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
-                      >
-                        {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                      </button>
-
-                      <span className="text-[10px] text-stone-300 font-medium">
-                        {currentVideo.views}
-                      </span>
-                    </div>
+                    <button
+                      onClick={() => setIsMuted(!isMuted)}
+                      className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition flex items-center space-x-1"
+                      aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+                    >
+                      {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                      <span className="text-[10px]">{isMuted ? "Muted" : "Sound"}</span>
+                    </button>
                   </div>
 
                   {/* Animated Progress Bar */}
@@ -268,15 +298,15 @@ export default function OffersBanner() {
               </div>
             </div>
 
-            {/* Right: Video Ad Copy, Dish Pitch & Direct Pinterest Action */}
+            {/* Right: Video Ad Copy, Dish Highlights & Direct Action */}
             <div className="lg:col-span-6 flex flex-col justify-center space-y-4 sm:space-y-5">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-red-900/40 border border-red-500/30 text-red-200 text-xs font-bold w-fit">
-                <Pin className="w-3.5 h-3.5 text-red-400" />
-                <span>Featured Video Ad • Pinterest Inspiration</span>
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-[#580D1A]/80 border border-[#D4AF37]/30 text-[#DFC17B] text-xs font-bold w-fit">
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>Featured Animated Cooking Reel</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-black font-display text-white leading-tight">
-                Experience Food Sizzle Right Off the Tava & Wok
+                Experience Culinary Perfection in Dynamic Motion
               </h3>
 
               <p className="text-stone-300 text-sm leading-relaxed">
@@ -299,11 +329,11 @@ export default function OffersBanner() {
                 </div>
               </div>
 
-              {/* Action Buttons: WhatsApp Order + Open on Pinterest */}
+              {/* Action Buttons: WhatsApp Order + Explore Menu */}
               <div className="pt-3 flex flex-wrap items-center gap-3">
                 <a
                   href={`https://wa.me/919885455342?text=${encodeURIComponent(
-                    `Hello Upahar Tiffins, I saw your video ad for ${currentVideo.title} and would like to order!`
+                    `Hello Upahar Tiffins, I saw your video showcase for ${currentVideo.title} and would like to order!`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -313,15 +343,13 @@ export default function OffersBanner() {
                   <span>Order on WhatsApp Directly</span>
                 </a>
 
-                <a
-                  href={currentVideo.pinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/menu"
                   className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF7F2] font-bold text-xs sm:text-sm flex items-center space-x-2 transition"
                 >
-                  <Pin className="w-4 h-4 text-[#E60023]" />
-                  <span>View Pin on Pinterest</span>
-                </a>
+                  <Utensils className="w-4 h-4 text-[#DFC17B]" />
+                  <span>View Complete Menu</span>
+                </Link>
               </div>
             </div>
 
