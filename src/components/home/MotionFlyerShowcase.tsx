@@ -148,7 +148,7 @@ const GARNISHES = [
 export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState<"All" | "Tiffins" | "Fast Food">("All");
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [highlightProgress, setHighlightProgress] = useState(0);
 
   const filteredDishes =
     selectedFilter === "All"
@@ -159,28 +159,44 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
   const activeIndex = currentIndex % filteredDishes.length;
   const activeDish = filteredDishes[activeIndex] || filteredDishes[0];
 
-  // Smooth linear horizontal auto-slide (no spinning rotation)
+  // Automatically move to the next item after highlighting each item for 3 seconds
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    const DURATION = 3000;
+    const STEP = 50;
+    let elapsed = 0;
+
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % filteredDishes.length);
-    }, 4000);
+      elapsed += STEP;
+      setHighlightProgress((elapsed / DURATION) * 100);
+
+      if (elapsed >= DURATION) {
+        elapsed = 0;
+        setHighlightProgress(0);
+        setCurrentIndex((prev) => (prev + 1) % filteredDishes.length);
+      }
+    }, STEP);
+
     return () => clearInterval(timer);
-  }, [isAutoPlaying, filteredDishes.length]);
+  }, [currentIndex, filteredDishes.length]);
+
+  const handleSelectDish = (idx: number) => {
+    setCurrentIndex(idx);
+    setHighlightProgress(0);
+  };
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + filteredDishes.length) % filteredDishes.length);
+    setHighlightProgress(0);
   };
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % filteredDishes.length);
+    setHighlightProgress(0);
   };
 
   return (
     <section
       className="relative w-full min-h-[90vh] bg-gradient-to-b from-[#120B0B] via-[#1A0E10] to-[#0E0909] text-[#FAF7F2] overflow-hidden py-14 sm:py-20 select-none flex flex-col justify-between"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
       aria-label="What's on our Plate Horizontal Motion Showcase"
     >
       {/* Background Kinetic Watermark Typography */}
@@ -373,6 +389,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
               <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider">
                 <Flame className="w-3 h-3 text-[#DFC17B]" />
                 <span>{activeDish.badge}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping ml-1" />
               </div>
               <h4 className="text-xl sm:text-2xl font-black text-white font-display">
                 {activeDish.name} • ₹{activeDish.price}
@@ -405,6 +422,14 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
               </Link>
             </div>
 
+          </div>
+
+          {/* Automatic Progress Timer Line (Auto-glides after highlight) */}
+          <div className="w-full bg-white/10 h-1 rounded-full mt-4 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-[#D4AF37] via-amber-400 to-[#E60023] h-full transition-all duration-75 ease-linear"
+              style={{ width: `${highlightProgress}%` }}
+            />
           </div>
         </div>
 
