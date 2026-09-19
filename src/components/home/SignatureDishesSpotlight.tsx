@@ -231,15 +231,15 @@ export default function SignatureDishesSpotlight() {
 
               <div className="flex items-center space-x-2.5">
                 <a
-                  href={`https://wa.me/919876543210?text=${encodeURIComponent(
-                    `Hello Sri K. Venkat Rao, I would like to inquire about the ${activeDish.name} at Upahar Tiffins.`
+                  href={`https://wa.me/919885455342?text=${encodeURIComponent(
+                    `Hello Sri Vamsi, I would like to inquire about the ${activeDish.name} at Upahar Tiffins.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-white" />
-                  <span>WhatsApp Owner</span>
+                  <span>WhatsApp Sri Vamsi</span>
                 </a>
 
                 <Link

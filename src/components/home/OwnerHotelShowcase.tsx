@@ -57,7 +57,7 @@ export default function OwnerHotelShowcase() {
               <div className="relative h-96 sm:h-[450px] w-full rounded-2xl overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=85"
-                  alt="Sri K. Venkat Rao - Founder of UPAHAR TIFFINS AND FAST FOOD"
+                  alt="Sri Vamsi - Founder & Host of UPAHAR TIFFINS AND FAST FOOD"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-top filter contrast-105"
@@ -73,10 +73,10 @@ export default function OwnerHotelShowcase() {
                 {/* Owner Name Tag */}
                 <div className="absolute bottom-4 left-4 right-4 bg-[#141210]/95 backdrop-blur-md p-4 rounded-2xl border border-stone-800">
                   <span className="text-[10px] uppercase font-bold text-[#DFC17B] tracking-widest block">
-                    Proprietor & Master Chef
+                    Proprietor & Master Host
                   </span>
                   <h3 className="text-xl font-black text-white font-display">
-                    Sri K. Venkat Rao
+                    Sri Vamsi
                   </h3>
                   <p className="text-xs text-stone-300 mt-0.5">
                     UPAHAR TIFFINS AND FAST FOOD, Sangivalasa
@@ -106,7 +106,7 @@ export default function OwnerHotelShowcase() {
                 Welcome to <strong>UPAHAR TIFFINS AND FAST FOOD</strong>, conveniently located at <strong>1-1, Sangivalasa, ANITS College Road, beside SBI</strong>. Our kitchen operates on two dedicated daily sessions designed for your routine: hearty, steaming tiffins from <strong>6:00 AM to 10:00 AM</strong>, and sizzling fast food & Chinese delicacies from <strong>6:00 PM to 10:30 PM</strong>.
               </p>
               <p>
-                Under the personal direction of Sri K. Venkat Rao, every tawa dosa is roasted with pure desi ghee, every idli is steamed from freshly ground batter, and every wok of noodles is tossed hot with vibrant fresh vegetables and tender chicken.
+                Under the personal direction of Sri Vamsi, every tawa dosa is roasted with pure desi ghee, every idli is steamed from freshly ground batter, and every wok of noodles is tossed hot with vibrant fresh vegetables and tender chicken.
               </p>
             </div>
 
@@ -129,13 +129,13 @@ export default function OwnerHotelShowcase() {
             {/* Direct WhatsApp & Contact Buttons */}
             <div className="pt-4 flex flex-col sm:flex-row items-center gap-3.5">
               <a
-                href="https://wa.me/919885455342?text=Namaste%20Sri%20Venkat%20Rao%20ji,%20I%20visited%20the%20Upahar%20website%20and%20would%20like%20to%20inquire%20about%20today's%20menu%20and%20timings."
+                href="https://wa.me/919885455342?text=Namaste%20Sri%20Vamsi%20ji,%20I%20visited%20the%20Upahar%20website%20and%20would%20like%20to%20inquire%20about%20today's%20menu%20and%20timings."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-xs sm:text-sm tracking-wide bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl transition flex items-center justify-center space-x-2 border border-emerald-400/40"
               >
                 <MessageSquare className="w-4 h-4 text-emerald-100" />
-                <span>Chat with Owner on WhatsApp</span>
+                <span>Chat with Sri Vamsi on WhatsApp</span>
               </a>
 
               <a
@@ -143,7 +143,7 @@ export default function OwnerHotelShowcase() {
                 className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-xs sm:text-sm tracking-wide text-[#FAF7F2] bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 transition flex items-center justify-center space-x-2"
               >
                 <Phone className="w-4 h-4 text-[#DFC17B]" />
-                <span>Call Sri Venkat Rao (9885455342)</span>
+                <span>Call Sri Vamsi (9885455342)</span>
               </a>
             </div>
           </div>
@@ -375,13 +375,13 @@ export default function OwnerHotelShowcase() {
 
               <div className="flex items-center space-x-2.5">
                 <a
-                  href="https://wa.me/919885455342?text=Hello%20Sri%20Venkat%20Rao,%20I%20am%20reviewing%20your%20menu%20cards%20and%20would%20like%20to%20order%20parcel%20or%20check%20today's%20batch%20timing."
+                  href="https://wa.me/919885455342?text=Hello%20Sri%20Vamsi,%20I%20am%20reviewing%20your%20menu%20cards%20and%20would%20like%20to%20order%20parcel%20or%20check%20today's%20batch%20timing."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-maroon-gold px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-[#DFC17B]" />
-                  <span>Chat with Owner About Menu</span>
+                  <span>Chat with Sri Vamsi About Menu</span>
                 </a>
               </div>
             </div>

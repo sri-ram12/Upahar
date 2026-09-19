@@ -150,13 +150,13 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://wa.me/919885455342?text=Namaste%20Upahar!%20I%20am%20inquiring%20from%20your%20website."
+                  href="https://wa.me/919885455342?text=Namaste%20Sri%20Vamsi!%20I%20am%20inquiring%20from%20the%20Upahar%20website."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span>WhatsApp Sri Venkat Rao</span>
+                  <span>WhatsApp Sri Vamsi</span>
                 </a>
 
                 <a
@@ -179,10 +179,6 @@ export default function Footer() {
             © {new Date().getFullYear()} UPAHAR TIFFINS AND FAST FOOD. All Rights Reserved. Sunrise to Sunset.
           </p>
           <div className="flex items-center space-x-4 text-xs">
-            <Link href="/admin/login" className="hover:text-[#DFC17B] transition">
-              Owner Management
-            </Link>
-            <span>•</span>
             <a
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"
@@ -190,6 +186,15 @@ export default function Footer() {
               className="hover:text-[#DFC17B] transition"
             >
               Google Maps Listing
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.instagram.com/upahar_07/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#DFC17B] transition"
+            >
+              Instagram @upahar_07
             </a>
           </div>
         </div>

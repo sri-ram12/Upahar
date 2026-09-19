@@ -171,14 +171,14 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           <div className="pt-3 border-t border-[#EADBCE] flex flex-col sm:flex-row items-center justify-between gap-2.5">
             <a
               href={`https://wa.me/919885455342?text=${encodeURIComponent(
-                `Hello Sri K. Venkat Rao, I would like more details about ${item.name} (₹${item.price}) at Upahar Tiffins.`
+                `Hello Sri Vamsi, I would like more details about ${item.name} (₹${item.price}) at Upahar Tiffins.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition"
             >
               <MessageSquare className="w-3.5 h-3.5 text-white" />
-              <span>WhatsApp Owner</span>
+              <span>WhatsApp Sri Vamsi</span>
             </a>
 
             <a

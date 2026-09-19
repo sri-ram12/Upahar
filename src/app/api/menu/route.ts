@@ -1,6 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
+import { FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
+
+function filterFallbackItems(searchParams: URLSearchParams) {
+  const category = searchParams.get("category");
+  const search = searchParams.get("search");
+  const vegOnly = searchParams.get("vegOnly") === "true";
+  const bestsellerOnly = searchParams.get("bestsellerOnly") === "true";
+  const signatureOnly = searchParams.get("signatureOnly") === "true";
+  const sort = searchParams.get("sort");
+
+  let filtered = [...FALLBACK_MENU_ITEMS];
+
+  if (category && category !== "all") {
+    filtered = filtered.filter((item) => item.category?.slug === category || item.categoryId === category);
+  }
+
+  if (search && search.trim()) {
+    const q = search.trim().toLowerCase();
+    filtered = filtered.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        (item.ingredients && item.ingredients.toLowerCase().includes(q))
+    );
+  }
+
+  if (vegOnly) {
+    filtered = filtered.filter((item) => item.isVeg);
+  }
+
+  if (bestsellerOnly) {
+    filtered = filtered.filter((item) => item.isBestseller);
+  }
+
+  if (signatureOnly) {
+    filtered = filtered.filter((item) => item.isSignature);
+  }
+
+  if (sort === "price-asc") {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (sort === "price-desc") {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (sort === "name") {
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else {
+    filtered.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  }
+
+  return filtered;
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -64,13 +114,17 @@ export async function GET(req: NextRequest) {
       orderBy,
     });
 
+    if (!items || items.length === 0) {
+      const fallbackFiltered = filterFallbackItems(searchParams);
+      return NextResponse.json({ items: fallbackFiltered });
+    }
+
     return NextResponse.json({ items });
   } catch (error) {
-    console.error("Error fetching menu items:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch menu items" },
-      { status: 500 }
-    );
+    console.error("Error fetching menu items, using fallback:", error);
+    const { searchParams } = new URL(req.url);
+    const fallbackFiltered = filterFallbackItems(searchParams);
+    return NextResponse.json({ items: fallbackFiltered });
   }
 }
 

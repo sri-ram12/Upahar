@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
+import { FALLBACK_CATEGORIES } from "@/lib/fallback-menu";
 
 export async function GET() {
   try {
@@ -14,13 +15,14 @@ export async function GET() {
       orderBy: { displayOrder: "asc" },
     });
 
+    if (!categories || categories.length === 0) {
+      return NextResponse.json({ categories: FALLBACK_CATEGORIES });
+    }
+
     return NextResponse.json({ categories });
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch categories" },
-      { status: 500 }
-    );
+    console.error("Error fetching categories, using fallback:", error);
+    return NextResponse.json({ categories: FALLBACK_CATEGORIES });
   }
 }
 

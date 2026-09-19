@@ -32,69 +32,64 @@ const signatureDishes: Dish[] = [
     tagline: "The Legendary Crown Jewel of Upahar",
     description:
       "Crispy golden crepe smeared generously with our house-roasted spicy red garlic allam-karam chutney, roasted on high flame with pure fragrant desi ghee, and folded to a crisp perfection. Served with coconut chutney & piping drumstick sambar.",
-    price: 90,
-    image:
-      "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1200&q=85",
-    prepTime: "8-10 mins",
+    price: 45,
+    image: "/ghee-karam-dosa.jpg",
+    prepTime: "5-7 mins",
     portionSize: "1 Large Dosa + 2 Chutneys + Sambar",
     ingredients: "Fermented batter, Pure Desi Ghee, Roasted red garlic karam, Fresh curry leaves",
     isSpicy: true,
   },
   {
-    id: "button-ghee-sambar-idli",
-    name: "Button Ghee Sambar Idli (14 Pcs)",
+    id: "sambar-idly",
+    name: "Sambar Idly (3)",
     tagline: "Piping Hot Comfort in Every Spoon",
     description:
-      "Fourteen miniature steamed rice cakes submerged completely in a steaming bowl of aromatic drumstick sambar, crowned with a generous drizzle of hot desi ghee and fresh coriander. It melts effortlessly on the tongue.",
-    price: 75,
-    image:
-      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1200&q=85",
-    prepTime: "3-5 mins",
-    portionSize: "14 Mini Idlis in Sambar Bowl",
-    ingredients: "Stone-ground parboiled rice & urad dal, Drumstick sambar, Melted Desi Ghee",
+      "Three cloud-soft steamed rice cakes submerged completely in a steaming bowl of aromatic drumstick sambar, crowned with a generous drizzle of hot desi ghee and fresh coriander. It melts effortlessly on the tongue.",
+    price: 30,
+    image: "/sambar-idli.jpg",
+    prepTime: "2-3 mins",
+    portionSize: "3 Idlis in Sambar Bowl",
+    ingredients: "Stone-ground rice & urad dal, Drumstick sambar, Melted Desi Ghee",
     isSpicy: false,
   },
   {
-    id: "butter-masala-dosa",
-    name: "Special Butter Masala Dosa",
+    id: "masala-dosa",
+    name: "Masala Dosa",
     tagline: "Golden Crispy Crepe with Fragrant Potato Mash",
     description:
-      "Wafer-thin golden crepe cooked on seasoned cast-iron tava with creamy Amul butter, encasing freshly spiced turmeric potato mash with tempered mustard seeds, green chilies, and ginger.",
-    price: 85,
-    image:
-      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1200&q=85",
-    prepTime: "8-10 mins",
+      "Wafer-thin golden crepe cooked on seasoned cast-iron tava with pure ghee, encasing freshly spiced turmeric potato mash with tempered mustard seeds, green chilies, and ginger.",
+    price: 40,
+    image: "/butter-masala-dosa.jpg",
+    prepTime: "5-7 mins",
     portionSize: "1 Large Dosa + Potato Mash",
-    ingredients: "Traditional batter, Amul butter, Spiced potato filling, Mustard, Curry leaves",
+    ingredients: "Traditional batter, Desi ghee, Spiced potato filling, Mustard, Curry leaves",
     isSpicy: false,
   },
   {
-    id: "butter-pav-bhaji",
-    name: "Amul Butter Pav Bhaji",
-    tagline: "Mumbai Street Craft on Roaring High Flame",
+    id: "chicken-fried-rice",
+    name: "Chicken Fried Rice",
+    tagline: "Wok-Tossed on Roaring High Flame",
     description:
-      "Crushed spiced vegetable bhaji simmered on large cast iron tawa with generous dollops of melting Amul butter, served with soft toasted pavs, freshly chopped onions, and a wedge of lemon.",
-    price: 110,
-    image:
-      "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=1200&q=85",
+      "Aromatic basmati rice tossed on high flame wok with tender spiced chicken chunks, eggs, and crispy fresh vegetables in garlic glaze.",
+    price: 120,
+    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=1200&q=85",
     prepTime: "10-12 mins",
-    portionSize: "1 Bowl Bhaji + 2 Butter Pavs",
-    ingredients: "Mashed potatoes, Green peas, Tomatoes, Amul butter, Pav bhaji spices",
+    portionSize: "1 Full Plate Chicken Fried Rice",
+    ingredients: "Basmati rice, Chicken chunks, Farm eggs, Soy glaze, Spring onions",
     isSpicy: true,
   },
   {
-    id: "degree-filter-coffee",
-    name: "South Indian Degree Filter Coffee",
-    tagline: "The Soul of South Indian Hospitality",
+    id: "veg-manchurian-noodles",
+    name: "Veg Manchurian Noodles",
+    tagline: "Street-Style Sizzling Hakka Noodle Craft",
     description:
-      "Slow-dripped dark chicory decoction frothed by hand with boiling fresh milk and poured high between brass davarah and tumbler for that signature golden froth.",
-    price: 30,
-    image:
-      "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=85",
-    prepTime: "2-3 mins",
-    portionSize: "1 Brass Davarah (150 ml)",
-    ingredients: "Freshly ground chicory-coffee blend, Whole boiled milk, Sugar",
-    isSpicy: false,
+      "High heat wok noodles tossed with shredded bell peppers, cabbage, and crisp fried vegetable Manchurian dumplings in tangy dark soya glaze.",
+    price: 90,
+    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=1200&q=85",
+    prepTime: "8-10 mins",
+    portionSize: "1 Loaded Manchurian Noodle Plate",
+    ingredients: "Hakka noodles, Manchurian dumplings, Garlic, Shredded vegetables",
+    isSpicy: true,
   },
 ];
 
@@ -228,14 +223,14 @@ export default function SignatureShowcase() {
               <div className="flex items-center space-x-2.5">
                 <a
                   href={`https://wa.me/919885455342?text=${encodeURIComponent(
-                    `Hello Sri K. Venkat Rao, I would like to inquire about ${activeDish.name} at Upahar Tiffins.`
+                    `Hello Sri Vamsi, I would like to inquire about ${activeDish.name} at Upahar Tiffins.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-white" />
-                  <span>WhatsApp Owner</span>
+                  <span>WhatsApp Sri Vamsi</span>
                 </a>
 
                 <Link

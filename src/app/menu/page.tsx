@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { FoodItem, Category } from "@/types";
 import MenuDishCard from "@/components/menu/MenuDishCard";
 import DishDetailModal from "@/components/menu/DishDetailModal";
+import { FALLBACK_CATEGORIES, FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
 import {
   Search,
   Flame,
@@ -20,13 +21,13 @@ function MenuContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<FoodItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>(FALLBACK_CATEGORIES);
+  const [items, setItems] = useState<FoodItem[]>(FALLBACK_MENU_ITEMS);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "signature" | "bestseller" | "spicy">("all");
   const [sortBy, setSortBy] = useState("popular");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [activeModalDish, setActiveModalDish] = useState<FoodItem | null>(null);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function MenuContent() {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => {
-        if (data.categories) setCategories(data.categories);
+        if (data.categories && data.categories.length > 0) setCategories(data.categories);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -66,13 +67,44 @@ function MenuContent() {
     fetch(`/api/menu?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        let fetched: FoodItem[] = data.items || [];
+        let fetched: FoodItem[] = (data.items && data.items.length > 0) ? data.items : [];
         if (filterType === "spicy") {
           fetched = fetched.filter((i) => i.isSpicy);
         }
-        setItems(fetched);
+
+        // If API returned 0 items (e.g. offline/unseeded DB), filter locally from fallback menu
+        if (fetched.length === 0) {
+          let local = [...FALLBACK_MENU_ITEMS];
+          if (selectedCategory && selectedCategory !== "all") {
+            local = local.filter((i) => i.category?.slug === selectedCategory || i.categoryId === selectedCategory);
+          }
+          if (searchQuery.trim()) {
+            const q = searchQuery.trim().toLowerCase();
+            local = local.filter(
+              (i) =>
+                i.name.toLowerCase().includes(q) ||
+                i.description.toLowerCase().includes(q) ||
+                (i.ingredients && i.ingredients.toLowerCase().includes(q))
+            );
+          }
+          if (filterType === "signature") local = local.filter((i) => i.isSignature);
+          if (filterType === "bestseller") local = local.filter((i) => i.isBestseller);
+          if (filterType === "spicy") local = local.filter((i) => i.isSpicy);
+
+          if (sortBy === "price-asc") local.sort((a, b) => a.price - b.price);
+          else if (sortBy === "price-desc") local.sort((a, b) => b.price - a.price);
+          else if (sortBy === "name") local.sort((a, b) => a.name.localeCompare(b.name));
+          else local.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+
+          setItems(local);
+        } else {
+          setItems(fetched);
+        }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error("API error, using local fallback:", err);
+        setItems(FALLBACK_MENU_ITEMS);
+      })
       .finally(() => setLoading(false));
   }, [selectedCategory, searchQuery, filterType, sortBy]);
 

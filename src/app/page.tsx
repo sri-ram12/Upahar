@@ -1,6 +1,7 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import { calculateStoreStatus } from "@/lib/store-hours";
+import { FALLBACK_CATEGORIES, FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
 import HeroSection from "@/components/home/HeroSection";
 import CategoryChips from "@/components/home/CategoryChips";
 import FeaturedSection from "@/components/home/FeaturedSection";
@@ -16,31 +17,45 @@ import SensoryCTASection from "@/components/home/SensoryCTASection";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [categories, foodItems, settings] = await Promise.all([
-    prisma.category.findMany({
-      where: { isActive: true },
-      include: {
-        _count: {
-          select: { items: true },
+  let categories: any[] = [];
+  let foodItems: any[] = [];
+  let settings: any = null;
+
+  try {
+    const [dbCategories, dbFoodItems, dbSettings] = await Promise.all([
+      prisma.category.findMany({
+        where: { isActive: true },
+        include: {
+          _count: {
+            select: { items: true },
+          },
         },
-      },
-      orderBy: { displayOrder: "asc" },
-    }),
-    prisma.foodItem.findMany({
-      where: { isAvailable: true },
-      include: {
-        category: true,
-      },
-      orderBy: [
-        { isSignature: "desc" },
-        { isBestseller: "desc" },
-        { displayOrder: "asc" },
-      ],
-    }),
-    prisma.restaurantSetting.findUnique({
-      where: { id: "default" },
-    }),
-  ]);
+        orderBy: { displayOrder: "asc" },
+      }),
+      prisma.foodItem.findMany({
+        where: { isAvailable: true },
+        include: {
+          category: true,
+        },
+        orderBy: [
+          { isSignature: "desc" },
+          { isBestseller: "desc" },
+          { displayOrder: "asc" },
+        ],
+      }),
+      prisma.restaurantSetting.findUnique({
+        where: { id: "default" },
+      }),
+    ]);
+
+    categories = dbCategories && dbCategories.length > 0 ? dbCategories : FALLBACK_CATEGORIES;
+    foodItems = dbFoodItems && dbFoodItems.length > 0 ? dbFoodItems : FALLBACK_MENU_ITEMS;
+    settings = dbSettings;
+  } catch (err) {
+    console.error("Database query failed on homepage, using fallbacks:", err);
+    categories = FALLBACK_CATEGORIES;
+    foodItems = FALLBACK_MENU_ITEMS;
+  }
 
   const storeStatus = calculateStoreStatus(
     settings?.openingTime || "06:00",

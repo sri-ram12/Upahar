@@ -6,7 +6,7 @@ import { MessageSquare, X } from "lucide-react";
 export default function FloatingWhatsAppButton() {
   const [isOpen, setIsOpen] = useState(false);
   const ownerNumber = "919885455342";
-  const whatsappUrl = `https://wa.me/${ownerNumber}?text=Namaste%20Sri%20Venkat%20Rao%20ji!%20I%20am%20visiting%20the%20Upahar%20website%20and%20would%20like%20details%20about%20today's%20menu%20and%20timings%20at%20Sangivalasa.`;
+  const whatsappUrl = `https://wa.me/${ownerNumber}?text=Namaste%20Sri%20Vamsi%20ji!%20I%20am%20visiting%20the%20Upahar%20website%20and%20would%20like%20details%20about%20today's%20menu%20and%20timings%20at%20Sangivalasa.`;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-auto select-none">
@@ -19,7 +19,7 @@ export default function FloatingWhatsAppButton() {
                 <span className="text-[10px] tracking-widest uppercase font-bold text-emerald-200">
                   Direct Line with Owner
                 </span>
-                <h4 className="font-serif font-bold text-base mt-0.5">Sri K. Venkat Rao</h4>
+                <h4 className="font-serif font-bold text-base mt-0.5">Sri Vamsi</h4>
                 <p className="text-xs text-emerald-100">Managing Partner & Founder</p>
               </div>
               <button

@@ -108,13 +108,6 @@ export default function Navbar() {
               <Phone className="w-3.5 h-3.5 text-[#DFC17B]" />
               <span>+91 9885455342</span>
             </a>
-            <span className="text-[#C5A059]/40">|</span>
-            <Link
-              href="/admin/login"
-              className="text-[#DFC17B]/80 hover:text-[#FAF7F2] transition text-[11px] uppercase tracking-wider font-semibold"
-            >
-              Owner Portal
-            </Link>
           </div>
         </div>
       </div>
@@ -267,13 +260,6 @@ export default function Navbar() {
                 <MapPin className="w-4 h-4 text-[#580D1A]" />
                 <span>Directions to Sangivalasa</span>
               </a>
-
-              <Link
-                href="/admin/login"
-                className="text-center text-[11px] text-stone-500 hover:text-[#580D1A] pt-2 font-medium"
-              >
-                Restaurant Owner Access
-              </Link>
             </div>
           </div>
         )}

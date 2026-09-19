@@ -24,7 +24,7 @@ export default function CustomerReviews() {
       role: "Evening Snack Regular",
       rating: 5,
       comment:
-        "Their Amul Butter Pav Bhaji and Veg Hakka Noodles are legendary. Outstanding hygiene, reasonable prices, and the owner Sri Venkat Rao always greets guests with genuine warmth.",
+        "Their Amul Butter Pav Bhaji and Veg Hakka Noodles are legendary. Outstanding hygiene, reasonable prices, and the owner Sri Vamsi always greets guests with genuine warmth.",
     },
   ];
 
