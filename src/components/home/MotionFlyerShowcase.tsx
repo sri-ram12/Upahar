@@ -22,21 +22,21 @@ export default function MotionFlyerShowcase({ items }: MotionFlyerShowcaseProps)
         name: "SPICY GHEE KARAM DOSA",
         description: "Crispy golden crepe smeared generously with our house-roasted spicy red garlic chutney, roasted on high flame.",
         price: 90,
-        image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=800&q=80"
+        image: "/ghee-karam-dosa.jpg"
       },
       {
         id: "fb-2",
-        name: "BUTTER MASALA IDLI",
-        description: "Steamed rice cakes tossed in gunpowder spices and melting butter, served with coconut chutney.",
+        name: "BUTTON GHEE SAMBAR IDLI",
+        description: "Steamed mini rice cakes completely submerged in piping hot drumstick sambar with melting ghee.",
         price: 75,
-        image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80"
+        image: "/sambar-idli.jpg"
       },
       {
         id: "fb-3",
-        name: "SPECIAL PANEER BIRYANI",
-        description: "Fragrant basmati rice cooked with secret coastal spices and fresh paneer cubes.",
-        price: 150,
-        image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80"
+        name: "SPECIAL BUTTER MASALA DOSA",
+        description: "Golden crispy crepe with generous dollops of melting yellow butter and spiced potato mash spilling out.",
+        price: 85,
+        image: "/butter-masala-dosa.jpg"
       }
     ];
   }
