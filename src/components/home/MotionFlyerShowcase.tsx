@@ -12,11 +12,10 @@ import {
   MapPin,
   MessageSquare,
   ArrowRight,
-  ShieldCheck,
-  Zap,
   ChevronLeft,
   ChevronRight,
-  Star,
+  CheckCircle2,
+  Utensils,
 } from "lucide-react";
 
 interface DishFlyer {
@@ -30,7 +29,7 @@ interface DishFlyer {
   image: string;
   category: "Tiffins" | "Fast Food";
   isVeg?: boolean;
-  spicyLevel: number; // 1 to 3
+  spicyLevel: number;
   ingredients: string[];
   accentColor: string;
   bgWord: string;
@@ -57,8 +56,8 @@ const MOTION_DISHES: DishFlyer[] = [
   {
     id: "citti-idly",
     name: "Chitti Idly",
-    subtitle: "Soft, Steamed Mini Idlies tossed with Ghee Podi",
-    tagline: "GHEE PODI • BUTTON IDLIS • TRADITIONAL TASTE",
+    subtitle: "Soft, Steamed Mini Idlies with Ghee Podi",
+    tagline: "GHEE PODI • BUTTON IDLIS • TRADITIONAL",
     badge: "✨ UPAHAR EXCLUSIVE",
     price: 40,
     originalPrice: 45,
@@ -107,9 +106,9 @@ const MOTION_DISHES: DishFlyer[] = [
     name: "Chicken Fried Rice",
     subtitle: "Wok-Tossed on Roaring High Flame",
     tagline: "SMOKY • FLAVORFUL • TENDER CHICKEN",
-    badge: "⚡ EVENING BESTSELLER",
-    price: 120,
-    originalPrice: 140,
+    badge: "⚡ FAST FOOD BESTSELLER",
+    price: 100,
+    originalPrice: 120,
     image: "/chicken-fried-rice.jpg",
     category: "Fast Food",
     isVeg: false,
@@ -122,9 +121,9 @@ const MOTION_DISHES: DishFlyer[] = [
   {
     id: "veg-manchurian-noodles",
     name: "Veg Manchurian Noodles",
-    subtitle: "Street-Style Spicy Hakka Noodles with Manchurian",
+    subtitle: "Street-Style Spicy Hakka Noodles",
     tagline: "SIZZLING • TASTY • CRISP VEGGIES",
-    badge: "🍜 STUDENT'S FAVORITE",
+    badge: "🍜 POPULAR CHOICE",
     price: 90,
     originalPrice: 100,
     image: "/veg-manchurian-noodles.jpg",
@@ -138,443 +137,293 @@ const MOTION_DISHES: DishFlyer[] = [
   },
 ];
 
-interface FloatingParticle {
-  id: number;
-  emoji: string;
-  size: string;
-  initialX: number;
-  initialY: number;
-  targetX: number;
-  targetY: number;
-  duration: number;
-  delay: number;
-}
-
-const PARTICLES: FloatingParticle[] = [
-  { id: 1, emoji: "🌶️", size: "text-2xl sm:text-4xl", initialX: -180, initialY: -120, targetX: -90, targetY: -70, duration: 4.5, delay: 0 },
-  { id: 2, emoji: "🌿", size: "text-xl sm:text-3xl", initialX: 190, initialY: -140, targetX: 110, targetY: -80, duration: 5.2, delay: 0.3 },
-  { id: 3, emoji: "🧄", size: "text-lg sm:text-2xl", initialX: -200, initialY: 130, targetX: -120, targetY: 70, duration: 4.8, delay: 0.6 },
-  { id: 4, emoji: "✨", size: "text-xl sm:text-3xl", initialX: 210, initialY: 120, targetX: 130, targetY: 80, duration: 3.8, delay: 0.2 },
-  { id: 5, emoji: "🧅", size: "text-base sm:text-2xl", initialX: -140, initialY: -180, targetX: -70, targetY: -100, duration: 5.5, delay: 0.5 },
-  { id: 6, emoji: "🍅", size: "text-lg sm:text-2xl", initialX: 160, initialY: -190, targetX: 90, targetY: -110, duration: 4.2, delay: 0.4 },
+// Gentle floating garnish particles (drifting linear bob, NO round rotation)
+const GARNISHES = [
+  { id: 1, emoji: "🌿", initialX: -260, yOffset: -80, duration: 6, delay: 0 },
+  { id: 2, emoji: "🌶️", initialX: 280, yOffset: -100, duration: 5.5, delay: 0.4 },
+  { id: 3, emoji: "🧄", initialX: -300, yOffset: 120, duration: 7, delay: 0.8 },
+  { id: 4, emoji: "✨", initialX: 320, yOffset: 90, duration: 4.8, delay: 0.2 },
 ];
 
 export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedFilter, setSelectedFilter] = useState<"All" | "Tiffins" | "Fast Food">("All");
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
 
-  const activeDish = MOTION_DISHES[currentIndex];
+  const filteredDishes =
+    selectedFilter === "All"
+      ? MOTION_DISHES
+      : MOTION_DISHES.filter((d) => d.category === selectedFilter);
 
-  // Auto-slide cycling every 4.5 seconds with visual progress bar
+  // Normalize index if filter changes
+  const activeIndex = currentIndex % filteredDishes.length;
+  const activeDish = filteredDishes[activeIndex] || filteredDishes[0];
+
+  // Smooth linear horizontal auto-slide (no spinning rotation)
   useEffect(() => {
     if (!isAutoPlaying) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % filteredDishes.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, filteredDishes.length]);
 
-    const DURATION = 4500;
-    const INTERVAL = 50;
-    let elapsed = 0;
-
-    const ticker = setInterval(() => {
-      elapsed += INTERVAL;
-      setProgress(Math.min((elapsed / DURATION) * 100, 100));
-
-      if (elapsed >= DURATION) {
-        elapsed = 0;
-        setProgress(0);
-        setCurrentIndex((prev) => (prev + 1) % MOTION_DISHES.length);
-      }
-    }, INTERVAL);
-
-    return () => clearInterval(ticker);
-  }, [currentIndex, isAutoPlaying]);
-
-  const handleSelectDish = (index: number) => {
-    setCurrentIndex(index);
-    setProgress(0);
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + filteredDishes.length) % filteredDishes.length);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % MOTION_DISHES.length);
-    setProgress(0);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + MOTION_DISHES.length) % MOTION_DISHES.length);
-    setProgress(0);
+    setCurrentIndex((prev) => (prev + 1) % filteredDishes.length);
   };
 
   return (
     <section
-      className="relative w-full min-h-[92vh] lg:min-h-screen bg-[#0E0909] text-[#FAF7F2] overflow-hidden flex flex-col justify-between py-8 sm:py-12 select-none"
+      className="relative w-full min-h-[90vh] bg-gradient-to-b from-[#120B0B] via-[#1A0E10] to-[#0E0909] text-[#FAF7F2] overflow-hidden py-14 sm:py-20 select-none flex flex-col justify-between"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
-      aria-label="Pinterest Motion Ad Food Flyer Showcase"
+      aria-label="What's on our Plate Horizontal Motion Showcase"
     >
-      {/* ========================================================================= */}
-      {/* 1. BACKGROUND KINETIC WATERMARK TYPOGRAPHY (Pinterest Video Ad Style)     */}
-      {/* ========================================================================= */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeDish.id}
-            initial={{ scale: 0.6, opacity: 0, rotate: -6 }}
-            animate={{ scale: 1, opacity: 0.07, rotate: 0 }}
-            exit={{ scale: 1.4, opacity: 0, rotate: 6 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center select-none"
-          >
-            <span className="block text-[18vw] sm:text-[16vw] font-black text-[#D4AF37] uppercase tracking-tighter leading-none whitespace-nowrap">
-              {activeDish.bgWord}
-            </span>
-            <span className="block text-[10vw] sm:text-[8vw] font-black text-white/50 uppercase tracking-widest -mt-4 sm:-mt-8">
-              UPAHAR SPECIAL
-            </span>
-          </motion.div>
-        </AnimatePresence>
+      {/* Background Kinetic Watermark Typography */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden opacity-5">
+        <span className="text-[20vw] font-black uppercase text-amber-100 whitespace-nowrap tracking-tighter">
+          {activeDish.bgWord}
+        </span>
       </div>
 
-      {/* Radiant Golden/Maroon Radial Spotlight */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.18)_0%,rgba(88,13,26,0.25)_40%,rgba(14,9,9,0.98)_80%)] pointer-events-none z-0" />
+      {/* Subtle Warm Amber Spotlight */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.12)_0%,rgba(88,13,26,0.18)_50%,transparent_80%)] pointer-events-none z-0" />
 
-      {/* Kinetic Hazard / Speed Lines Diagonal Ribbon Accent */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#580D1A] to-[#D4AF37] opacity-80 z-20" />
+      {/* Floating Ambient Garnish Particles (Gentle floating bob, NO spinning rotation) */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+        {GARNISHES.map((g) => (
+          <motion.div
+            key={g.id}
+            className="absolute left-1/2 top-1/2 text-2xl select-none"
+            initial={{ x: g.initialX, y: g.yOffset, opacity: 0.3 }}
+            animate={{
+              y: [g.yOffset - 12, g.yOffset + 12, g.yOffset - 12],
+              opacity: [0.3, 0.75, 0.3],
+            }}
+            transition={{
+              duration: g.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: g.delay,
+            }}
+          >
+            {g.emoji}
+          </motion.div>
+        ))}
+      </div>
 
-      {/* ========================================================================= */}
-      {/* 2. TOP HEADER BAR: "WE ARE OPEN" NEON MARQUEE & LIVE STATUS (Pin 2 Style) */}
-      {/* ========================================================================= */}
       <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 sm:pb-6 border-b border-white/10">
-          {/* Neon "WE ARE OPEN" Glowing Pill */}
-          <div className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-[#1C1213] border border-[#D4AF37]/50 shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-            </span>
-            <span className="text-xs sm:text-sm font-black tracking-widest uppercase text-[#DFC17B]">
-              WE ARE OPEN NOW
-            </span>
-            <span className="text-white/40 text-xs hidden sm:inline">•</span>
-            <span className="text-stone-300 text-xs hidden sm:inline font-medium">
-              Morning 6–10 AM | Evening 6–10:30 PM
-            </span>
+        
+        {/* ========================================================================= */}
+        {/* 1. "WHAT'S ON OUR PLATE" HEADER & CATEGORY TABS (Wilson Wings Style)      */}
+        {/* ========================================================================= */}
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1C1213] border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest mb-3 shadow-lg">
+            <Sparkles className="w-3.5 h-3.5 text-[#DFC17B]" />
+            <span>Interactive Culinary Showcase</span>
           </div>
 
-          {/* Quick Direct Actions: Sangivalasa, ANITS Road beside SBI */}
-          <div className="flex items-center space-x-2 sm:space-x-3 text-xs">
-            <a
-              href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-200 border border-white/15 flex items-center space-x-1.5 transition"
-            >
-              <MapPin className="w-3.5 h-3.5 text-[#DFC17B]" />
-              <span className="hidden md:inline">Beside SBI, ANITS Road</span>
-              <span className="md:hidden">Directions</span>
-            </a>
+          <h2 className="text-3xl sm:text-5xl font-black font-display text-white tracking-tight leading-tight">
+            What&apos;s on our Plate
+          </h2>
+          <p className="text-stone-300 text-xs sm:text-sm mt-2 font-normal max-w-xl mx-auto">
+            Please serve yourself with our best choices — prepared live on seasoned cast-iron & high-flame wok.
+          </p>
 
-            <a
-              href="tel:+919885455342"
-              className="px-3 py-1.5 rounded-lg bg-[#580D1A] hover:bg-[#74171E] text-[#DFC17B] border border-[#D4AF37]/40 font-bold flex items-center space-x-1.5 shadow-md transition"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>9885455342</span>
-            </a>
+          {/* Filter Tabs */}
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {(["All", "Tiffins", "Fast Food"] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setSelectedFilter(cat);
+                  setCurrentIndex(0);
+                }}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                  selectedFilter === cat
+                    ? "bg-[#D4AF37] text-black font-black shadow-lg shadow-[#D4AF37]/20 scale-105"
+                    : "bg-white/5 hover:bg-white/10 text-stone-300 border border-white/10"
+                }`}
+              >
+                {cat === "All" ? "All Dishes" : cat === "Tiffins" ? "Tiffins & Dosa" : "Fast Food & Wok"}
+              </button>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* ========================================================================= */}
-      {/* 3. MAIN FLYER STAGE: 3D ROTATING DISH + FLOATING INGREDIENTS (Pins 1 & 3) */}
-      {/* ========================================================================= */}
-      <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 my-auto py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-          {/* ------------------------------------------------------------- */}
-          {/* LEFT: KINETIC TYPOGRAPHY BANNER & BADGES                      */}
-          {/* ------------------------------------------------------------- */}
-          <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 sm:space-y-5 order-2 lg:order-1">
-            {/* Top Promo Badge */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`badge-${activeDish.id}`}
-                initial={{ opacity: 0, y: -20, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 20, scale: 0.8 }}
-                transition={{ duration: 0.35, type: "spring", stiffness: 200 }}
-                className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#580D1A] border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.4)]"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-[#DFC17B]" />
-                <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-[#DFC17B]">
-                  {activeDish.badge}
-                </span>
-              </motion.div>
-            </AnimatePresence>
+        {/* ========================================================================= */}
+        {/* 2. HORIZONTAL LINEAR GLIDE TRACK (No Round Rotation!)                     */}
+        {/* ========================================================================= */}
+        <div className="relative py-4 sm:py-8 overflow-hidden">
+          
+          {/* Navigation Glide Buttons */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
+            aria-label="Previous Dish"
+          >
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
 
-            {/* Giant Punchy Dish Title */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`title-${activeDish.id}`}
-                initial={{ opacity: 0, x: -40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 40 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
-                className="space-y-1"
-              >
-                <span className="text-xs sm:text-sm font-black tracking-[0.25em] text-[#DFC17B] uppercase block">
-                  {activeDish.tagline}
-                </span>
-                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black font-display uppercase tracking-tight text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] leading-[1.05]">
-                  {activeDish.name}
-                </h2>
-                <p className="text-stone-300 text-xs sm:text-sm md:text-base max-w-lg mt-2 font-medium leading-relaxed">
-                  {activeDish.highlights}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+          <button
+            onClick={handleNext}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
+            aria-label="Next Dish"
+          >
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
 
-            {/* Key Ingredients Pill Tags (Pin 1 Flying Ingredients Theme) */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
-              {activeDish.ingredients.map((ing, idx) => (
-                <motion.span
-                  key={`${activeDish.id}-ing-${idx}`}
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.15 + idx * 0.06 }}
-                  className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#1C1917] border border-white/15 text-stone-300 flex items-center space-x-1 shadow-sm"
+          {/* Linear Gliding Plates Row */}
+          <div className="flex items-center justify-center gap-6 sm:gap-10 py-6 min-h-[340px] sm:min-h-[420px]">
+            {filteredDishes.map((dish, idx) => {
+              const isCenter = idx === activeIndex;
+              const offset = idx - activeIndex;
+
+              // Only show items near active window for clean performance
+              if (Math.abs(offset) > 2) return null;
+
+              return (
+                <motion.div
+                  key={dish.id}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`cursor-pointer transition-all duration-500 flex flex-col items-center ${
+                    isCenter ? "z-30 scale-105 sm:scale-110" : "z-10 opacity-40 hover:opacity-75 scale-75 sm:scale-80"
+                  }`}
+                  initial={{ opacity: 0, x: offset * 120 }}
+                  animate={{
+                    opacity: isCenter ? 1 : 0.45,
+                    x: offset * 30, // Smooth horizontal slide layout
+                    y: isCenter ? [-6, 6, -6] : 0, // Gentle floating levitation (NO spinning!)
+                  }}
+                  transition={{
+                    y: isCenter
+                      ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" }
+                      : { duration: 0.4 },
+                    x: { type: "spring", stiffness: 120, damping: 18 },
+                    opacity: { duration: 0.35 },
+                  }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                  <span>{ing}</span>
-                </motion.span>
-              ))}
+                  {/* Plate Container with soft realistic drop shadow (NO 360 rotation!) */}
+                  <div
+                    className={`relative rounded-full overflow-hidden transition-all duration-500 bg-[#141210] ${
+                      isCenter
+                        ? "w-52 h-52 sm:w-72 sm:h-72 md:w-80 md:h-80 border-4 sm:border-6 border-[#D4AF37] shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
+                        : "w-36 h-36 sm:w-48 sm:h-48 border-2 border-white/20 shadow-xl"
+                    }`}
+                  >
+                    <Image
+                      src={dish.image}
+                      alt={dish.name}
+                      fill
+                      priority={isCenter}
+                      sizes={isCenter ? "(max-width: 640px) 220px, 320px" : "180px"}
+                      className="object-cover transition-transform duration-700 ease-out hover:scale-105"
+                    />
+
+                    {/* Sizzle Glow on Center Plate */}
+                    {isCenter && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                    )}
+
+                    {/* Hot Tariff Price Stamp on Plate */}
+                    {isCenter && (
+                      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 bg-gradient-to-br from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-[#110A0A] font-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-xl border-2 border-black/40 flex flex-col items-center">
+                        <span className="text-[9px] uppercase tracking-widest font-black leading-none">
+                          HOT TARIFF
+                        </span>
+                        <span className="text-base sm:text-xl font-black font-display leading-none mt-0.5">
+                          ₹{dish.price}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dish Caption below Plate */}
+                  <div className="mt-4 text-center max-w-[200px] sm:max-w-[240px]">
+                    <h3
+                      className={`font-black font-display tracking-tight transition ${
+                        isCenter ? "text-lg sm:text-xl text-[#DFC17B]" : "text-sm text-stone-400"
+                      }`}
+                    >
+                      {dish.name}
+                    </h3>
+                    {isCenter && (
+                      <p className="text-[11px] text-stone-300 line-clamp-1 mt-1 font-medium">
+                        {dish.subtitle}
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 3. ACTIVE DISH SPOTLIGHT CARD & QUICK WHATSAPP PARCEL ORDER              */}
+        {/* ========================================================================= */}
+        <div className="max-w-2xl mx-auto mt-4 p-5 sm:p-6 rounded-3xl bg-[#1C1213]/90 border border-[#D4AF37]/35 shadow-2xl backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <div className="text-center sm:text-left space-y-1.5">
+              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider">
+                <Flame className="w-3 h-3 text-[#DFC17B]" />
+                <span>{activeDish.badge}</span>
+              </div>
+              <h4 className="text-xl sm:text-2xl font-black text-white font-display">
+                {activeDish.name} • ₹{activeDish.price}
+              </h4>
+              <p className="text-xs text-stone-300 max-w-md">
+                {activeDish.highlights}
+              </p>
             </div>
 
-            {/* Action Row: Price Blast + WhatsApp Order + Full Menu CTA */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2 sm:pt-4">
-              {/* Starburst Price Tag on Left for Mobile and Desktop */}
-              <div className="flex items-baseline space-x-2 bg-[#1C1213] px-4 py-2 rounded-2xl border border-[#D4AF37]/50 shadow-lg">
-                <span className="text-3xl sm:text-4xl font-black text-[#D4AF37] font-display">
-                  ₹{activeDish.price}
-                </span>
-                {activeDish.originalPrice && (
-                  <span className="text-sm text-stone-500 line-through font-bold">
-                    ₹{activeDish.originalPrice}
-                  </span>
-                )}
-                <span className="text-[10px] text-emerald-400 font-extrabold uppercase ml-1">
-                  Fresh Hot
-                </span>
-              </div>
-
-              {/* WhatsApp Quick Parcel Order */}
+            {/* Direct WhatsApp Parcel CTA */}
+            <div className="flex items-center gap-2.5 shrink-0">
               <a
                 href={`https://wa.me/919885455342?text=${encodeURIComponent(
-                  `Namaste Upahar! I want to order ${activeDish.name} (₹${activeDish.price}) from the live website special.`
+                  `Namaste Upahar! I would like to order ${activeDish.name} (₹${activeDish.price}) from the What's on our Plate menu.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm tracking-wider uppercase flex items-center space-x-2 shadow-[0_0_25px_rgba(16,185,129,0.35)] hover:scale-105 transition-all"
+                className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm tracking-wide uppercase flex items-center space-x-2 shadow-lg transition hover:scale-105 active:scale-95"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>Order on WhatsApp</span>
+                <span>Order Parcel</span>
               </a>
 
-              {/* View Dish Details */}
               <Link
                 href="/menu"
-                className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-[#D4AF37]/40 font-bold text-xs sm:text-sm uppercase flex items-center space-x-1.5 transition"
+                className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-white/15 text-xs font-bold uppercase flex items-center space-x-1 transition"
               >
-                <span>Full Menu</span>
-                <ArrowRight className="w-4 h-4" />
+                <Utensils className="w-3.5 h-3.5" />
+                <span>Menu</span>
               </Link>
             </div>
-          </div>
 
-          {/* ------------------------------------------------------------- */}
-          {/* RIGHT: 360-DEGREE CONTINUOUS ROTATING DISH + PARTICLES        */}
-          {/* ------------------------------------------------------------- */}
-          <div className="lg:col-span-6 relative flex items-center justify-center order-1 lg:order-2 py-4 sm:py-8">
-            {/* Floating 3D Ingredients Orbiting the Plate (Pin 1 Motion Reference) */}
-            {PARTICLES.map((particle) => (
-              <motion.div
-                key={`${activeDish.id}-p-${particle.id}`}
-                className={`absolute z-30 pointer-events-none select-none ${particle.size}`}
-                initial={{
-                  x: particle.initialX,
-                  y: particle.initialY,
-                  opacity: 0,
-                  scale: 0.3,
-                  rotate: 0,
-                }}
-                animate={{
-                  x: [particle.initialX, particle.targetX, particle.initialX],
-                  y: [particle.initialY, particle.targetY, particle.initialY],
-                  opacity: [0.3, 0.9, 0.3],
-                  scale: [0.8, 1.2, 0.8],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: particle.duration,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: particle.delay,
-                }}
-              >
-                {particle.emoji}
-              </motion.div>
-            ))}
-
-            {/* Radiant Sunburst Aura behind Plate */}
-            <div className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-[420px] md:h-[420px] rounded-full bg-gradient-to-tr from-[#D4AF37]/30 via-[#580D1A]/40 to-transparent blur-2xl animate-pulse pointer-events-none" />
-
-            {/* Main Interactive Spinning Plate Container */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeDish.id}
-                initial={{ opacity: 0, scale: 0.3, rotate: -60 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                exit={{ opacity: 0, scale: 1.4, rotate: 60 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 75,
-                  damping: 14,
-                  mass: 0.9,
-                }}
-                className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-96 md:h-96 lg:w-[430px] lg:h-[430px] rounded-full border-4 sm:border-8 border-[#D4AF37]/40 shadow-[0_30px_70px_rgba(0,0,0,0.95)] overflow-hidden group bg-[#141210]"
-              >
-                {/* Continuous 360-Degree Fluid Rotation */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
-                  className="w-full h-full relative"
-                >
-                  <Image
-                    src={activeDish.image}
-                    alt={activeDish.name}
-                    fill
-                    priority
-                    sizes="(max-width: 640px) 240px, (max-width: 1024px) 380px, 450px"
-                    className="object-cover scale-110"
-                  />
-                </motion.div>
-
-                {/* Cinematic Food-Ad Fog & Rising Steam over dish */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full z-20">
-                  {/* Drifting horizontal fog across the plate */}
-                  <div className="fog-layer-base animate-fog-drift   absolute bottom-0 left-0 w-full h-2/3" />
-                  <div className="fog-layer-mid  animate-fog-drift-2 absolute bottom-0 left-0 w-full h-1/2" />
-                  <div className="fog-layer-top  animate-fog-drift-3 absolute bottom-2 left-0 w-full h-1/3" />
-
-                  {/* Wispy rising plumes */}
-                  <div className="steam-wisp      animate-steam-1      absolute bottom-0 left-[20%]         w-10 h-40" />
-                  <div className="steam-wisp-wide animate-steam-2      absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-48" />
-                  <div className="steam-wisp      animate-steam-3      absolute bottom-0 right-[20%]        w-10 h-40" />
-                  <div className="steam-wisp      animate-steam-wisp-1 absolute bottom-0 left-[8%]          w-8  h-30" />
-                  <div className="steam-wisp      animate-steam-wisp-2 absolute bottom-0 right-[8%]         w-8  h-30" />
-
-                  {/* Golden heat shimmer aura */}
-                  <div className="golden-heat-aura animate-heat-shimmer absolute bottom-0 inset-x-0 h-20" />
-                </div>
-
-                {/* Jagged / Starburst Explosive Price Blast Badge on Plate (Pin 1 & 3 Reference) */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -25 }}
-                  animate={{ scale: 1, rotate: -12 }}
-                  transition={{ delay: 0.3, type: "spring", stiffness: 300, damping: 15 }}
-                  className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-40 bg-gradient-to-br from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-[#110A0A] font-black px-3.5 py-2 sm:px-5 sm:py-3 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-2 sm:border-4 border-[#110A0A] flex flex-col items-center"
-                >
-                  <span className="text-[9px] sm:text-[11px] uppercase tracking-widest font-black leading-none">
-                    HOT TARIFF
-                  </span>
-                  <span className="text-xl sm:text-3xl font-black font-display leading-none mt-0.5">
-                    ₹{activeDish.price}
-                  </span>
-                </motion.div>
-
-                {/* Veg / Non-Veg Stamp on Plate */}
-                <div
-                  className={`absolute top-3 left-3 sm:top-5 sm:left-5 z-40 bg-[#141210]/90 backdrop-blur-md p-1.5 sm:p-2 rounded-xl border shadow-md ${
-                    activeDish.isVeg === false ? "border-red-500/60" : "border-emerald-500/60"
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 sm:w-5 sm:h-5 border-2 rounded-sm flex items-center justify-center ${
-                      activeDish.isVeg === false ? "border-red-500" : "border-emerald-400"
-                    }`}
-                  >
-                    <div
-                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${
-                        activeDish.isVeg === false ? "bg-red-500" : "bg-emerald-400"
-                      }`}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Left/Right Arrow Navigation Buttons on Flyer */}
-            <button
-              onClick={handlePrev}
-              className="absolute left-0 sm:-left-4 z-40 p-2.5 sm:p-3 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-xl transition-all hover:scale-110 active:scale-95"
-              aria-label="Previous Dish"
-            >
-              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-            <button
-              onClick={handleNext}
-              className="absolute right-0 sm:-right-4 z-40 p-2.5 sm:p-3 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-xl transition-all hover:scale-110 active:scale-95"
-              aria-label="Next Dish"
-            >
-              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
           </div>
         </div>
-      </div>
 
-      {/* ========================================================================= */}
-      {/* 4. BOTTOM DISH SWITCHER BAR & PROGRESS TIMER (Pins 2 & 3 Interactive Bar) */}
-      {/* ========================================================================= */}
-      <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4">
-        {/* Progress Bar for Auto-play */}
-        <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden mb-3">
-          <div
-            className="bg-gradient-to-r from-[#D4AF37] to-[#EF4444] h-full transition-all duration-75"
-            style={{ width: `${progress}%` }}
-          />
+        {/* ========================================================================= */}
+        {/* 4. DISH DOT INDICATORS                                                    */}
+        {/* ========================================================================= */}
+        <div className="flex items-center justify-center space-x-2 mt-6">
+          {filteredDishes.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === activeIndex ? "w-8 bg-[#D4AF37]" : "w-2 bg-white/20 hover:bg-white/40"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
         </div>
 
-        {/* Horizontal Scrollable Dish Selector Strip */}
-        <div className="flex items-center justify-start sm:justify-center gap-2.5 overflow-x-auto no-scrollbar pb-2">
-          {MOTION_DISHES.map((dish, idx) => {
-            const isSelected = idx === currentIndex;
-            return (
-              <button
-                key={dish.id}
-                onClick={() => handleSelectDish(idx)}
-                className={`flex-shrink-0 flex items-center space-x-2.5 px-3.5 py-2 rounded-xl transition-all duration-300 border text-left ${isSelected
-                    ? "bg-[#580D1A] border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.35)] scale-105"
-                    : "bg-[#1C1917]/80 hover:bg-[#1C1917] border-white/10 opacity-70 hover:opacity-100"
-                  }`}
-              >
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/40 flex-shrink-0">
-                  <Image
-                    src={dish.image}
-                    alt={dish.name}
-                    fill
-                    sizes="32px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-black text-white whitespace-nowrap leading-tight">
-                    {dish.name}
-                  </span>
-                  <span className="text-[10px] font-bold text-[#DFC17B]">
-                    ₹{dish.price}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
       </div>
     </section>
   );

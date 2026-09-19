@@ -215,7 +215,6 @@ export default function OffersBanner() {
                     autoPlay
                     loop
                     muted={isMuted}
-                    defaultMuted
                     playsInline
                     preload="auto"
                     className="absolute inset-0 w-full h-full object-cover z-10"
