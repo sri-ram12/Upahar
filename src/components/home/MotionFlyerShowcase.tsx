@@ -3,36 +3,26 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface MotionFlyerShowcaseProps {
   items: any[];
 }
 
 export default function MotionFlyerShowcase({ items }: MotionFlyerShowcaseProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
   const topItems = items.filter(item => item.imageUrl).slice(0, 4);
   if (topItems.length === 0) return null;
 
-  // Parallax transformations for background text and elements
-  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const rotateLeft = useTransform(scrollYProgress, [0, 1], [0, -25]);
-  const rotateRight = useTransform(scrollYProgress, [0, 1], [0, 25]);
-  
   return (
     <section 
-      ref={containerRef}
       className="relative py-24 sm:py-32 bg-[#2B070E] overflow-hidden flex items-center justify-center min-h-screen"
     >
       {/* Background Decorative Typography */}
       <motion.div 
-        style={{ y: yBg }}
-        className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none"
+        initial={{ y: 50, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 0.05 }}
+        transition={{ duration: 1 }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
         <span className="text-[20vw] font-black text-white whitespace-nowrap tracking-tighter">
           OPEN NOW
@@ -73,19 +63,20 @@ export default function MotionFlyerShowcase({ items }: MotionFlyerShowcaseProps)
                 key={item.id}
                 className="absolute origin-center"
                 style={{ 
-                  zIndex: zIndexOffset,
-                  rotate: isLeft ? rotateLeft : rotateRight
+                  zIndex: zIndexOffset
                 }}
                 initial={{ 
                   opacity: 0, 
                   x: isLeft ? -200 : 200,
                   y: yOffset,
+                  rotate: isLeft ? -25 : 25,
                   scale: 0.5 
                 }}
                 whileInView={{ 
                   opacity: 1, 
                   x: xOffset,
                   y: yOffset,
+                  rotate: 0,
                   scale: scaleOffset 
                 }}
                 viewport={{ once: true, margin: "-100px" }}
