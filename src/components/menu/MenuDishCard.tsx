@@ -27,18 +27,22 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/80 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/70 via-black/10 to-transparent" />
 
-          {/* Realistic Rising Foggy Steam Animation */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-75 group-hover:opacity-100 transition-opacity">
-            {/* Steam plume 1 */}
-            <div className="absolute bottom-6 left-1/4 w-20 h-32 bg-gradient-to-t from-white/30 via-white/15 to-transparent rounded-full filter blur-md animate-steam-1" />
-            {/* Steam plume 2 */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-28 h-36 bg-gradient-to-t from-amber-100/25 via-white/10 to-transparent rounded-full filter blur-lg animate-steam-2" />
-            {/* Steam plume 3 */}
-            <div className="absolute bottom-6 right-1/4 w-24 h-32 bg-gradient-to-t from-white/20 via-white/10 to-transparent rounded-full filter blur-md animate-steam-3" />
-            {/* Foggy warm glow aura */}
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#580D1A]/40 to-transparent pointer-events-none" />
+          {/* Realistic Rising Foggy Steam Animation – always visible */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Steam plume 1 - left */}
+            <div className="absolute bottom-0 left-[22%] w-14 h-40 bg-gradient-to-t from-white/60 via-white/30 to-transparent rounded-full filter blur-xl animate-steam-1" />
+            {/* Steam plume 2 - center, tallest */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-48 bg-gradient-to-t from-amber-50/70 via-white/40 to-transparent rounded-full filter blur-2xl animate-steam-2" />
+            {/* Steam plume 3 - right */}
+            <div className="absolute bottom-0 right-[22%] w-16 h-40 bg-gradient-to-t from-white/55 via-white/25 to-transparent rounded-full filter blur-xl animate-steam-3" />
+            {/* Extra wispy steam 4 - far left */}
+            <div className="absolute bottom-0 left-[10%] w-10 h-32 bg-gradient-to-t from-white/40 via-white/15 to-transparent rounded-full filter blur-lg animate-steam-1" style={{animationDelay: "0.8s"}} />
+            {/* Extra wispy steam 5 - far right */}
+            <div className="absolute bottom-0 right-[10%] w-10 h-32 bg-gradient-to-t from-white/40 via-white/15 to-transparent rounded-full filter blur-lg animate-steam-3" style={{animationDelay: "1.5s"}} />
+            {/* Foggy warm glow aura at base */}
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#D4AF37]/20 via-amber-100/10 to-transparent pointer-events-none" />
           </div>
 
           {/* Badges on Visual */}

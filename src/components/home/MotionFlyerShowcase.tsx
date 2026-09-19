@@ -453,6 +453,16 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
                   />
                 </motion.div>
 
+                {/* Rising Foggy Steam over dish – always visible */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full z-20">
+                  <div className="absolute bottom-0 left-[20%] w-12 h-36 bg-gradient-to-t from-white/70 via-white/35 to-transparent rounded-full filter blur-xl animate-steam-1" />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-44 bg-gradient-to-t from-amber-50/80 via-white/45 to-transparent rounded-full filter blur-2xl animate-steam-2" />
+                  <div className="absolute bottom-0 right-[20%] w-12 h-36 bg-gradient-to-t from-white/65 via-white/30 to-transparent rounded-full filter blur-xl animate-steam-3" />
+                  <div className="absolute bottom-0 left-[8%] w-8 h-28 bg-gradient-to-t from-white/50 via-white/20 to-transparent rounded-full filter blur-lg animate-steam-1" style={{animationDelay:"1s"}} />
+                  <div className="absolute bottom-0 right-[8%] w-8 h-28 bg-gradient-to-t from-white/50 via-white/20 to-transparent rounded-full filter blur-lg animate-steam-3" style={{animationDelay:"0.5s"}} />
+                </div>
+
+
                 {/* Jagged / Starburst Explosive Price Blast Badge on Plate (Pin 1 & 3 Reference) */}
                 <motion.div
                   initial={{ scale: 0, rotate: -25 }}
