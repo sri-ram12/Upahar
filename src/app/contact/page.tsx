@@ -12,6 +12,7 @@ import {
   AlertCircle,
   MessageSquare,
 } from "lucide-react";
+import { InstagramIcon } from "@/components/ui/Icons";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({

@@ -219,13 +219,13 @@ export default function LocationHoursSection({
               </span>
 
               <a
-                href="https://instagram.com/upahartiffins"
+                href="https://www.instagram.com/upahar_07"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-bold text-[#580D1A] hover:text-[#74171E] flex items-center space-x-1"
               >
                 <InstagramIcon className="w-3.5 h-3.5" />
-                <span>Follow on Instagram</span>
+                <span>Follow @upahar_07 on Instagram</span>
               </a>
             </div>
           </div>

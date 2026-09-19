@@ -23,28 +23,28 @@ export const metadata = {
 export default function ExperiencePage() {
   const moments = [
     {
-      time: "06:30 AM",
-      title: "The Dawn Aroma & First Batch",
-      desc: "Granite grinders complete their night's work. The first round of steamed button idlis emerges in clouds of steam, paired with freshly brewed degree filter coffee.",
-      image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+      time: "06:00 AM",
+      title: "The Dawn Aroma & Hot Chitti Idly",
+      desc: "Granite stone-grinders complete their work. Fresh batches of soft steamed mini Chitti Idlis tossed with ghee podi and piping hot sambar emerge fresh.",
+      image: "/images/upahar_chitti_idly.jpg",
     },
     {
-      time: "08:30 AM",
-      title: "The Bustling Breakfast Rush",
-      desc: "Cast-iron tavas roar with sizzling batter. Crisp ghee karam dosas and puffed pooris are served to morning walkers, office commuters, and neighborhood regulars.",
-      image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=800&q=80",
+      time: "08:00 AM",
+      title: "The Morning Tava & Breakfast Rush",
+      desc: "Cast-iron tavas roar with sizzling batter. Wafer-crisp ghee karam dosas, masala dosas, and golden wadas served to students and morning commuters.",
+      image: "/ghee-karam-dosa.jpg",
     },
     {
-      time: "05:00 PM",
-      title: "Evening Tiffins & Chai Time",
-      desc: "As the sun dips, families gather for hot Mysore bondas, buttery pav bhaji with toasted buns, and steaming tumblers of South Indian filter coffee.",
-      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80",
+      time: "06:00 PM",
+      title: "The Upahar Front Counter & Ambience",
+      desc: "Our iconic Warli-painted exterior counter lights up on ANITS College Road beside SBI, welcoming guests for evening tiffins and hot takeaway parcels.",
+      image: "/images/upahar_hotel_counter.jpg",
     },
     {
-      time: "08:30 PM",
-      title: "Dinner & High-Flame Indo-Chinese",
-      desc: "The evening counter comes alive with wok-tossed Hakka noodles, Schezwan fried rice, crispy paneer 65, and comforting late-night dosas.",
-      image: "https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=800&q=80",
+      time: "08:00 PM",
+      title: "Covered Dining & High-Flame Fast Food",
+      desc: "Guests enjoy breezy outdoor dining under our sheltered canopy with steaming wok-tossed Hakka noodles, sizzling fried rice, and crispy starters.",
+      image: "/images/upahar_hotel_dining.jpg",
     },
   ];
 

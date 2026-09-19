@@ -86,10 +86,10 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 relative h-80 sm:h-96 rounded-2xl overflow-hidden border border-[#D4AF37]/30 shadow-lg">
+            <div className="lg:col-span-5 relative h-80 sm:h-96 rounded-2xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
-                alt="Upahar Kitchen Live Tiffin Station"
+                src="/images/upahar_hotel_counter.jpg"
+                alt="Upahar Restaurant Front Counter in Sangivalasa"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"

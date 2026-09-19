@@ -23,20 +23,20 @@ export default function OwnerHotelShowcase() {
     {
       title: "Front Dining & Takeaway Counter",
       subtitle: "1-1, ANITS College Road, beside SBI, Sangivalasa",
-      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
-      tag: "Hotel Exterior",
+      image: "/images/upahar_hotel_counter.jpg",
+      tag: "Authentic Exterior",
     },
     {
-      title: "Hygienic Dining Environment",
-      subtitle: "Fresh, airy, and clean seating for students & families",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+      title: "Covered Dining & Seating Space",
+      subtitle: "Clean, breezy and hygienic seating for ANITS students & families",
+      image: "/images/upahar_hotel_dining.jpg",
       tag: "Dining Space",
     },
     {
-      title: "Live Sizzling Tawa & Wok Kitchen",
-      subtitle: "Live high-flame cooking with pure desi ghee & fresh ingredients",
-      image: "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?auto=format&fit=crop&w=800&q=80",
-      tag: "Live Kitchen",
+      title: "Signature Chitti Idly & Dosa Craft",
+      subtitle: "Soft steamed mini idlis tossed with ghee podi & spicy chutneys",
+      image: "/images/upahar_chitti_idly.jpg",
+      tag: "Signature Dish",
     },
   ];
 
@@ -370,7 +370,15 @@ export default function OwnerHotelShowcase() {
             {/* Modal Footer */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
               <div className="text-xs text-stone-400 text-center sm:text-left">
-                <span>1-1, Sangivalasa, ANITS Road • Ph: 9885455342 • Instagram: @upahar_07</span>
+                <span>1-1, Sangivalasa, ANITS Road • Ph: 9885455342 • </span>
+                <a
+                  href="https://www.instagram.com/upahar_07"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#DFC17B] hover:text-white font-semibold transition-colors"
+                >
+                  Instagram: @upahar_07
+                </a>
               </div>
 
               <div className="flex items-center space-x-2.5">

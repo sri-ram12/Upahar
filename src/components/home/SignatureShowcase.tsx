@@ -40,6 +40,19 @@ const signatureDishes: Dish[] = [
     isSpicy: true,
   },
   {
+    id: "citti-idly",
+    name: "Chitti Idly",
+    tagline: "Soft, Steamed Mini Idlies tossed with Ghee Podi",
+    description:
+      "Delicate bite-sized button idlies steamed to spongy perfection and generously tossed in aromatic roasted gun powder (podi) and pure fragrant ghee. Served with coconut chutney, tomato chutney, and ghee podi.",
+    price: 40,
+    image: "/images/upahar_chitti_idly.jpg",
+    prepTime: "3-5 mins",
+    portionSize: "1 Bowl Mini Button Idlis + 3 Chutneys",
+    ingredients: "Mini idlis, Pure Desi Ghee, Roasted spiced karam podi, 3 Chutneys",
+    isSpicy: true,
+  },
+  {
     id: "sambar-idly",
     name: "Sambar Idly (3)",
     tagline: "Piping Hot Comfort in Every Spoon",
@@ -72,7 +85,7 @@ const signatureDishes: Dish[] = [
     description:
       "Aromatic basmati rice tossed on high flame wok with tender spiced chicken chunks, eggs, and crispy fresh vegetables in garlic glaze.",
     price: 120,
-    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=1200&q=85",
+    image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=1200&q=85",
     prepTime: "10-12 mins",
     portionSize: "1 Full Plate Chicken Fried Rice",
     ingredients: "Basmati rice, Chicken chunks, Farm eggs, Soy glaze, Spring onions",
@@ -85,7 +98,7 @@ const signatureDishes: Dish[] = [
     description:
       "High heat wok noodles tossed with shredded bell peppers, cabbage, and crisp fried vegetable Manchurian dumplings in tangy dark soya glaze.",
     price: 90,
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=1200&q=85",
+    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=85",
     prepTime: "8-10 mins",
     portionSize: "1 Loaded Manchurian Noodle Plate",
     ingredients: "Hakka noodles, Manchurian dumplings, Garlic, Shredded vegetables",

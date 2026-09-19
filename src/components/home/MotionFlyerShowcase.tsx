@@ -54,6 +54,22 @@ const MOTION_DISHES: DishFlyer[] = [
     highlights: "House-roasted allam-karam chutney smeared over cast-iron golden crepe.",
   },
   {
+    id: "citti-idly",
+    name: "Chitti Idly",
+    subtitle: "Soft, Steamed Mini Idlies tossed with Ghee Podi",
+    tagline: "GHEE PODI • BUTTON IDLIS • TRADITIONAL TASTE",
+    badge: "✨ UPAHAR EXCLUSIVE",
+    price: 40,
+    originalPrice: 45,
+    image: "/images/upahar_chitti_idly.jpg",
+    category: "Tiffins",
+    spicyLevel: 2,
+    ingredients: ["Steamed Mini Idlis", "Desi Ghee", "Roasted Karam Podi", "Coconut & Tomato Chutneys"],
+    accentColor: "#EAB308",
+    bgWord: "CHITTI IDLY",
+    highlights: "Tossed fresh in fragrant gun powder and molten ghee, served with 3 signature chutneys.",
+  },
+  {
     id: "sambar-idli",
     name: "Sambar Idly (3)",
     subtitle: "Submerged in Steaming Drumstick Sambar",
@@ -70,20 +86,20 @@ const MOTION_DISHES: DishFlyer[] = [
     highlights: "Soft steamed rice cakes completely dipped in rich spiced lentil broth.",
   },
   {
-    id: "chees-dosa",
-    name: "Chees Dosa",
-    subtitle: "Golden Crepe Loaded with Gooey Melted Cheese",
-    tagline: "RICH CHEESE • SAVORY • FLAVORFUL",
+    id: "masala-dosa",
+    name: "Masala Dosa",
+    subtitle: "Crispy Golden Crepe with Spiced Potato Mash",
+    tagline: "CLASSIC • SATISFYING • AROMATIC",
     badge: "👑 ALL-TIME FAVORITE",
-    price: 60,
-    originalPrice: 70,
+    price: 40,
+    originalPrice: 45,
     image: "/butter-masala-dosa.jpg",
     category: "Tiffins",
     spicyLevel: 1,
-    ingredients: ["Melted Cheese Blend", "Pure Desi Ghee", "Crisp Golden Crepe", "Coconut Chutney"],
-    accentColor: "#EAB308",
-    bgWord: "CHEES DOSA",
-    highlights: "Decadent crisp golden crepe overflowing with savory melting cheese.",
+    ingredients: ["Spiced Potato Palya", "Pure Desi Ghee", "Crisp Golden Crepe", "Coconut Chutney"],
+    accentColor: "#D4AF37",
+    bgWord: "MASALA DOSA",
+    highlights: "Decadent crisp golden crepe filled with fragrant seasoned potato mash.",
   },
   {
     id: "chicken-fried-rice",
@@ -93,7 +109,7 @@ const MOTION_DISHES: DishFlyer[] = [
     badge: "⚡ EVENING BESTSELLER",
     price: 120,
     originalPrice: 140,
-    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=80",
     category: "Fast Food",
     spicyLevel: 2,
     ingredients: ["Aromatic Basmati Rice", "Tender Marinated Chicken", "Scrambled Egg", "Crunchy Spring Onions"],
@@ -109,7 +125,7 @@ const MOTION_DISHES: DishFlyer[] = [
     badge: "🍜 STUDENT'S FAVORITE",
     price: 90,
     originalPrice: 100,
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80",
     category: "Fast Food",
     spicyLevel: 2,
     ingredients: ["Handmade Noodles", "Crispy Manchurian Balls", "Cabbage & Capsicum", "Dark Soya Chilli Glaze"],
@@ -500,11 +516,10 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
               <button
                 key={dish.id}
                 onClick={() => handleSelectDish(idx)}
-                className={`flex-shrink-0 flex items-center space-x-2.5 px-3.5 py-2 rounded-xl transition-all duration-300 border text-left ${
-                  isSelected
+                className={`flex-shrink-0 flex items-center space-x-2.5 px-3.5 py-2 rounded-xl transition-all duration-300 border text-left ${isSelected
                     ? "bg-[#580D1A] border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.35)] scale-105"
                     : "bg-[#1C1917]/80 hover:bg-[#1C1917] border-white/10 opacity-70 hover:opacity-100"
-                }`}
+                  }`}
               >
                 <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/40 flex-shrink-0">
                   <Image

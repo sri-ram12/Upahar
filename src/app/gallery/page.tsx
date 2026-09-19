@@ -5,20 +5,124 @@ import Image from "next/image";
 import { GalleryImage } from "@/types";
 import { X, ZoomIn, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 
+const FALLBACK_GALLERY_IMAGES: GalleryImage[] = [
+  {
+    id: "gal-1",
+    title: "Upahar Front Service Counter & Exterior",
+    category: "Ambiance",
+    imageUrl: "/images/upahar_hotel_counter.jpg",
+    caption: "Authentic Warli art front counter on ANITS Road, Sangivalasa",
+    isAmbiance: true,
+    displayOrder: 1,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-2",
+    title: "Covered Dining & Seating Space",
+    category: "Ambiance",
+    imageUrl: "/images/upahar_hotel_dining.jpg",
+    caption: "Spacious shaded outdoor seating for students and families",
+    isAmbiance: true,
+    displayOrder: 2,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-3",
+    title: "Chitti Idly Tossed with Ghee Podi",
+    category: "Dishes",
+    imageUrl: "/images/upahar_chitti_idly.jpg",
+    caption: "Soft steamed mini idlies tossed with pure ghee and gun powder",
+    isAmbiance: false,
+    displayOrder: 3,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-4",
+    title: "Sambar Idly (3)",
+    category: "Dishes",
+    imageUrl: "/sambar-idli.jpg",
+    caption: "Steaming hot idlis submerged in aromatic drumstick sambar",
+    isAmbiance: false,
+    displayOrder: 4,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-5",
+    title: "Signature Ghee Karam Dosa",
+    category: "Dishes",
+    imageUrl: "/ghee-karam-dosa.jpg",
+    caption: "Golden crispy crepe roasted with pure desi ghee and fiery red garlic karam",
+    isAmbiance: false,
+    displayOrder: 5,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-6",
+    title: "Butter Masala Dosa",
+    category: "Dishes",
+    imageUrl: "/butter-masala-dosa.jpg",
+    caption: "Classic crisp dosa stuffed with seasoned potato masala",
+    isAmbiance: false,
+    displayOrder: 6,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-7",
+    title: "Official Tiffins & Dosa Menu Tariff",
+    category: "Heritage",
+    imageUrl: "/images/upahar_tiffins_menu.jpg",
+    caption: "Original morning tiffins & evening dosa menu tariff board",
+    isAmbiance: false,
+    displayOrder: 7,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-8",
+    title: "Official Fast Food & Noodles Menu Tariff",
+    category: "Heritage",
+    imageUrl: "/images/upahar_fastfood_menu.jpg",
+    caption: "Original evening Chinese fast food, fried rice & starters tariff",
+    isAmbiance: false,
+    displayOrder: 8,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-9",
+    title: "Live Cast-Iron Tava Craft",
+    category: "Kitchen",
+    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    caption: "Fresh morning tiffins roasted live on high flame",
+    isAmbiance: false,
+    displayOrder: 9,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "gal-10",
+    title: "High-Flame Fast Food Wok",
+    category: "Kitchen",
+    imageUrl: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=80",
+    caption: "Evening noodles and fried rice tossed with authentic spices",
+    isAmbiance: false,
+    displayOrder: 10,
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export default function GalleryPage() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [images, setImages] = useState<GalleryImage[]>(FALLBACK_GALLERY_IMAGES);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch("/api/gallery")
       .then((res) => res.json())
       .then((data) => {
-        if (data.images) setImages(data.images);
+        if (data.images && data.images.length > 0) {
+          setImages(data.images);
+        }
       })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+      .catch((err) => console.error(err));
   }, []);
 
   const categories = ["All", "Dishes", "Kitchen", "Ambiance", "Heritage"];
