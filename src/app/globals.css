@@ -307,7 +307,7 @@
   100% { transform: translateY(-150px) translateX(-8px) rotate(-10deg) scaleX(1.8); opacity: 0; }
 }
 
-/* Horizontal drifting fog layers (Pinterest food ad style) */
+/* Horizontal drifting fog layers */
 @keyframes fogDrift {
   0%   { transform: translateX(0%)   scaleY(1);   opacity: 0.6; }
   50%  { transform: translateX(-15%) scaleY(1.1); opacity: 0.9; }

@@ -71,7 +71,7 @@ export default async function HomePage() {
       {/* 2. Menu Category Navigator */}
       <CategoryChips categories={categories} />
 
-      {/* 3. Pinterest-Style Motion Flyer Showcase (Kinetic Typography, 360 Rotation, Floating Particles) */}
+      {/* 3. What's on our Plate - Interactive Horizontal Gliding Showcase */}
       <MotionFlyerShowcase items={foodItems} />
 
       {/* 4. Popular Food / Bestseller Dishes (Editorial Food Cards) */}

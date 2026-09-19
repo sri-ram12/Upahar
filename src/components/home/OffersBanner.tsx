@@ -67,29 +67,29 @@ export default function OffersBanner() {
       title: "Crispy Sizzling Chicken & Veg Bites",
       tagline: "Golden Crisp • High-Flame Wok Tossed • Signature Spices",
       image: "/images/dishes/chicken-manchurian.jpg",
-      videoUrl: "/videos/video1.mp4", // Downloaded from Pinterest pin https://pin.it/1jsvNhmkB
+      videoUrl: "/videos/video1.mp4",
       duration: "0:12",
       badge: "🔥 Live Sizzle Action",
       price: "₹100 / ₹70",
       dishHighlight: "Crispy Chicken Manchurian & Chilli Paneer tossed fresh on order",
     },
-    noodles: {
-      id: "noodles",
-      title: "High-Flame Wok Tossed Schezwan Noodles",
-      tagline: "Smoky Wok Char • Crunchy Garden Veggies • Spicy Glaze",
+    wok: {
+      id: "wok",
+      title: "High-Flame Wok & Plate Culinary Action",
+      tagline: "Smoky Wok Char • Wok-Tossed Basmati • Spicy Glaze",
       image: "/veg-manchurian-noodles.jpg",
-      videoUrl: "/videos/video2.mp4", // Awaiting your 2nd video
+      videoUrl: "/videos/video2.mp4",
       duration: "0:15",
-      badge: "🥢 Wok Flame Sizzle",
+      badge: "🥢 Wok Flame Action",
       price: "₹60 / ₹90",
-      dishHighlight: "High-heat stir fried noodles with fresh veggies & garlic sauce",
+      dishHighlight: "High-heat stir fried noodles & rice with fresh veggies & garlic glaze",
     },
-    dosa: {
-      id: "dosa",
+    tava: {
+      id: "tava",
       title: "Cast-Iron Sizzling Ghee Karam Dosa",
       tagline: "Golden Crepe • Melting Desi Ghee • Fiery Garlic Podi",
       image: "/ghee-karam-dosa.jpg",
-      videoUrl: "/videos/video3.mp4", // Awaiting your 3rd video
+      videoUrl: "/videos/video3.mp4",
       duration: "0:15",
       badge: "✨ Hot Tava Special",
       price: "₹45 Only",
@@ -97,7 +97,7 @@ export default function OffersBanner() {
     },
   };
 
-  const [activeVideoTab, setActiveVideoTab] = useState<"starters" | "noodles" | "dosa">("starters");
+  const [activeVideoTab, setActiveVideoTab] = useState<"starters" | "wok" | "tava">("starters");
 
   const currentVideo = videoAds[activeVideoTab];
 
@@ -168,7 +168,7 @@ export default function OffersBanner() {
 
             {/* Video Selector Tabs */}
             <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
-              {(["starters", "noodles", "dosa"] as const).map((tabKey) => (
+              {(["starters", "wok", "tava"] as const).map((tabKey) => (
                 <button
                   key={tabKey}
                   onClick={() => setActiveVideoTab(tabKey)}
@@ -179,10 +179,10 @@ export default function OffersBanner() {
                   }`}
                 >
                   {tabKey === "starters"
-                    ? "🔥 Crispy Sizzle (Video 1)"
-                    : tabKey === "noodles"
-                    ? "🥢 Wok Noodles (Video 2)"
-                    : "✨ Ghee Dosa (Video 3)"}
+                    ? "🔥 Crispy Sizzle"
+                    : tabKey === "wok"
+                    ? "🥢 Wok Action"
+                    : "✨ Tava Dosa"}
                 </button>
               ))}
             </div>

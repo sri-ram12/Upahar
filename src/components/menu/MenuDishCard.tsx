@@ -29,7 +29,7 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/65 via-transparent to-transparent" />
 
-          {/* ── CINEMATIC FOG SYSTEM (Pinterest food-ad style) ── */}
+          {/* ── CINEMATIC FOG SYSTEM ── */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {/* Drifting horizontal fog layers */}
             <div className="fog-layer-base animate-fog-drift   absolute bottom-0 left-0 w-full h-2/3" />
