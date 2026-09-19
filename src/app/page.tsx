@@ -5,7 +5,7 @@ import HeroSection from "@/components/home/HeroSection";
 import SectionWaveDivider from "@/components/effects/SectionWaveDivider";
 import CategoryChips from "@/components/home/CategoryChips";
 import FeaturedSection from "@/components/home/FeaturedSection";
-import CircularDishInspector from "@/components/home/CircularDishInspector";
+import MotionFlyerShowcase from "@/components/home/MotionFlyerShowcase";
 import SignatureShowcase from "@/components/home/SignatureShowcase";
 import OffersBanner from "@/components/home/OffersBanner";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
@@ -64,8 +64,8 @@ export default async function HomePage() {
       {/* 2. Menu Category Navigator */}
       <CategoryChips categories={categories} />
 
-      {/* 3. Circular Items to Check with Sizzling Foggy Steam Mist */}
-      <CircularDishInspector items={foodItems} />
+      {/* 3. Dynamic Motion Flyer Showcase replacing circular inspector */}
+      <MotionFlyerShowcase items={foodItems} />
 
       {/* Fluid Liquid Wave Transition into Popular Dishes */}
       <SectionWaveDivider
