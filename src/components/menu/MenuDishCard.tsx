@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Sparkles, Flame, Clock, Info } from "lucide-react";
 import { FoodItem } from "@/types";
 import TiltCard from "@/components/effects/TiltCard";
-import FoggySteamRings from "@/components/effects/FoggySteamRings";
 
 interface MenuDishCardProps {
   item: FoodItem;
@@ -21,7 +20,6 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
       >
         {/* Top Image Container with Visible Foggy Nature & Ring Effects */}
         <div className="relative h-48 sm:h-52 w-full bg-[#F4EFE6] overflow-hidden">
-          <FoggySteamRings variant="card" />
         <Image
           src={item.image}
           alt={item.name}

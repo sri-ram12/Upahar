@@ -11,9 +11,6 @@ import {
   ShieldCheck,
   MessageSquare,
 } from "lucide-react";
-import FoggySteamRings from "@/components/effects/FoggySteamRings";
-
-interface Dish {
   id: string;
   name: string;
   tagline: string;
@@ -135,9 +132,8 @@ export default function SignatureShowcase() {
 
         {/* Main Stage Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#1C1917]/90 rounded-3xl p-6 sm:p-10 border border-[#D4AF37]/25 shadow-2xl">
-          {/* Featured Large Visual with Visible Foggy Nature & Glowing Rings */}
+          {/* Featured Large Visual */}
           <div className="lg:col-span-7 relative h-72 sm:h-96 lg:h-[440px] rounded-2xl overflow-hidden border border-[#D4AF37]/20 group">
-            <FoggySteamRings variant="spotlight" />
             <Image
               src={activeDish.image}
               alt={activeDish.name}
