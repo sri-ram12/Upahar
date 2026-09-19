@@ -21,7 +21,6 @@ import {
 export default function OffersBanner() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [activeVideoTab, setActiveVideoTab] = useState<"dosa" | "noodles" | "idly">("dosa");
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Authentic Upahar Menu Combos matching exact tariff & categories
@@ -61,42 +60,44 @@ export default function OffersBanner() {
     },
   ];
 
-  // 3 Animated Video Ads Showcase data (ready for 3 custom animated videos)
+  // 3 Animated Video Ads Showcase data (with custom animated videos)
   const videoAds = {
-    dosa: {
-      id: "dosa",
-      title: "Cast-Iron Sizzling Ghee Karam Dosa",
-      tagline: "Golden Crepe • Melting Desi Ghee • Fiery Garlic Podi",
-      image: "/ghee-karam-dosa.jpg",
-      videoUrl: "/videos/ghee-karam-dosa.mp4", // Ready for your 1st animated video
-      duration: "0:15",
-      badge: "🔥 Live Tava Action",
-      price: "₹45 Only",
-      dishHighlight: "Roasted crisp on cast-iron tava with pure ghee & garlic karam",
+    starters: {
+      id: "starters",
+      title: "Crispy Sizzling Chicken & Veg Bites",
+      tagline: "Golden Crisp • High-Flame Wok Tossed • Signature Spices",
+      image: "/images/dishes/chicken-manchurian.jpg",
+      videoUrl: "/videos/video1.mp4", // Downloaded from Pinterest pin https://pin.it/1jsvNhmkB
+      duration: "0:12",
+      badge: "🔥 Live Sizzle Action",
+      price: "₹100 / ₹70",
+      dishHighlight: "Crispy Chicken Manchurian & Chilli Paneer tossed fresh on order",
     },
     noodles: {
       id: "noodles",
       title: "High-Flame Wok Tossed Schezwan Noodles",
       tagline: "Smoky Wok Char • Crunchy Garden Veggies • Spicy Glaze",
       image: "/veg-manchurian-noodles.jpg",
-      videoUrl: "/videos/wok-noodles.mp4", // Ready for your 2nd animated video
-      duration: "0:20",
+      videoUrl: "/videos/video2.mp4", // Awaiting your 2nd video
+      duration: "0:15",
       badge: "🥢 Wok Flame Sizzle",
       price: "₹60 / ₹90",
       dishHighlight: "High-heat stir fried noodles with fresh veggies & garlic sauce",
     },
-    idly: {
-      id: "idly",
-      title: "Button Chitti Idly with Podi & Desi Ghee",
-      tagline: "Steaming Soft • Roasted Podi Ghee Bath • Fresh Chutneys",
-      image: "/images/upahar_chitti_idly.jpg",
-      videoUrl: "/videos/chitti-idly.mp4", // Ready for your 3rd animated video
-      duration: "0:12",
-      badge: "✨ Upahar Exclusive",
-      price: "₹40 Only",
-      dishHighlight: "Bite-sized mini idlis drenched in aromatic gunpowder and molten ghee",
+    dosa: {
+      id: "dosa",
+      title: "Cast-Iron Sizzling Ghee Karam Dosa",
+      tagline: "Golden Crepe • Melting Desi Ghee • Fiery Garlic Podi",
+      image: "/ghee-karam-dosa.jpg",
+      videoUrl: "/videos/video3.mp4", // Awaiting your 3rd video
+      duration: "0:15",
+      badge: "✨ Hot Tava Special",
+      price: "₹45 Only",
+      dishHighlight: "Roasted crisp on cast-iron tava with pure ghee & garlic karam",
     },
   };
+
+  const [activeVideoTab, setActiveVideoTab] = useState<"starters" | "noodles" | "dosa">("starters");
 
   const currentVideo = videoAds[activeVideoTab];
 
@@ -167,7 +168,7 @@ export default function OffersBanner() {
 
             {/* Video Selector Tabs */}
             <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
-              {(["dosa", "noodles", "idly"] as const).map((tabKey) => (
+              {(["starters", "noodles", "dosa"] as const).map((tabKey) => (
                 <button
                   key={tabKey}
                   onClick={() => setActiveVideoTab(tabKey)}
@@ -177,7 +178,11 @@ export default function OffersBanner() {
                       : "text-stone-300 hover:text-white"
                   }`}
                 >
-                  {tabKey === "dosa" ? "🔥 Ghee Dosa" : tabKey === "noodles" ? "🥢 Wok Noodles" : "✨ Chitti Idly"}
+                  {tabKey === "starters"
+                    ? "🔥 Crispy Sizzle (Video 1)"
+                    : tabKey === "noodles"
+                    ? "🥢 Wok Noodles (Video 2)"
+                    : "✨ Ghee Dosa (Video 3)"}
                 </button>
               ))}
             </div>
@@ -202,7 +207,7 @@ export default function OffersBanner() {
                     }`}
                   />
 
-                  {/* HTML5 Video Layer (plays automatically when video file is loaded) */}
+                  {/* HTML5 Video Layer */}
                   <video
                     ref={videoRef}
                     key={currentVideo.videoUrl}
@@ -211,12 +216,9 @@ export default function OffersBanner() {
                     loop
                     muted={isMuted}
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover z-10 opacity-0 data-[loaded=true]:opacity-100 transition-opacity duration-500"
-                    onLoadedData={(e) => {
-                      (e.target as HTMLElement).setAttribute("data-loaded", "true");
-                    }}
+                    className="absolute inset-0 w-full h-full object-cover z-10"
                     onError={(e) => {
-                      (e.target as HTMLElement).setAttribute("data-loaded", "false");
+                      (e.target as HTMLElement).style.display = "none";
                     }}
                   />
                 </div>
