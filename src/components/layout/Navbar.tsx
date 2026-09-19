@@ -217,7 +217,7 @@ export default function Navbar() {
               <Clock className="w-4 h-4 text-[#580D1A] flex-shrink-0" />
               <div>
                 <span className="font-bold block">
-                  {storeStatus ? storeStatus.statusText : "Open Daily: 6:30 AM – 11:00 PM"}
+                  {storeStatus ? storeStatus.statusText : "Open Daily: 6am - 10am | 6pm - 10:30pm"}
                 </span>
                 <span className="text-[11px] text-stone-600 block">
                   {storeStatus?.subText || "Serving Breakfast, Lunch, Evening Snacks & Dinner"}

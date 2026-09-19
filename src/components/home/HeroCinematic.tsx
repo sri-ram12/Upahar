@@ -49,13 +49,13 @@ export default function HeroCinematic({ storeStatus }: HeroCinematicProps) {
             <span>
               {storeStatus?.isOpen
                 ? `${storeStatus.statusText} • ${storeStatus.currentSession || "Breakfast Session"}`
-                : "Open Daily 6:30 AM – 11:00 PM"}
+                : "Open Daily: 6am - 10am | 6pm - 10:30pm"}
             </span>
           </div>
 
           <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-black/40 border border-white/10 text-stone-300 backdrop-blur-md">
             <MapPin className="w-3.5 h-3.5 text-[#DFC17B]" />
-            <span>1-1, Sangivalasa, ANITS College Road</span>
+            <span>1-1, Sangivalasa, ANITS College Road, Beside SBI</span>
           </div>
         </div>
 

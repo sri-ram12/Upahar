@@ -19,24 +19,38 @@ export default function MotionFlyerShowcase({ items }: MotionFlyerShowcaseProps)
     topItems = [
       {
         id: "fb-1",
-        name: "SPICY GHEE KARAM DOSA",
+        name: "Ghee Karam Dosa",
         description: "Crispy golden crepe smeared generously with our house-roasted spicy red garlic chutney, roasted on high flame.",
-        price: 90,
+        price: 45,
         image: "/ghee-karam-dosa.jpg"
       },
       {
         id: "fb-2",
-        name: "BUTTON GHEE SAMBAR IDLI",
+        name: "Sambar Idly (3)",
         description: "Steamed mini rice cakes completely submerged in piping hot drumstick sambar with melting ghee.",
-        price: 75,
+        price: 30,
         image: "/sambar-idli.jpg"
       },
       {
         id: "fb-3",
-        name: "SPECIAL BUTTER MASALA DOSA",
+        name: "Special Butter Masala Dosa",
         description: "Golden crispy crepe with generous dollops of melting yellow butter and spiced potato mash spilling out.",
-        price: 85,
+        price: 85, // Note: Not in exact menu image, but closely matches Masala Dosa
         image: "/butter-masala-dosa.jpg"
+      },
+      {
+        id: "fb-4",
+        name: "Chicken Fried Rice",
+        description: "Aromatic basmati rice wok-tossed with tender chicken chunks, egg, and our signature spices.",
+        price: 120,
+        image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "fb-5",
+        name: "Veg Noodles",
+        description: "Street-style hot and spicy hakka noodles tossed with fresh crunchy vegetables on a high flame.",
+        price: 60,
+        image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80"
       }
     ];
   }
