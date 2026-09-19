@@ -207,7 +207,7 @@ export default function OffersBanner() {
                     }`}
                   />
 
-                  {/* HTML5 Video Layer */}
+                  {/* HTML5 Video Layer with robust autoplay */}
                   <video
                     ref={videoRef}
                     key={currentVideo.videoUrl}
@@ -215,7 +215,9 @@ export default function OffersBanner() {
                     autoPlay
                     loop
                     muted={isMuted}
+                    defaultMuted
                     playsInline
+                    preload="auto"
                     className="absolute inset-0 w-full h-full object-cover z-10"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = "none";
