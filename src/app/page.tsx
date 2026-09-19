@@ -2,7 +2,6 @@ import React from "react";
 import { prisma } from "@/lib/prisma";
 import { calculateStoreStatus } from "@/lib/store-hours";
 import HeroSection from "@/components/home/HeroSection";
-import SectionWaveDivider from "@/components/effects/SectionWaveDivider";
 import CategoryChips from "@/components/home/CategoryChips";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import MotionFlyerShowcase from "@/components/home/MotionFlyerShowcase";
@@ -54,55 +53,20 @@ export default async function HomePage() {
       {/* 1. Hero Section with Signature Realistic Water-Throw Stream Engine */}
       <HeroSection storeStatus={storeStatus} />
 
-      {/* Fluid Liquid Wave Transition */}
-      <SectionWaveDivider
-        fillColor="#FAF7F2"
-        crestColor="rgba(212, 175, 55, 0.25)"
-        bgColor="#141210"
-      />
-
       {/* 2. Menu Category Navigator */}
       <CategoryChips categories={categories} />
 
       {/* 3. Dynamic Motion Flyer Showcase replacing circular inspector */}
       <MotionFlyerShowcase items={foodItems} />
 
-      {/* Fluid Liquid Wave Transition into Popular Dishes */}
-      <SectionWaveDivider
-        fillColor="#FAF7F2"
-        crestColor="rgba(88, 13, 26, 0.35)"
-        bgColor="#141210"
-      />
-
       {/* 4. Popular Food / Bestseller Dishes (Editorial Food Cards) */}
       <FeaturedSection items={foodItems} />
-
-      {/* Fluid Liquid Wave Transition into Dark Showcase */}
-      <SectionWaveDivider
-        fillColor="#141210"
-        crestColor="rgba(88, 13, 26, 0.35)"
-        bgColor="#FAF7F2"
-      />
 
       {/* 4. Chef's Signature Tava Craft Showcase with Plate Selector */}
       <SignatureShowcase />
 
-      {/* Fluid Liquid Wave Transition into Daily Specials */}
-      <SectionWaveDivider
-        fillColor="#380A11"
-        crestColor="rgba(212, 175, 55, 0.3)"
-        bgColor="#141210"
-      />
-
       {/* 5. Special Daily Combos & Culinary Highlights Banner */}
       <OffersBanner />
-
-      {/* Fluid Liquid Wave Transition into Quality Pillars */}
-      <SectionWaveDivider
-        fillColor="#FAF7F2"
-        crestColor="rgba(88, 13, 26, 0.25)"
-        bgColor="#2B070E"
-      />
 
       {/* 6. About Upahar: 4 Pillars of Freshness */}
       <WhyChooseUs />
@@ -112,13 +76,6 @@ export default async function HomePage() {
 
       {/* 8. Diner Reviews & Ratings */}
       <CustomerReviews />
-
-      {/* Fluid Liquid Wave Transition into Location */}
-      <SectionWaveDivider
-        fillColor="#141210"
-        crestColor="rgba(88, 13, 26, 0.35)"
-        bgColor="#FAF7F2"
-      />
 
       {/* 9. Location, Timings & Google Maps Embed */}
       <LocationSection settings={settings} storeStatus={storeStatus} />

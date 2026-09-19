@@ -12,8 +12,6 @@ import {
   ChevronDown,
   MessageSquare,
 } from "lucide-react";
-import RealisticWaterEngine from "@/components/effects/RealisticWaterEngine";
-import FoggySteamRings from "@/components/effects/FoggySteamRings";
 
 interface HeroCinematicProps {
   storeStatus?: {
@@ -41,16 +39,6 @@ export default function HeroCinematic({ storeStatus }: HeroCinematicProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-[#2B070E]/75 to-[#141210]/60" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(74,14,23,0.4)_0%,rgba(20,18,16,0.85)_100%)]" />
       </div>
-
-      {/* Signature Realistic Water-Stream & Droplet Splash Engine */}
-      <RealisticWaterEngine
-        intensity="medium"
-        showStream={true}
-        className="absolute inset-0 z-[5] pointer-events-none opacity-85"
-      />
-
-      {/* Visible Foggy Steam Vapor & Concentric Glowing Rings */}
-      <FoggySteamRings variant="hero" />
 
       {/* Content Container */}
       <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">

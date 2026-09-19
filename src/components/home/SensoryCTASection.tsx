@@ -8,9 +8,8 @@ import WaterRippleEffect from "@/components/effects/WaterRippleEffect";
 export default function SensoryCTASection() {
   return (
     <section className="py-20 sm:py-28 bg-gradient-to-b from-[#141210] via-[#2B070E] to-[#141210] text-[#FAF7F2] relative overflow-hidden border-t border-[#D4AF37]/30">
-      {/* Dynamic Water Ripple Pulse Ring in Background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-[500px] h-80 sm:h-[500px] rounded-full border border-[#D4AF37]/25 animate-water-ripple pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-80 h-48 sm:h-80 rounded-full border border-amber-400/30 animate-ring-pulse pointer-events-none" />
+      {/* Background Layer */}
+      <div className="absolute inset-0 z-0">
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest shadow-lg">
@@ -29,7 +28,6 @@ export default function SensoryCTASection() {
 
         {/* Action Buttons */}
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <WaterRippleEffect>
             <Link
               href="/menu"
               className="btn-maroon-gold px-8 py-3.5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wide flex items-center justify-center space-x-2 shadow-2xl hover:scale-105 transition"
@@ -37,7 +35,6 @@ export default function SensoryCTASection() {
               <span>Explore Complete Menu</span>
               <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
             </Link>
-          </WaterRippleEffect>
 
           <a
             href="https://wa.me/919885455342?text=Namaste!%20I%20am%20planning%20to%20visit%20Upahar%20Tiffins%20and%20Fast%20Food%20at%20Sangivalasa.%20Could%20you%20share%20directions%20and%20today's%20specials?"

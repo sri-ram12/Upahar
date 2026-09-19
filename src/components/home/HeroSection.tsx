@@ -14,8 +14,6 @@ import {
   Flame,
   Phone,
 } from "lucide-react";
-import RealisticWaterEngine from "@/components/effects/RealisticWaterEngine";
-import FoggySteamRings from "@/components/effects/FoggySteamRings";
 
 interface HeroSectionProps {
   storeStatus?: {
@@ -43,16 +41,6 @@ export default function HeroSection({ storeStatus }: HeroSectionProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-[#380A11]/85 to-[#141210]/70" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(88,13,26,0.5)_0%,rgba(20,18,16,0.92)_100%)]" />
       </div>
-
-      {/* Signature Realistic Water-Throw Stream Engine */}
-      <RealisticWaterEngine
-        intensity="high"
-        showStream={true}
-        className="absolute inset-0 z-[5] pointer-events-none opacity-85"
-      />
-
-      {/* Visible Foggy Steam Mist & Concentric Radar Rings */}
-      <FoggySteamRings variant="hero" />
 
       {/* Main Content Area */}
       <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center flex flex-col items-center">
@@ -83,10 +71,6 @@ export default function HeroSection({ storeStatus }: HeroSectionProps) {
         {/* CENTER OF ATTRACTION: OFFICIAL UPAHAR EMBLEM LOGO                 */}
         {/* ================================================================= */}
         <div className="relative mb-6 group select-none">
-          {/* Outer Radiant Gold Halo & Concentric Glow */}
-          <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#D4AF37]/30 via-[#580D1A]/50 to-[#2D5A27]/40 blur-xl animate-pulse pointer-events-none" />
-          <div className="absolute -inset-1 rounded-full border-2 border-[#D4AF37]/60 ring-glow-gold animate-ring-pulse pointer-events-none" />
-
           {/* Logo Crest Circle */}
           <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-2xl shadow-[#580D1A] bg-[#580D1A] flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
             <Image
