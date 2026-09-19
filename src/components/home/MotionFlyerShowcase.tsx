@@ -29,6 +29,7 @@ interface DishFlyer {
   originalPrice?: number;
   image: string;
   category: "Tiffins" | "Fast Food";
+  isVeg?: boolean;
   spicyLevel: number; // 1 to 3
   ingredients: string[];
   accentColor: string;
@@ -109,8 +110,9 @@ const MOTION_DISHES: DishFlyer[] = [
     badge: "⚡ EVENING BESTSELLER",
     price: 120,
     originalPrice: 140,
-    image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=80",
+    image: "/chicken-fried-rice.jpg",
     category: "Fast Food",
+    isVeg: false,
     spicyLevel: 2,
     ingredients: ["Aromatic Basmati Rice", "Tender Marinated Chicken", "Scrambled Egg", "Crunchy Spring Onions"],
     accentColor: "#EF4444",
@@ -125,8 +127,9 @@ const MOTION_DISHES: DishFlyer[] = [
     badge: "🍜 STUDENT'S FAVORITE",
     price: 90,
     originalPrice: 100,
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80",
+    image: "/veg-manchurian-noodles.jpg",
     category: "Fast Food",
+    isVeg: true,
     spicyLevel: 2,
     ingredients: ["Handmade Noodles", "Crispy Manchurian Balls", "Cabbage & Capsicum", "Dark Soya Chilli Glaze"],
     accentColor: "#F97316",
@@ -453,15 +456,23 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
                   />
                 </motion.div>
 
-                {/* Rising Foggy Steam over dish – always visible */}
+                {/* Cinematic Food-Ad Fog & Rising Steam over dish */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full z-20">
-                  <div className="absolute bottom-0 left-[20%] w-12 h-36 bg-gradient-to-t from-white/70 via-white/35 to-transparent rounded-full filter blur-xl animate-steam-1" />
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-44 bg-gradient-to-t from-amber-50/80 via-white/45 to-transparent rounded-full filter blur-2xl animate-steam-2" />
-                  <div className="absolute bottom-0 right-[20%] w-12 h-36 bg-gradient-to-t from-white/65 via-white/30 to-transparent rounded-full filter blur-xl animate-steam-3" />
-                  <div className="absolute bottom-0 left-[8%] w-8 h-28 bg-gradient-to-t from-white/50 via-white/20 to-transparent rounded-full filter blur-lg animate-steam-1" style={{animationDelay:"1s"}} />
-                  <div className="absolute bottom-0 right-[8%] w-8 h-28 bg-gradient-to-t from-white/50 via-white/20 to-transparent rounded-full filter blur-lg animate-steam-3" style={{animationDelay:"0.5s"}} />
-                </div>
+                  {/* Drifting horizontal fog across the plate */}
+                  <div className="fog-layer-base animate-fog-drift   absolute bottom-0 left-0 w-full h-2/3" />
+                  <div className="fog-layer-mid  animate-fog-drift-2 absolute bottom-0 left-0 w-full h-1/2" />
+                  <div className="fog-layer-top  animate-fog-drift-3 absolute bottom-2 left-0 w-full h-1/3" />
 
+                  {/* Wispy rising plumes */}
+                  <div className="steam-wisp      animate-steam-1      absolute bottom-0 left-[20%]         w-10 h-40" />
+                  <div className="steam-wisp-wide animate-steam-2      absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-48" />
+                  <div className="steam-wisp      animate-steam-3      absolute bottom-0 right-[20%]        w-10 h-40" />
+                  <div className="steam-wisp      animate-steam-wisp-1 absolute bottom-0 left-[8%]          w-8  h-30" />
+                  <div className="steam-wisp      animate-steam-wisp-2 absolute bottom-0 right-[8%]         w-8  h-30" />
+
+                  {/* Golden heat shimmer aura */}
+                  <div className="golden-heat-aura animate-heat-shimmer absolute bottom-0 inset-x-0 h-20" />
+                </div>
 
                 {/* Jagged / Starburst Explosive Price Blast Badge on Plate (Pin 1 & 3 Reference) */}
                 <motion.div
@@ -478,10 +489,22 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
                   </span>
                 </motion.div>
 
-                {/* Pure Veg Stamp on Plate */}
-                <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-40 bg-[#141210]/90 backdrop-blur-md p-1.5 sm:p-2 rounded-xl border border-emerald-500/50 shadow-md">
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-emerald-400 rounded-sm flex items-center justify-center">
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400" />
+                {/* Veg / Non-Veg Stamp on Plate */}
+                <div
+                  className={`absolute top-3 left-3 sm:top-5 sm:left-5 z-40 bg-[#141210]/90 backdrop-blur-md p-1.5 sm:p-2 rounded-xl border shadow-md ${
+                    activeDish.isVeg === false ? "border-red-500/60" : "border-emerald-500/60"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 sm:w-5 sm:h-5 border-2 rounded-sm flex items-center justify-center ${
+                      activeDish.isVeg === false ? "border-red-500" : "border-emerald-400"
+                    }`}
+                  >
+                    <div
+                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${
+                        activeDish.isVeg === false ? "bg-red-500" : "bg-emerald-400"
+                      }`}
+                    />
                   </div>
                 </div>
               </motion.div>

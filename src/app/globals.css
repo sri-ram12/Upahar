@@ -289,68 +289,142 @@
   animation: floatBlob 16s ease-in-out infinite reverse;
 }
 
-/* 4. Rising Steam Waves from Hot Tiffins & Coffee */
+/* 4. CINEMATIC FOOD-AD FOG & STEAM ANIMATION SYSTEM */
+
+/* Rising wispy steam plumes from hot food */
 @keyframes steamRise {
-  0% {
-    transform: translateY(0) scaleX(1) scaleY(1);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-55px) scaleX(1.5) scaleY(1.3);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-120px) scaleX(2) scaleY(1.6);
-    opacity: 0;
-  }
+  0%   { transform: translateY(0)    scaleX(1)   scaleY(1);   opacity: 0;    }
+  12%  { opacity: 0.9; }
+  45%  { transform: translateY(-60px)  scaleX(1.6) scaleY(1.4); opacity: 0.65; }
+  100% { transform: translateY(-140px) scaleX(2.2) scaleY(1.8); opacity: 0;    }
 }
 
-.animate-steam-1 {
-  animation: steamRise 3s ease-in-out infinite;
+/* Curling wispy vapor tendrils */
+@keyframes steamWisp {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg) scaleX(1); opacity: 0; }
+  10%  { opacity: 0.8; }
+  50%  { transform: translateY(-70px) translateX(12px) rotate(15deg) scaleX(1.4); opacity: 0.5; }
+  100% { transform: translateY(-150px) translateX(-8px) rotate(-10deg) scaleX(1.8); opacity: 0; }
 }
 
-.animate-steam-2 {
-  animation: steamRise 3.8s ease-in-out infinite 0.9s;
+/* Horizontal drifting fog layers (Pinterest food ad style) */
+@keyframes fogDrift {
+  0%   { transform: translateX(0%)   scaleY(1);   opacity: 0.6; }
+  50%  { transform: translateX(-15%) scaleY(1.1); opacity: 0.9; }
+  100% { transform: translateX(0%)   scaleY(1);   opacity: 0.6; }
 }
 
-.animate-steam-3 {
-  animation: steamRise 3.4s ease-in-out infinite 1.8s;
+@keyframes fogDriftReverse {
+  0%   { transform: translateX(0%)  scaleY(1.1); opacity: 0.5; }
+  50%  { transform: translateX(12%) scaleY(1);   opacity: 0.85; }
+  100% { transform: translateX(0%)  scaleY(1.1); opacity: 0.5; }
 }
 
-/* 5. Visible Foggy Steam & Glowing Ring Utility Presets */
+/* Pulsing atmospheric heat-shimmer glow */
+@keyframes heatShimmer {
+  0%, 100% { transform: scaleX(1)   scaleY(1);   opacity: 0.4; }
+  50%       { transform: scaleX(1.1) scaleY(1.05); opacity: 0.7; }
+}
+
+/* Golden aura pulse */
+@keyframes goldenAuraPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.05); }
+}
+
+.animate-steam-1 { animation: steamRise 3s ease-in-out infinite; }
+.animate-steam-2 { animation: steamRise 3.8s ease-in-out infinite 0.9s; }
+.animate-steam-3 { animation: steamRise 3.4s ease-in-out infinite 1.8s; }
+.animate-steam-wisp-1 { animation: steamWisp 4s ease-in-out infinite 0.3s; }
+.animate-steam-wisp-2 { animation: steamWisp 5s ease-in-out infinite 1.5s; }
+.animate-fog-drift   { animation: fogDrift 8s ease-in-out infinite; }
+.animate-fog-drift-2 { animation: fogDriftReverse 11s ease-in-out infinite 2s; }
+.animate-fog-drift-3 { animation: fogDrift 14s ease-in-out infinite 5s; }
+.animate-heat-shimmer { animation: heatShimmer 3s ease-in-out infinite; }
+.animate-golden-aura  { animation: goldenAuraPulse 4s ease-in-out infinite; }
+
+/* 5. Fog layer presets */
+.fog-layer-base {
+  background: radial-gradient(ellipse 120% 60% at 50% 100%,
+    rgba(255, 248, 230, 0.55) 0%,
+    rgba(255, 240, 200, 0.3) 35%,
+    transparent 70%);
+  filter: blur(18px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.fog-layer-mid {
+  background: radial-gradient(ellipse 150% 50% at 50% 100%,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(220, 200, 160, 0.2) 40%,
+    transparent 70%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.fog-layer-top {
+  background: radial-gradient(ellipse 200% 40% at 50% 80%,
+    rgba(255, 255, 255, 0.25) 0%,
+    transparent 60%);
+  filter: blur(40px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.steam-wisp {
+  background: radial-gradient(ellipse 40% 100% at 50% 100%,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 248, 235, 0.4) 40%,
+    transparent 75%);
+  filter: blur(8px);
+  mix-blend-mode: screen;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.steam-wisp-wide {
+  background: radial-gradient(ellipse 70% 100% at 50% 100%,
+    rgba(255, 250, 240, 0.65) 0%,
+    rgba(255, 245, 220, 0.3) 45%,
+    transparent 75%);
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.golden-heat-aura {
+  background: radial-gradient(ellipse 80% 50% at 50% 100%,
+    rgba(212, 175, 55, 0.4) 0%,
+    rgba(255, 165, 0, 0.15) 40%,
+    transparent 70%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+
 .foggy-nature-overlay {
-  background: radial-gradient(
-    circle at 50% 50%,
+  background: radial-gradient(circle at 50% 50%,
     rgba(255, 245, 230, 0.25) 0%,
     rgba(212, 175, 55, 0.15) 35%,
     rgba(88, 13, 26, 0.08) 65%,
-    transparent 100%
-  );
+    transparent 100%);
   filter: blur(20px);
   pointer-events: none;
 }
 
 .foggy-steam-cloud {
-  background: radial-gradient(
-    ellipse at center,
+  background: radial-gradient(ellipse at center,
     rgba(255, 255, 255, 0.6) 0%,
     rgba(255, 248, 238, 0.35) 40%,
-    transparent 70%
-  );
+    transparent 70%);
   filter: blur(14px);
   pointer-events: none;
 }
 
-.ring-glow-gold {
-  box-shadow: 0 0 25px 2px rgba(212, 175, 55, 0.45), inset 0 0 15px rgba(212, 175, 55, 0.2);
-}
-
-.ring-glow-maroon {
-  box-shadow: 0 0 30px 4px rgba(88, 13, 26, 0.5), inset 0 0 20px rgba(88, 13, 26, 0.25);
-}
+.ring-glow-gold   { box-shadow: 0 0 25px 2px rgba(212,175,55,0.45), inset 0 0 15px rgba(212,175,55,0.2); }
+.ring-glow-maroon { box-shadow: 0 0 30px 4px rgba(88,13,26,0.5),    inset 0 0 20px rgba(88,13,26,0.25); }
 
 /* Accessibility: Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
@@ -360,14 +434,12 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .animate-marquee,
-  .animate-water-ripple,
-  .animate-ring-pulse,
-  .animate-float-blob,
-  .animate-float-blob-reverse,
-  .animate-steam-1,
-  .animate-steam-2,
-  .animate-steam-3 {
+  .animate-marquee, .animate-water-ripple, .animate-ring-pulse,
+  .animate-float-blob, .animate-float-blob-reverse,
+  .animate-steam-1, .animate-steam-2, .animate-steam-3,
+  .animate-steam-wisp-1, .animate-steam-wisp-2,
+  .animate-fog-drift, .animate-fog-drift-2, .animate-fog-drift-3,
+  .animate-heat-shimmer, .animate-golden-aura {
     animation: none !important;
   }
 }

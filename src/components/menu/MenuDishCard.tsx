@@ -18,7 +18,7 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
         onClick={() => onSelectDish(item)}
         className="brand-card group cursor-pointer overflow-hidden flex flex-col justify-between h-full bg-white border border-[#EADBCE]/80 hover:border-[#D4AF37] transition-all duration-300 relative"
       >
-        {/* Top Image Container with Visible Foggy Steam & Warm Glow */}
+        {/* Top Image Container – Cinematic Food-Ad Fog & Steam */}
         <div className="relative h-48 sm:h-52 w-full bg-[#1C1917] overflow-hidden">
           <Image
             src={item.image || "/ghee-karam-dosa.jpg"}
@@ -27,22 +27,22 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/70 via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/65 via-transparent to-transparent" />
 
-          {/* Realistic Rising Foggy Steam Animation – always visible */}
+          {/* ── CINEMATIC FOG SYSTEM (Pinterest food-ad style) ── */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {/* Steam plume 1 - left */}
-            <div className="absolute bottom-0 left-[22%] w-14 h-40 bg-gradient-to-t from-white/60 via-white/30 to-transparent rounded-full filter blur-xl animate-steam-1" />
-            {/* Steam plume 2 - center, tallest */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-48 bg-gradient-to-t from-amber-50/70 via-white/40 to-transparent rounded-full filter blur-2xl animate-steam-2" />
-            {/* Steam plume 3 - right */}
-            <div className="absolute bottom-0 right-[22%] w-16 h-40 bg-gradient-to-t from-white/55 via-white/25 to-transparent rounded-full filter blur-xl animate-steam-3" />
-            {/* Extra wispy steam 4 - far left */}
-            <div className="absolute bottom-0 left-[10%] w-10 h-32 bg-gradient-to-t from-white/40 via-white/15 to-transparent rounded-full filter blur-lg animate-steam-1" style={{animationDelay: "0.8s"}} />
-            {/* Extra wispy steam 5 - far right */}
-            <div className="absolute bottom-0 right-[10%] w-10 h-32 bg-gradient-to-t from-white/40 via-white/15 to-transparent rounded-full filter blur-lg animate-steam-3" style={{animationDelay: "1.5s"}} />
-            {/* Foggy warm glow aura at base */}
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#D4AF37]/20 via-amber-100/10 to-transparent pointer-events-none" />
+            {/* Drifting horizontal fog layers */}
+            <div className="fog-layer-base animate-fog-drift   absolute bottom-0 left-0 w-full h-2/3" />
+            <div className="fog-layer-mid  animate-fog-drift-2 absolute bottom-0 left-0 w-full h-1/2" />
+            <div className="fog-layer-top  animate-fog-drift-3 absolute bottom-2 left-0 w-full h-1/3" />
+            {/* Rising wispy steam plumes */}
+            <div className="steam-wisp      animate-steam-1      absolute bottom-0 left-[18%]         w-10 h-36" />
+            <div className="steam-wisp-wide animate-steam-2      absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-44" />
+            <div className="steam-wisp      animate-steam-3      absolute bottom-0 right-[18%]        w-10 h-36" />
+            <div className="steam-wisp      animate-steam-wisp-1 absolute bottom-0 left-[7%]          w-7  h-28" />
+            <div className="steam-wisp      animate-steam-wisp-2 absolute bottom-0 right-[7%]         w-7  h-28" />
+            {/* Golden heat shimmer aura */}
+            <div className="golden-heat-aura animate-heat-shimmer absolute bottom-0 inset-x-0 h-16" />
           </div>
 
           {/* Badges on Visual */}

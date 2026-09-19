@@ -172,9 +172,7 @@ export async function POST(req: NextRequest) {
         slug,
         description: description || "",
         price: parseFloat(price),
-        image:
-          image ||
-          "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+        image: image || "/butter-masala-dosa.jpg",
         categoryId,
         isVeg: Boolean(isVeg),
         isSpicy: Boolean(isSpicy),

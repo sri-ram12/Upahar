@@ -72,7 +72,7 @@ export default function AdminMenuPage() {
       price: "",
       description: "",
       categoryId: categories[0]?.id || "",
-      image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+      image: "/butter-masala-dosa.jpg",
       isVeg: true,
       isSpicy: false,
       isBestseller: false,

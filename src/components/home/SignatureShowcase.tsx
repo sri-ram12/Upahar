@@ -85,7 +85,7 @@ const signatureDishes: Dish[] = [
     description:
       "Aromatic basmati rice tossed on high flame wok with tender spiced chicken chunks, eggs, and crispy fresh vegetables in garlic glaze.",
     price: 120,
-    image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=1200&q=85",
+    image: "/chicken-fried-rice.jpg",
     prepTime: "10-12 mins",
     portionSize: "1 Full Plate Chicken Fried Rice",
     ingredients: "Basmati rice, Chicken chunks, Farm eggs, Soy glaze, Spring onions",
@@ -98,7 +98,7 @@ const signatureDishes: Dish[] = [
     description:
       "High heat wok noodles tossed with shredded bell peppers, cabbage, and crisp fried vegetable Manchurian dumplings in tangy dark soya glaze.",
     price: 90,
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=85",
+    image: "/veg-manchurian-noodles.jpg",
     prepTime: "8-10 mins",
     portionSize: "1 Loaded Manchurian Noodle Plate",
     ingredients: "Hakka noodles, Manchurian dumplings, Garlic, Shredded vegetables",
