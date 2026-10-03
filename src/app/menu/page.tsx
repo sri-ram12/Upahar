@@ -20,7 +20,6 @@ import {
 function MenuContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
-  const tableName = searchParams.get("table");
 
   const [categories, setCategories] = useState<Category[]>(FALLBACK_CATEGORIES);
   const [items, setItems] = useState<FoodItem[]>(FALLBACK_MENU_ITEMS);
@@ -127,24 +126,15 @@ function MenuContent() {
       {/* Header Banner */}
       <div className="bg-gradient-to-br from-[#380A11] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] py-16 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
         <div className="max-w-3xl mx-auto relative z-10 space-y-3">
-          {tableName ? (
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-[#DFC17B] text-[#2B070E] shadow-lg border border-white/40">
-              <UtensilsCrossed className="w-3.5 h-3.5 text-[#580D1A]" />
-              <span>Welcome to {tableName}</span>
-            </div>
-          ) : (
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
-              <UtensilsCrossed className="w-3.5 h-3.5 text-[#DFC17B]" />
-              <span>Daily Fresh Selection</span>
-            </div>
-          )}
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
+            <UtensilsCrossed className="w-3.5 h-3.5 text-[#DFC17B]" />
+            <span>Daily Fresh Selection</span>
+          </div>
           <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-white">
-            {tableName ? `Digital Menu for ${tableName}` : "The Digital Dining Menu"}
+            The Digital Dining Menu
           </h1>
           <p className="text-stone-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-            {tableName
-              ? `Browse our authentic dishes below. Please inform our staff or counter for ${tableName} when ready to order!`
-              : "Crafted fresh per order with stone-ground batter, pure fragrant desi ghee, and time-honored South Indian spices."}
+            Crafted fresh per order with stone-ground batter, pure fragrant desi ghee, and time-honored South Indian spices.
           </p>
         </div>
       </div>

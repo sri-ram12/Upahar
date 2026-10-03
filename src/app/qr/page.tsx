@@ -39,8 +39,8 @@ export default function QRPage() {
           </p>
         </div>
 
-        {/* Interactive Standee & Customizer */}
-        <TableStandee initialTable="Dine-In Menu" initialDestination="menu" />
+        {/* Official Standee & QR Code */}
+        <TableStandee />
 
         {/* 3 Step Guide on How to Scan */}
         <div className="bg-white rounded-3xl border border-[#EADBCE] p-8 sm:p-10 shadow-sm space-y-6">

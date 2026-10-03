@@ -7,64 +7,41 @@ import {
   Copy,
   Check,
   Sparkles,
-  UtensilsCrossed,
   Phone,
   MapPin,
   ShieldCheck,
   RefreshCw,
+  Globe,
 } from "lucide-react";
 import { generateQRCodeDataUrl } from "@/lib/qr";
 
 interface TableStandeeProps {
-  initialTable?: string;
-  initialDestination?: "menu" | "home";
   baseUrl?: string;
 }
 
-export default function TableStandee({
-  initialTable = "Table 01",
-  initialDestination = "menu",
-  baseUrl,
-}: TableStandeeProps) {
-  const [tableNumber, setTableNumber] = useState(initialTable);
-  const [destination, setDestination] = useState<"menu" | "home">(initialDestination);
-  const [qrColor, setQrColor] = useState<"#2B070E" | "#000000">("#2B070E");
-  const [includeLogo, setIncludeLogo] = useState(true);
+export default function TableStandee({ baseUrl }: TableStandeeProps) {
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [origin, setOrigin] = useState("");
+  const [targetUrl, setTargetUrl] = useState(baseUrl || "https://upahar.onrender.com");
 
   const printCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setOrigin(window.location.origin);
+      setTargetUrl(baseUrl || window.location.origin);
     }
-  }, []);
-
-  const getComputedUrl = () => {
-    const base = baseUrl || origin || "https://upahar.onrender.com";
-    const path = destination === "menu" ? "/menu" : "/";
-    const cleanTable = tableNumber.trim();
-    if (cleanTable) {
-      const param = encodeURIComponent(cleanTable);
-      return `${base}${path}?table=${param}`;
-    }
-    return `${base}${path}`;
-  };
+  }, [baseUrl]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
 
-    const targetUrl = getComputedUrl();
-
     generateQRCodeDataUrl(targetUrl, {
       size: 800,
-      darkColor: qrColor,
+      darkColor: "#2B070E",
       lightColor: "#FFFFFF",
-      includeLogo: includeLogo,
+      includeLogo: true,
       logoUrl: "/images/upahar_logo.jpg",
     })
       .then((url) => {
@@ -81,11 +58,11 @@ export default function TableStandee({
     return () => {
       active = false;
     };
-  }, [tableNumber, destination, qrColor, includeLogo, origin, baseUrl]);
+  }, [targetUrl]);
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(getComputedUrl());
+      await navigator.clipboard.writeText(targetUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
@@ -97,7 +74,7 @@ export default function TableStandee({
     if (!qrDataUrl) return;
     const link = document.createElement("a");
     link.href = qrDataUrl;
-    link.download = `upahar-${tableNumber.replace(/\s+/g, "-").toLowerCase() || "qr"}.png`;
+    link.download = `upahar-website-qr.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -109,126 +86,51 @@ export default function TableStandee({
 
   return (
     <div className="space-y-8">
-      {/* Configuration Controls Bar (Hidden during print) */}
-      <div className="print:hidden bg-white p-5 sm:p-6 rounded-3xl border border-[#EADBCE] shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#EADBCE]">
-          <div>
-            <h2 className="text-lg font-black text-[#2B070E] font-display flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#D4AF37]" />
-              <span>Tabletop Standee & QR Customizer</span>
-            </h2>
-            <p className="text-xs text-stone-500 mt-0.5">
-              Customize the table number and destination, then print or download high-resolution tent cards.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={handlePrint}
-              className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md hover:scale-105 transition"
-            >
-              <Printer className="w-4 h-4 text-[#DFC17B]" />
-              <span>Print Table Standee</span>
-            </button>
-
-            <button
-              onClick={handleDownload}
-              className="btn-gold-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm"
-            >
-              <Download className="w-4 h-4 text-[#580D1A]" />
-              <span>Download High-Res PNG</span>
-            </button>
-
-            <button
-              onClick={handleCopyLink}
-              className="px-3.5 py-2.5 rounded-xl text-xs font-bold border border-stone-200 hover:bg-stone-50 text-stone-700 flex items-center space-x-1.5"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span className="text-emerald-700">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 text-stone-500" />
-                  <span>Copy QR Link</span>
-                </>
-              )}
-            </button>
-          </div>
+      {/* Action Controls Bar (Hidden during print) */}
+      <div className="print:hidden bg-white p-5 sm:p-6 rounded-3xl border border-[#EADBCE] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-black text-[#2B070E] font-display flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[#D4AF37]" />
+            <span>Official Website QR Code</span>
+          </h2>
+          <p className="text-xs text-stone-500 mt-0.5">
+            This QR code opens the Upahar website directly when scanned by customers.
+          </p>
         </div>
 
-        {/* Inputs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          {/* Table / Location label */}
-          <div>
-            <label className="block font-bold text-stone-700 mb-1.5">
-              Table / Standee Label:
-            </label>
-            <input
-              type="text"
-              value={tableNumber}
-              onChange={(e) => setTableNumber(e.target.value)}
-              placeholder="e.g. Table 01 or Counter"
-              className="w-full px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#580D1A] bg-stone-50 font-semibold"
-            />
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handlePrint}
+            className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md hover:scale-105 transition cursor-pointer"
+          >
+            <Printer className="w-4 h-4 text-[#DFC17B]" />
+            <span>Print Standee Card</span>
+          </button>
 
-          {/* Destination */}
-          <div>
-            <label className="block font-bold text-stone-700 mb-1.5">
-              Destination Page:
-            </label>
-            <select
-              value={destination}
-              onChange={(e) => setDestination(e.target.value as any)}
-              className="w-full px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#580D1A] bg-stone-50 font-semibold"
-            >
-              <option value="menu">Digital Signature Menu (/menu)</option>
-              <option value="home">Home Page & Specials (/)</option>
-            </select>
-          </div>
+          <button
+            onClick={handleDownload}
+            className="btn-gold-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
+          >
+            <Download className="w-4 h-4 text-[#580D1A]" />
+            <span>Download PNG</span>
+          </button>
 
-          {/* QR Color */}
-          <div>
-            <label className="block font-bold text-stone-700 mb-1.5">
-              QR Color Palette:
-            </label>
-            <select
-              value={qrColor}
-              onChange={(e) => setQrColor(e.target.value as any)}
-              className="w-full px-3 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#580D1A] bg-stone-50 font-semibold"
-            >
-              <option value="#2B070E">Upahar Royal Maroon (#2B070E)</option>
-              <option value="#000000">Classic Deep Black (#000000)</option>
-            </select>
-          </div>
-
-          {/* Include Brand Logo */}
-          <div className="flex flex-col justify-between">
-            <label className="block font-bold text-stone-700 mb-1.5">
-              Center Brand Emblem:
-            </label>
-            <label className="flex items-center space-x-2 py-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={includeLogo}
-                onChange={(e) => setIncludeLogo(e.target.checked)}
-                className="w-4 h-4 rounded text-[#580D1A] focus:ring-[#580D1A]"
-              />
-              <span className="font-semibold text-stone-700">
-                Include Upahar Logo
-              </span>
-            </label>
-          </div>
-        </div>
-
-        {/* Live target URL display */}
-        <div className="pt-2 flex items-center space-x-2 text-[11px] text-stone-500 bg-stone-50 p-2.5 rounded-xl border border-stone-200">
-          <span className="font-bold text-stone-700">QR Encodes Target:</span>
-          <code className="text-[#580D1A] font-mono break-all">
-            {getComputedUrl()}
-          </code>
+          <button
+            onClick={handleCopyLink}
+            className="px-3.5 py-2.5 rounded-xl text-xs font-bold border border-stone-200 hover:bg-stone-50 text-stone-700 flex items-center space-x-1.5 cursor-pointer"
+          >
+            {copied ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-600" />
+                <span className="text-emerald-700">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4 text-stone-500" />
+                <span>Copy Link</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -265,15 +167,13 @@ export default function TableStandee({
               </p>
             </div>
 
-            {/* Table Number Pill */}
-            {tableNumber && (
-              <div className="pt-2">
-                <div className="inline-flex items-center space-x-1.5 bg-[#580D1A] text-[#FAF7F2] border border-[#D4AF37]/50 px-4 py-1.5 rounded-full shadow-sm text-xs font-black uppercase tracking-wider">
-                  <UtensilsCrossed className="w-3.5 h-3.5 text-[#DFC17B]" />
-                  <span>{tableNumber}</span>
-                </div>
+            {/* Official Website Badge */}
+            <div className="pt-2">
+              <div className="inline-flex items-center space-x-1.5 bg-[#580D1A] text-[#FAF7F2] border border-[#D4AF37]/50 px-4 py-1.5 rounded-full shadow-sm text-xs font-black uppercase tracking-wider">
+                <Globe className="w-3.5 h-3.5 text-[#DFC17B]" />
+                <span>Scan To Open Website</span>
               </div>
-            )}
+            </div>
           </div>
 
           {/* QR Code Graphic with Brass Frame */}
@@ -293,7 +193,7 @@ export default function TableStandee({
               ) : qrDataUrl ? (
                 <img
                   src={qrDataUrl}
-                  alt={`QR Code for ${tableNumber || "Upahar Tiffins"}`}
+                  alt="Official Upahar Website QR Code"
                   className="w-full h-full object-contain rounded-lg"
                 />
               ) : (
@@ -307,10 +207,10 @@ export default function TableStandee({
           {/* Call to Action Prompt */}
           <div className="text-center space-y-2">
             <h3 className="text-sm sm:text-base font-black text-[#580D1A] tracking-tight">
-              SCAN TO VIEW OUR DIGITAL MENU
+              SCAN WITH YOUR PHONE CAMERA
             </h3>
             <p className="text-xs text-stone-600 max-w-xs mx-auto leading-relaxed">
-              Open your smartphone camera, aim at the QR code, and tap the link to browse our steaming dosas, button idlis & fast food specials!
+              Open your camera app, aim at the QR code, and tap the link to open the website, explore our menu & daily specials!
             </p>
           </div>
 
@@ -328,7 +228,7 @@ export default function TableStandee({
               </p>
               <p className="flex items-center justify-center space-x-1 font-semibold text-stone-600">
                 <Phone className="w-3 h-3 text-[#D4AF37] flex-shrink-0" />
-                <span>Customer Care & Catering: +91 9885455342</span>
+                <span>Phone & Orders: +91 9885455342</span>
               </p>
             </div>
           </div>
