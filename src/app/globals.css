@@ -443,3 +443,25 @@
     animation: none !important;
   }
 }
+
+/* Print optimization for tabletop standees */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  header, footer, nav, aside, .custom-cursor, #floating-whatsapp-btn {
+    display: none !important;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  #printable-standee {
+    box-shadow: none !important;
+    border: 2px solid #580D1A !important;
+    margin: 10mm auto !important;
+    page-break-inside: avoid !important;
+  }
+}

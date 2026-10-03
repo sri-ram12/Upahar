@@ -13,11 +13,14 @@ import {
   Compass,
   ArrowRight,
   MessageSquare,
+  QrCode,
 } from "lucide-react";
+import QRModal from "@/components/qr/QRModal";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [storeStatus, setStoreStatus] = useState<{
     isOpen: boolean;
@@ -53,6 +56,7 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Our Story", href: "/about" },
     { name: "Signature Menu", href: "/menu" },
+    { name: "Scan QR", href: "/qr" },
     { name: "The Experience", href: "/experience" },
     { name: "Photo Gallery", href: "/gallery" },
     { name: "Visit & Contact", href: "/contact" },
@@ -91,6 +95,15 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center space-x-5">
+            <button
+              onClick={() => setQrModalOpen(true)}
+              className="flex items-center space-x-1.5 text-[#DFC17B] hover:text-white transition font-semibold cursor-pointer"
+              title="Scan QR Code to open website on mobile"
+            >
+              <QrCode className="w-3.5 h-3.5" />
+              <span>Scan QR</span>
+            </button>
+            <span className="text-[#C5A059]/40">|</span>
             <a
               href="https://wa.me/919885455342?text=Namaste!%20I%20am%20visiting%20your%20website%20and%20would%20like%20further%20details%20about%20Upahar%20Tiffins."
               target="_blank"
@@ -149,7 +162,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3.5 py-2 rounded-lg transition-all duration-200 ${
+                  className={`px-3 py-2 rounded-lg transition-all duration-200 ${
                     isActive
                       ? "text-[#4A0E17] font-bold bg-[#EADBCE]/50 border-b-2 border-[#580D1A]"
                       : "text-[#292524] hover:text-[#580D1A] hover:bg-[#F4EFE6]"
@@ -162,28 +175,46 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop Action Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-2.5">
+            <button
+              onClick={() => setQrModalOpen(true)}
+              className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold border border-[#D4AF37]/50 bg-white hover:bg-[#F4EFE6] text-[#580D1A] flex items-center space-x-1.5 shadow-sm transition hover:scale-105 cursor-pointer"
+              title="Scan QR Code to open on Mobile"
+            >
+              <QrCode className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Scan QR</span>
+            </button>
+
             <a
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-gold-outline px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
+              className="btn-gold-outline px-3 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
             >
               <Compass className="w-3.5 h-3.5 text-[#580D1A]" />
-              <span>Get Directions</span>
+              <span>Directions</span>
             </a>
 
             <Link
               href="/menu"
-              className="btn-maroon-gold px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
+              className="btn-maroon-gold px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
             >
               <span>Explore Menu</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#DFC17B]" />
             </Link>
           </div>
 
-          {/* Mobile Menu Hamburger Button */}
+          {/* Mobile Menu Actions */}
           <div className="flex items-center space-x-2 lg:hidden">
+            <button
+              onClick={() => setQrModalOpen(true)}
+              className="p-2 rounded-xl bg-white text-[#580D1A] border border-[#D4AF37]/50 shadow-sm"
+              aria-label="Scan QR Code"
+              title="Scan QR Code"
+            >
+              <QrCode className="w-4 h-4 text-[#580D1A]" />
+            </button>
+
             <a
               href="tel:+919885455342"
               className="p-2 rounded-xl bg-[#580D1A] text-[#DFC17B] shadow-sm"
@@ -241,6 +272,17 @@ export default function Navbar() {
 
             {/* Mobile Action CTAs */}
             <div className="pt-3 border-t border-[#EADBCE] flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setQrModalOpen(true);
+                }}
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-center flex items-center justify-center space-x-2 bg-[#580D1A] hover:bg-[#400812] text-[#FAF7F2] border border-[#D4AF37]/40 shadow-sm transition"
+              >
+                <QrCode className="w-4 h-4 text-[#DFC17B]" />
+                <span>Scan QR Code (Mobile Menu)</span>
+              </button>
+
               <a
                 href="https://wa.me/919885455342?text=Namaste!%20I%20am%20visiting%20your%20website%20and%20would%20like%20further%20details%20about%20Upahar%20Tiffins."
                 target="_blank"
@@ -264,6 +306,9 @@ export default function Navbar() {
           </div>
         )}
       </header>
+
+      {/* Interactive QR Scan Modal */}
+      <QRModal isOpen={qrModalOpen} onClose={() => setQrModalOpen(false)} />
     </>
   );
 }

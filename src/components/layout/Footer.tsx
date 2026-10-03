@@ -8,6 +8,7 @@ import {
   Compass,
   ArrowUpRight,
   MessageSquare,
+  QrCode,
 } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/Icons";
 
@@ -81,6 +82,12 @@ export default function Footer() {
               <li>
                 <Link href="/gallery" className="hover:text-[#DFC17B] transition">
                   Photo Gallery
+                </Link>
+              </li>
+              <li>
+                <Link href="/qr" className="text-[#DFC17B] hover:text-white font-bold transition flex items-center space-x-1">
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>Scan QR Code</span>
                 </Link>
               </li>
               <li>

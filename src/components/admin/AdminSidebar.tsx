@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   Settings,
   MessageSquare,
+  QrCode,
   LogOut,
   ExternalLink,
 } from "lucide-react";
@@ -22,6 +23,7 @@ export default function AdminSidebar() {
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
     { name: "Menu Dishes", href: "/admin/menu", icon: UtensilsCrossed },
     { name: "Categories", href: "/admin/categories", icon: FolderTree },
+    { name: "QR Standees", href: "/admin/qr", icon: QrCode },
     { name: "Photo Gallery", href: "/admin/gallery", icon: ImageIcon },
     { name: "Store Settings", href: "/admin/settings", icon: Settings },
     { name: "Customer Inquiries", href: "/admin/inquiries", icon: MessageSquare },
