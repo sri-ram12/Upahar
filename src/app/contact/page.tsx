@@ -79,7 +79,7 @@ export default function ContactPage() {
         {/* Contact Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Phone Card */}
-          <div className="p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
             <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
               <Phone className="w-6 h-6" />
             </div>
@@ -104,7 +104,7 @@ export default function ContactPage() {
           </div>
 
           {/* Address Card */}
-          <div className="p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
             <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
               <MapPin className="w-6 h-6" />
             </div>
@@ -131,7 +131,7 @@ export default function ContactPage() {
           </div>
 
           {/* Hours Card */}
-          <div className="p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
             <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
               <Clock className="w-6 h-6" />
             </div>
@@ -155,7 +155,7 @@ export default function ContactPage() {
         {/* Form and Map Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Inquiry Form */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-8 border border-[#EADBCE] shadow-lg space-y-6">
+          <div className="lg:col-span-6 bg-white rounded-3xl p-5 sm:p-8 border border-[#EADBCE] shadow-lg space-y-6">
             <div className="space-y-1">
               <span className="text-xs uppercase font-extrabold tracking-widest text-[#74171E] flex items-center space-x-1.5">
                 <MessageSquare className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export default function ContactPage() {
           </div>
 
           {/* Interactive Map Embed */}
-          <div className="lg:col-span-6 rounded-3xl overflow-hidden border border-[#EADBCE] shadow-lg flex flex-col bg-white min-h-[450px]">
+          <div className="lg:col-span-6 rounded-3xl overflow-hidden border border-[#EADBCE] shadow-lg flex flex-col bg-white min-h-[350px] sm:min-h-[450px]">
             <div className="p-4 bg-[#2B070E] text-[#FAF7F2] flex items-center justify-between border-b border-[#D4AF37]/30">
               <span className="text-xs font-bold">Interactive Navigation Map</span>
               <a
@@ -281,7 +281,7 @@ export default function ContactPage() {
               </a>
             </div>
 
-            <div className="flex-1 relative w-full min-h-[380px] bg-stone-100">
+            <div className="flex-1 relative w-full min-h-[280px] sm:min-h-[380px] bg-stone-100">
               <iframe
                 title="UPAHAR TIFFINS Map"
                 src="https://maps.google.com/maps?q=Sangivalasa+ANITS+College+Road&t=&z=15&ie=UTF8&iwloc=&output=embed"

@@ -141,7 +141,7 @@ export default function SignatureShowcase() {
         </div>
 
         {/* Main Stage Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#1C1917]/90 rounded-3xl p-6 sm:p-10 border border-[#D4AF37]/25 shadow-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#1C1917]/90 rounded-3xl p-4 sm:p-8 lg:p-10 border border-[#D4AF37]/25 shadow-2xl">
           {/* Featured Large Visual */}
           <div className="lg:col-span-7 relative h-72 sm:h-96 lg:h-[440px] rounded-2xl overflow-hidden border border-[#D4AF37]/20 group">
             <Image
@@ -227,20 +227,20 @@ export default function SignatureShowcase() {
             </div>
 
             {/* Action Row */}
-            <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="flex items-center space-x-2 text-xs text-stone-400">
                 <ShieldCheck className="w-4 h-4 text-[#2D5A27]" />
                 <span>100% Pure Desi Ghee</span>
               </div>
 
-              <div className="flex items-center space-x-2.5">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5">
                 <a
                   href={`https://wa.me/919885455342?text=${encodeURIComponent(
                     `Hello Sri Vamsi, I would like to inquire about ${activeDish.name} at Upahar Tiffins.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-white" />
                   <span>WhatsApp Sri Vamsi</span>
@@ -248,7 +248,7 @@ export default function SignatureShowcase() {
 
                 <Link
                   href="/menu"
-                  className="btn-maroon-gold px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
+                  className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5"
                 >
                   <span>Full Menu</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#DFC17B]" />

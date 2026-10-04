@@ -306,8 +306,10 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
                 <motion.div
                   key={dish.id}
                   onClick={() => setCurrentIndex(idx)}
-                  className={`cursor-pointer transition-all duration-500 flex flex-col items-center ${
-                    isCenter ? "z-30 scale-105 sm:scale-110" : "z-10 opacity-40 hover:opacity-75 scale-75 sm:scale-80"
+                  className={`cursor-pointer transition-all duration-500 ${
+                    isCenter
+                      ? "z-30 scale-105 sm:scale-110 flex flex-col items-center"
+                      : "hidden sm:flex flex-col items-center z-10 opacity-40 hover:opacity-75 scale-75 sm:scale-80"
                   }`}
                   initial={{ opacity: 0, x: offset * 120 }}
                   animate={{
@@ -400,14 +402,14 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
             </div>
 
             {/* Direct WhatsApp Parcel CTA */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto shrink-0">
               <a
                 href={`https://wa.me/919885455342?text=${encodeURIComponent(
                   `Namaste Upahar! I would like to order ${activeDish.name} (₹${activeDish.price}) from the What's on our Plate menu.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm tracking-wide uppercase flex items-center space-x-2 shadow-lg transition hover:scale-105 active:scale-95"
+                className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center space-x-2 shadow-lg transition hover:scale-105 active:scale-95"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Order Parcel</span>
@@ -415,7 +417,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
 
               <Link
                 href="/menu"
-                className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-white/15 text-xs font-bold uppercase flex items-center space-x-1 transition"
+                className="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-white/15 text-xs font-bold uppercase flex items-center justify-center space-x-1 transition"
               >
                 <Utensils className="w-3.5 h-3.5" />
                 <span>Menu</span>

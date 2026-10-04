@@ -141,7 +141,7 @@ function MenuContent() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
         {/* Search & Filter Bar */}
-        <div className="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-[#EADBCE] space-y-4">
+        <div className="bg-white rounded-3xl shadow-xl p-4 sm:p-6 border border-[#EADBCE] space-y-4">
           <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
             {/* Search Input */}
             <div className="relative w-full md:w-96">
@@ -255,12 +255,12 @@ function MenuContent() {
         </div>
 
         {/* Dish Count Header */}
-        <div className="flex justify-between items-center my-6 px-1">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 my-6 px-1">
           <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
             Showing {items.length} {items.length === 1 ? "Dish" : "Dishes"}
           </span>
 
-          <div className="flex items-center space-x-3 text-xs text-stone-600">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-600">
             <a
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"
@@ -270,13 +270,13 @@ function MenuContent() {
               <Compass className="w-3.5 h-3.5 text-[#580D1A]" />
               <span>Visit Restaurant</span>
             </a>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <a
               href="tel:+919885455342"
               className="hover:text-[#580D1A] font-semibold flex items-center space-x-1"
             >
               <Phone className="w-3.5 h-3.5 text-[#580D1A]" />
-              <span>Takeaway Inquiries (9885455342)</span>
+              <span>Takeaway: 9885455342</span>
             </a>
           </div>
         </div>

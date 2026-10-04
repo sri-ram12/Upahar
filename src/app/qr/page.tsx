@@ -43,7 +43,7 @@ export default function QRPage() {
         <TableStandee />
 
         {/* 3 Step Guide on How to Scan */}
-        <div className="bg-white rounded-3xl border border-[#EADBCE] p-8 sm:p-10 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl border border-[#EADBCE] p-5 sm:p-10 shadow-sm space-y-6">
           <div className="text-center max-w-xl mx-auto space-y-1">
             <h2 className="text-xl sm:text-2xl font-black text-[#2B070E] font-display">
               How To Scan With Your Smartphone
@@ -54,7 +54,7 @@ export default function QRPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-            <div className="p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
               <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center font-black mx-auto sm:mx-0 shadow-sm">
                 1
               </div>
@@ -64,7 +64,7 @@ export default function QRPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
               <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center font-black mx-auto sm:mx-0 shadow-sm">
                 2
               </div>
@@ -74,7 +74,7 @@ export default function QRPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#F4EFE6] border border-[#EADBCE] space-y-3 text-center sm:text-left">
               <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center font-black mx-auto sm:mx-0 shadow-sm">
                 3
               </div>
@@ -87,7 +87,7 @@ export default function QRPage() {
         </div>
 
         {/* Quick Links CTA Section */}
-        <div className="bg-gradient-to-r from-[#2B070E] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] rounded-3xl p-8 sm:p-10 shadow-xl border border-[#D4AF37]/30 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-[#2B070E] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] rounded-3xl p-6 sm:p-10 shadow-xl border border-[#D4AF37]/30 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="text-xl sm:text-2xl font-black font-display text-white">
               Prefer To Explore Directly Online?
@@ -97,10 +97,10 @@ export default function QRPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <Link
               href="/menu"
-              className="btn-gold-outline bg-white text-[#2B070E] hover:bg-[#FAF7F2] px-5 py-3 rounded-xl text-xs font-bold flex items-center space-x-2 shadow-md transition"
+              className="btn-gold-outline bg-white text-[#2B070E] hover:bg-[#FAF7F2] px-5 py-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 shadow-md transition"
             >
               <UtensilsCrossed className="w-4 h-4 text-[#580D1A]" />
               <span>Explore Live Menu</span>
@@ -110,7 +110,7 @@ export default function QRPage() {
               href="https://wa.me/919885455342?text=Namaste!%20I%20scanned%20the%20Upahar%20QR%20code%20and%20would%20like%20to%20order."
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-3 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition flex items-center space-x-2"
+              className="px-5 py-3 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition flex items-center justify-center space-x-2"
             >
               <MessageSquare className="w-4 h-4 text-emerald-100" />
               <span>WhatsApp Us</span>

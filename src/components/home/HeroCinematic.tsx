@@ -43,9 +43,9 @@ export default function HeroCinematic({ storeStatus }: HeroCinematicProps) {
       {/* Content Container */}
       <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
         {/* Top Badges: Session & Location */}
-        <div className="inline-flex flex-wrap items-center justify-center gap-2 mb-6">
-          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#2B070E]/90 border border-[#D4AF37]/40 text-[#DFC17B] backdrop-blur-md shadow-lg">
-            <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+        <div className="inline-flex flex-wrap items-center justify-center gap-2 mb-6 max-w-full">
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-[#2B070E]/90 border border-[#D4AF37]/40 text-[#DFC17B] backdrop-blur-md shadow-lg text-center">
+            <Clock className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0" />
             <span>
               {storeStatus?.isOpen
                 ? `${storeStatus.statusText} • ${storeStatus.currentSession || "Breakfast Session"}`
@@ -53,19 +53,19 @@ export default function HeroCinematic({ storeStatus }: HeroCinematicProps) {
             </span>
           </div>
 
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-black/40 border border-white/10 text-stone-300 backdrop-blur-md">
-            <MapPin className="w-3.5 h-3.5 text-[#DFC17B]" />
-            <span>1-1, Sangivalasa, ANITS College Road, Beside SBI</span>
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-black/40 border border-white/10 text-stone-300 backdrop-blur-md text-center">
+            <MapPin className="w-3.5 h-3.5 text-[#DFC17B] flex-shrink-0" />
+            <span>1-1, Sangivalasa, ANITS College Road</span>
           </div>
         </div>
 
         {/* Restaurant Name Tagline */}
-        <span className="text-xs sm:text-sm font-black uppercase tracking-[0.3em] text-[#DFC17B] mb-2 drop-shadow-md">
+        <span className="text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#DFC17B] mb-2 drop-shadow-md text-center">
           UPAHAR TIFFINS AND FAST FOOD
         </span>
 
         {/* Primary Cinematic Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#FAF7F2] font-display max-w-4xl leading-[1.1] drop-shadow-2xl">
+        <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-[#FAF7F2] font-display max-w-4xl leading-[1.15] drop-shadow-2xl text-center">
           Authentic Flavours.
           <span className="block italic font-normal text-gradient-gold mt-1 sm:mt-2">
             Freshly Served with Warmth.

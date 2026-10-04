@@ -68,7 +68,7 @@ export default function ExperiencePage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 space-y-16">
         {/* Atmosphere Overview */}
-        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#EADBCE] shadow-xl space-y-8">
+        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-[#EADBCE] shadow-xl space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-2xl sm:text-3xl font-black text-[#2B070E] font-display">
               A Day in the Life of Our Restaurant
@@ -112,7 +112,7 @@ export default function ExperiencePage() {
 
         {/* Visiting Practicalities */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
             <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
@@ -124,7 +124,7 @@ export default function ExperiencePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
             <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
               <ShoppingBag className="w-5 h-5" />
             </div>
@@ -136,7 +136,7 @@ export default function ExperiencePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
             <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
               <Compass className="w-5 h-5" />
             </div>
@@ -150,13 +150,13 @@ export default function ExperiencePage() {
         </div>
 
         {/* CTA */}
-        <div className="text-center py-6">
+        <div className="text-center py-6 px-2">
           <Link
             href="/contact"
-            className="btn-maroon-gold inline-flex items-center space-x-2 px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider"
+            className="btn-maroon-gold w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 sm:px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider text-center"
           >
             <span>View Full Location & Contact Information</span>
-            <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
+            <ArrowRight className="w-4 h-4 text-[#DFC17B] flex-shrink-0" />
           </Link>
         </div>
       </div>

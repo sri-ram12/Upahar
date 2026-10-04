@@ -98,10 +98,10 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
           <button
             onClick={handlePrint}
-            className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md hover:scale-105 transition cursor-pointer"
+            className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md hover:scale-105 transition cursor-pointer"
           >
             <Printer className="w-4 h-4 text-[#DFC17B]" />
             <span>Print Standee Card</span>
@@ -109,7 +109,7 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
 
           <button
             onClick={handleDownload}
-            className="btn-gold-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
+            className="btn-gold-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 cursor-pointer"
           >
             <Download className="w-4 h-4 text-[#580D1A]" />
             <span>Download PNG</span>
@@ -117,7 +117,7 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
 
           <button
             onClick={handleCopyLink}
-            className="px-3.5 py-2.5 rounded-xl text-xs font-bold border border-stone-200 hover:bg-stone-50 text-stone-700 flex items-center space-x-1.5 cursor-pointer"
+            className="px-3.5 py-2.5 rounded-xl text-xs font-bold border border-stone-200 hover:bg-stone-50 text-stone-700 flex items-center justify-center space-x-1.5 cursor-pointer"
           >
             {copied ? (
               <>
@@ -139,10 +139,10 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
         <div
           ref={printCardRef}
           id="printable-standee"
-          className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl border-2 border-[#D4AF37] shadow-2xl p-6 sm:p-8 text-[#2B070E] relative overflow-hidden print:shadow-none print:border-2 print:border-black print:m-0 print:p-8 print:w-full print:max-w-none"
+          className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl border-2 border-[#D4AF37] shadow-2xl p-4 sm:p-8 text-[#2B070E] relative overflow-hidden print:shadow-none print:border-2 print:border-black print:m-0 print:p-8 print:w-full print:max-w-none"
         >
           {/* Subtle top gold accent line */}
-          <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#580D1A] to-[#D4AF37] -mt-6 sm:-mt-8 -mx-6 sm:-mx-8 mb-6" />
+          <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#580D1A] to-[#D4AF37] -mt-4 sm:-mt-8 -mx-4 sm:-mx-8 mb-6" />
 
           {/* Card Header with Brand Crest */}
           <div className="text-center space-y-2">

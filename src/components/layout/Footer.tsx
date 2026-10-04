@@ -181,11 +181,11 @@ export default function Footer() {
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-stone-500 gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-stone-500 gap-4 text-center sm:text-left">
           <p>
             © {new Date().getFullYear()} UPAHAR TIFFINS AND FAST FOOD. All Rights Reserved. Sunrise to Sunset.
           </p>
-          <div className="flex items-center space-x-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-4 gap-y-1 text-xs">
             <a
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"

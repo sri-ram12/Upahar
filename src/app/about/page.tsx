@@ -58,7 +58,7 @@ export default function AboutPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 space-y-12">
         {/* Story Section Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#EADBCE] shadow-xl space-y-10">
+        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-[#EADBCE] shadow-xl space-y-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 space-y-5">
               <span className="text-xs font-extrabold uppercase tracking-widest text-[#74171E] block">
@@ -86,7 +86,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 relative h-80 sm:h-96 rounded-2xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-lg">
+            <div className="lg:col-span-5 relative h-64 sm:h-96 rounded-2xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-lg">
               <Image
                 src="/images/upahar_hotel_counter.jpg"
                 alt="Upahar Restaurant Front Counter in Sangivalasa"
@@ -121,7 +121,7 @@ export default function AboutPage() {
         </div>
 
         {/* Community & Hospitality Card */}
-        <div className="bg-gradient-to-br from-[#2B070E] to-[#4A0E17] text-[#FAF7F2] rounded-3xl p-8 sm:p-12 border border-[#D4AF37]/30 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="bg-gradient-to-br from-[#2B070E] to-[#4A0E17] text-[#FAF7F2] rounded-3xl p-6 sm:p-12 border border-[#D4AF37]/30 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-3 text-center md:text-left">
             <span className="text-xs uppercase font-extrabold tracking-widest text-[#DFC17B]">
               Experience the Hospitality
@@ -134,10 +134,10 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link
               href="/menu"
-              className="btn-maroon-gold px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap"
+              className="btn-maroon-gold px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider text-center"
             >
               Explore Menu
             </Link>
@@ -145,7 +145,7 @@ export default function AboutPage() {
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-[#D4AF37]/50 transition whitespace-nowrap"
+              className="px-6 py-3.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-[#DFC17B] border border-[#D4AF37]/50 transition text-center"
             >
               Get Directions
             </a>

@@ -9,10 +9,10 @@ export default function FloatingWhatsAppButton() {
   const whatsappUrl = `https://wa.me/${ownerNumber}?text=Namaste%20Sri%20Vamsi%20ji!%20I%20am%20visiting%20the%20Upahar%20website%20and%20would%20like%20details%20about%20today's%20menu%20and%20timings%20at%20Sangivalasa.`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-auto select-none">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end pointer-events-auto select-none">
       {/* Popover Card */}
       {isOpen && (
-        <div className="mb-3 w-72 sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-emerald-500/30 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-xs sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-emerald-500/30 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200">
           <div className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 text-white p-4">
             <div className="flex justify-between items-start">
               <div>

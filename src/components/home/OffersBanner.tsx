@@ -167,7 +167,7 @@ export default function OffersBanner() {
             </div>
 
             {/* Video Selector Tabs */}
-            <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
+            <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/10 text-xs font-semibold overflow-x-auto no-scrollbar max-w-full">
               {(["starters", "wok", "tava"] as const).map((tabKey) => (
                 <button
                   key={tabKey}
@@ -333,14 +333,14 @@ export default function OffersBanner() {
               </div>
 
               {/* Action Buttons: WhatsApp Order + Explore Menu */}
-              <div className="pt-3 flex flex-wrap items-center gap-3">
+              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <a
                   href={`https://wa.me/919885455342?text=${encodeURIComponent(
                     `Hello Upahar Tiffins, I saw your video showcase for ${currentVideo.title} and would like to order!`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center space-x-2 transition shadow-lg hover:shadow-emerald-600/30"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center justify-center space-x-2 transition shadow-lg hover:shadow-emerald-600/30"
                 >
                   <MessageSquare className="w-4 h-4" />
                   <span>Order on WhatsApp Directly</span>
@@ -348,7 +348,7 @@ export default function OffersBanner() {
 
                 <Link
                   href="/menu"
-                  className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF7F2] font-bold text-xs sm:text-sm flex items-center space-x-2 transition"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF7F2] font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition"
                 >
                   <Utensils className="w-4 h-4 text-[#DFC17B]" />
                   <span>View Complete Menu</span>

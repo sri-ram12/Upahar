@@ -58,7 +58,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
         </button>
 
         {/* Top Image */}
-        <div className="relative h-64 sm:h-72 w-full bg-[#141210] flex-shrink-0">
+        <div className="relative h-48 sm:h-72 w-full bg-[#141210] flex-shrink-0">
           <Image
             src={item.image}
             alt={item.name}
@@ -90,16 +90,16 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           </div>
 
           <div className="absolute bottom-4 left-5 right-5">
-            <h3 id="dish-modal-title" className="text-2xl sm:text-3xl font-black text-white font-display">
+            <h3 id="dish-modal-title" className="text-xl sm:text-3xl font-black text-white font-display">
               {item.name}
             </h3>
           </div>
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto no-scrollbar">
+        <div className="p-4 sm:p-8 space-y-5 sm:space-y-6 overflow-y-auto no-scrollbar">
           {/* Price & Meta Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-[#EADBCE]">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#EADBCE]">
             <div>
               <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">
                 Menu Price
@@ -109,7 +109,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
               </span>
             </div>
 
-            <div className="flex items-center space-x-4 text-xs text-stone-600">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600">
               <span className="flex items-center space-x-1 font-semibold">
                 <Clock className="w-4 h-4 text-[#580D1A]" />
                 <span>{item.prepTime || "10-15 mins"}</span>

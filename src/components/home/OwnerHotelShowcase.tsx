@@ -381,15 +381,15 @@ export default function OwnerHotelShowcase() {
                 </a>
               </div>
 
-              <div className="flex items-center space-x-2.5">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
                 <a
                   href="https://wa.me/919885455342?text=Hello%20Sri%20Vamsi,%20I%20am%20reviewing%20your%20menu%20cards%20and%20would%20like%20to%20order%20parcel%20or%20check%20today's%20batch%20timing."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-maroon-gold px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
+                  className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-center"
                 >
-                  <MessageSquare className="w-3.5 h-3.5 text-[#DFC17B]" />
-                  <span>Chat with Sri Vamsi About Menu</span>
+                  <MessageSquare className="w-3.5 h-3.5 text-[#DFC17B] flex-shrink-0" />
+                  <span>Chat with Sri Vamsi</span>
                 </a>
               </div>
             </div>

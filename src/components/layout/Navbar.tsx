@@ -135,20 +135,20 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Emblem & Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md shadow-[#4A0E17]/20 group-hover:scale-105 transition duration-300 flex-shrink-0 bg-[#580D1A]">
+          <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group min-w-0">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md shadow-[#4A0E17]/20 group-hover:scale-105 transition duration-300 flex-shrink-0 bg-[#580D1A]">
               <img
                 src="/images/upahar_logo.jpg"
                 alt="UPAHAR Official Logo"
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#2B070E] font-display flex items-center gap-1.5">
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg sm:text-2xl font-black tracking-tight text-[#2B070E] font-display flex items-center gap-1 sm:gap-1.5 truncate">
                 UPAHAR
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
               </span>
-              <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-bold text-[#74171E] -mt-1">
+              <span className="text-[8px] sm:text-[10px] tracking-[0.18em] uppercase font-bold text-[#74171E] -mt-0.5 sm:-mt-1 truncate">
                 Tiffins & Fast Food
               </span>
             </div>
@@ -205,7 +205,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Actions */}
-          <div className="flex items-center space-x-2 lg:hidden">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 lg:hidden flex-shrink-0">
             <button
               onClick={() => setQrModalOpen(true)}
               className="p-2 rounded-xl bg-white text-[#580D1A] border border-[#D4AF37]/50 shadow-sm"
