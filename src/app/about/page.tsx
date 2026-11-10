@@ -39,9 +39,9 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-24">
+    <div className="min-h-screen bg-brand-cream pb-24">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-[#380A11] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
+      <div className="bg-gradient-to-br from-brand-900 via-brand-700 to-brand-950 text-brand-cream py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
         <div className="max-w-3xl mx-auto relative z-10 space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
             <UtensilsCrossed className="w-3.5 h-3.5 text-[#DFC17B]" />
@@ -58,13 +58,13 @@ export default function AboutPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 space-y-12">
         {/* Story Section Card */}
-        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-[#EADBCE] shadow-xl space-y-10">
+        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-brand-border shadow-xl space-y-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 space-y-5">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-[#74171E] block">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-brand-600 block">
                 Tradition Meets Daily Life
               </span>
-              <h2 className="text-2xl sm:text-4xl font-black text-[#2B070E] font-display tracking-tight leading-snug">
+              <h2 className="text-2xl sm:text-4xl font-black text-brand-950 font-display tracking-tight leading-snug">
                 Born From a Deep Love for Authentic Taste & Honest Cooking
               </h2>
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
@@ -77,10 +77,10 @@ export default function AboutPage() {
               <div className="pt-2 flex flex-wrap gap-3">
                 <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#2D5A27] bg-[#EBF3E8] px-3.5 py-1.5 rounded-xl border border-[#2D5A27]/20">
                   <ShieldCheck className="w-4 h-4 text-[#2D5A27]" />
-                  <span>100% Pure Vegetarian Kitchen</span>
+                  <span>Hygienic &amp; Fresh Kitchen</span>
                 </span>
-                <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#580D1A] bg-[#FAF7F2] px-3.5 py-1.5 rounded-xl border border-[#EADBCE]">
-                  <Flame className="w-4 h-4 text-[#580D1A]" />
+                <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-brand-700 bg-brand-cream px-3.5 py-1.5 rounded-xl border border-brand-border">
+                  <Flame className="w-4 h-4 text-brand-700" />
                   <span>Stone-Ground Batter Daily</span>
                 </span>
               </div>
@@ -98,17 +98,17 @@ export default function AboutPage() {
           </div>
 
           {/* Pillars of Quality */}
-          <div className="pt-10 border-t border-[#F4EFE6]">
-            <h3 className="text-2xl sm:text-3xl font-black text-[#2B070E] font-display text-center mb-8">
+          <div className="pt-10 border-t border-brand-surface">
+            <h3 className="text-2xl sm:text-3xl font-black text-brand-950 font-display text-center mb-8">
               The Four Pillars of Our Kitchen
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {pillars.map((pillar, i) => (
                 <div
                   key={i}
-                  className="p-6 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] space-y-2 hover:border-[#D4AF37] transition duration-300"
+                  className="p-6 rounded-2xl bg-brand-cream border border-brand-border space-y-2 hover:border-[#D4AF37] transition duration-300"
                 >
-                  <h4 className="font-bold text-[#2B070E] text-base font-heading">
+                  <h4 className="font-bold text-brand-950 text-base font-heading">
                     {pillar.title}
                   </h4>
                   <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
@@ -121,7 +121,7 @@ export default function AboutPage() {
         </div>
 
         {/* Community & Hospitality Card */}
-        <div className="bg-gradient-to-br from-[#2B070E] to-[#4A0E17] text-[#FAF7F2] rounded-3xl p-6 sm:p-12 border border-[#D4AF37]/30 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="bg-gradient-to-br from-brand-950 to-brand-800 text-brand-cream rounded-3xl p-6 sm:p-12 border border-[#D4AF37]/30 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-3 text-center md:text-left">
             <span className="text-xs uppercase font-extrabold tracking-widest text-[#DFC17B]">
               Experience the Hospitality
@@ -130,7 +130,7 @@ export default function AboutPage() {
               We Look Forward to Welcoming You
             </h3>
             <p className="text-stone-300 text-xs sm:text-sm max-w-lg">
-              Located at 1-1, Sangivalasa, ANITS College Road, beside SBI. Visit us for morning tiffins (6am–10am) or evening fast food (6pm–10:30pm).
+              Located at 1-1, Sangivalasa, ANITS College Road, beside SBI. Visit us for morning tiffins (6:00 AM–10:30 AM) or afternoon &amp; evening fast food (12:00 PM–10:30 PM).
             </p>
           </div>
 

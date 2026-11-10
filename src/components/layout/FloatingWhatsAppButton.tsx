@@ -32,7 +32,7 @@ export default function FloatingWhatsAppButton() {
             </div>
           </div>
 
-          <div className="p-4 bg-[#FAF7F2] text-[#141210]">
+          <div className="p-4 bg-brand-cream text-[#141210]">
             <p className="text-xs text-stone-600 leading-relaxed">
               Have questions about morning tiffins, catering orders, fresh pure ghee preparation, or table seating?
               Chat directly with our founder on WhatsApp!

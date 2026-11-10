@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { RestaurantSetting } from "@/types";
+import { RestaurantSetting, Coupon } from "@/types";
 import {
   Save,
   CheckCircle2,
@@ -10,10 +10,20 @@ import {
   Compass,
   Phone,
   ShieldCheck,
+  Bike,
+  QrCode,
+  Tag,
+  Plus,
 } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<RestaurantSetting | null>(null);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [newCouponCode, setNewCouponCode] = useState("");
+  const [newCouponDesc, setNewCouponDesc] = useState("");
+  const [newCouponType, setNewCouponType] = useState<"FLAT" | "PERCENT">("FLAT");
+  const [newCouponValue, setNewCouponValue] = useState("25");
+  const [newCouponMin, setNewCouponMin] = useState("149");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -21,9 +31,14 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const res = await fetch("/api/restaurant");
+      const [res, coupRes] = await Promise.all([
+        fetch("/api/restaurant"),
+        fetch("/api/coupons?all=true"),
+      ]);
       const data = await res.json();
+      const coupData = await coupRes.json();
       if (data.settings) setSettings(data.settings);
+      if (coupData.coupons) setCoupons(coupData.coupons);
     } catch (e) {
       console.error(e);
     } finally {
@@ -328,6 +343,195 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+        {/* Card 4: Online Orders & Tagarapuvalasa Delivery Zone */}
+        <div className="bg-white p-6 rounded-3xl border border-[#EADBCE] shadow-sm space-y-4">
+          <h2 className="text-base font-bold text-[#2B070E] border-b border-[#F4EFE6] pb-2 flex items-center space-x-2">
+            <Bike className="w-4 h-4 text-[#580D1A]" />
+            <span>Online Orders & Tagarapuvalasa 5km Delivery Configuration</span>
+          </h2>
+
+          <div className="space-y-3">
+            <label className="flex items-center space-x-3 p-3 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.isOnlineOrderingEnabled ?? true}
+                onChange={(e) =>
+                  setSettings({ ...settings, isOnlineOrderingEnabled: e.target.checked })
+                }
+              />
+              <div>
+                <span className="font-bold text-[#2B070E] block">
+                  Enable Online Food Ordering
+                </span>
+                <span className="text-[11px] text-stone-500">
+                  Allows customers to add items to cart and place orders for doorstep delivery or takeaway.
+                </span>
+              </div>
+            </label>
+
+            <label className="flex items-center space-x-3 p-3 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.enforceStoreHours ?? true}
+                onChange={(e) =>
+                  setSettings({ ...settings, enforceStoreHours: e.target.checked })
+                }
+              />
+              <div>
+                <span className="font-bold text-[#2B070E] block">
+                  Enforce Session Hours &amp; Morning/Evening Menus
+                </span>
+                <span className="text-[11px] text-stone-500">
+                  Locks checkout outside 6–10:30 AM &amp; 12–10:30 PM IST, and hides Noodles, Fried Rice &amp; Starters during Morning Tiffins.
+                </span>
+              </div>
+            </label>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 pt-2">
+              <div className="space-y-1">
+                <label className="font-bold text-stone-700 block">
+                  Max Radius (km)
+                </label>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={settings.deliveryRadiusKm ?? 5.0}
+                  onChange={(e) =>
+                    setSettings({ ...settings, deliveryRadiusKm: parseFloat(e.target.value) })
+                  }
+                  className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-700 block">
+                  Min Delivery Order (₹)
+                </label>
+                <input
+                  type="number"
+                  value={settings.minDeliveryOrderAmount ?? 60}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      minDeliveryOrderAmount: parseFloat(e.target.value),
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-700 block">
+                  Parcel Packaging (₹)
+                </label>
+                <input
+                  type="number"
+                  value={settings.packagingFee ?? 10}
+                  onChange={(e) =>
+                    setSettings({ ...settings, packagingFee: parseFloat(e.target.value) })
+                  }
+                  className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-700 block">
+                  Base Delivery Fee (₹)
+                </label>
+                <input
+                  type="number"
+                  value={settings.deliveryBaseFee ?? 25}
+                  onChange={(e) =>
+                    setSettings({ ...settings, deliveryBaseFee: parseFloat(e.target.value) })
+                  }
+                  className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-700 block">
+                  Free Delivery Above (₹)
+                </label>
+                <input
+                  type="number"
+                  value={settings.minOrderFreeDelivery ?? 199}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      minOrderFreeDelivery: parseFloat(e.target.value),
+                    })
+                  }
+                  className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs"
+                />
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <label className="font-bold text-stone-700 block">
+                FSSAI License No. (Optional — printed on Customer Bill Receipts)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. 20124000000123"
+                value={settings.fssaiNumber || ""}
+                onChange={(e) => setSettings({ ...settings, fssaiNumber: e.target.value })}
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs mt-1 font-mono"
+              />
+            </div>
+
+            <div className="pt-2 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="font-bold text-stone-700 block">
+                    Official Business UPI ID (Paytm / GPay / PhonePe)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. paytm.s2fno8y@pty"
+                    value={settings.upiId || "paytm.s2fno8y@pty"}
+                    onChange={(e) => setSettings({ ...settings, upiId: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs mt-1 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-stone-700 block">
+                    Merchant / Payee Display Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Suravajjula Sai Sri Vamsi"
+                    value={settings.upiMerchantName || "Suravajjula Sai Sri Vamsi"}
+                    onChange={(e) =>
+                      setSettings({ ...settings, upiMerchantName: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl font-semibold text-xs mt-1"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] flex flex-col sm:flex-row items-center gap-4">
+                <img
+                  src={settings.paymentQrUrl || "/images/payment-qr.jpg"}
+                  alt="Business Payment QR"
+                  className="w-24 h-28 object-contain rounded-xl border border-stone-200 bg-white p-1"
+                />
+                <div className="flex-1 space-y-2 w-full">
+                  <label className="font-bold text-stone-700 block">
+                    Business Payment QR Image URL (Displayed at Checkout, Tracking & Delivery App)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.paymentQrUrl || "/images/payment-qr.jpg"}
+                    onChange={(e) => setSettings({ ...settings, paymentQrUrl: e.target.value })}
+                    className="w-full px-3 py-2 bg-white border border-[#EADBCE] rounded-xl font-mono text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-end pt-4">
           <button
             type="submit"
@@ -339,6 +543,129 @@ export default function AdminSettingsPage() {
           </button>
         </div>
       </form>
+
+      {/* Card 5: Promo Coupons Management */}
+      <div className="bg-white p-6 rounded-3xl border border-[#EADBCE] shadow-sm space-y-5 text-xs">
+        <div className="border-b border-[#F4EFE6] pb-3">
+          <h2 className="text-base font-bold text-[#2B070E] flex items-center space-x-2">
+            <Tag className="w-4 h-4 text-[#580D1A]" />
+            <span>Promo Codes & Student Offers (Checkout Discounts)</span>
+          </h2>
+          <p className="text-[11px] text-stone-500 mt-0.5">
+            Create or pause discount codes visible to Tagarapuvalasa & ANITS customers during checkout.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
+          <div>
+            <label className="font-bold text-stone-600 block mb-1">Code</label>
+            <input
+              type="text"
+              placeholder="e.g. GHEE20"
+              value={newCouponCode}
+              onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+              className="w-full px-3 py-2 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-mono font-bold uppercase"
+            />
+          </div>
+          <div>
+            <label className="font-bold text-stone-600 block mb-1">Type</label>
+            <select
+              value={newCouponType}
+              onChange={(e) => setNewCouponType(e.target.value as "FLAT" | "PERCENT")}
+              className="w-full px-3 py-2 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-semibold"
+            >
+              <option value="FLAT">Flat ₹ Off</option>
+              <option value="PERCENT">Percent % Off</option>
+            </select>
+          </div>
+          <div>
+            <label className="font-bold text-stone-600 block mb-1">Discount</label>
+            <input
+              type="number"
+              value={newCouponValue}
+              onChange={(e) => setNewCouponValue(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-bold"
+            />
+          </div>
+          <div>
+            <label className="font-bold text-stone-600 block mb-1">Min Order (₹)</label>
+            <input
+              type="number"
+              value={newCouponMin}
+              onChange={(e) => setNewCouponMin(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-bold"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!newCouponCode.trim()) return;
+              const res = await fetch("/api/coupons", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  code: newCouponCode.trim(),
+                  description:
+                    newCouponDesc ||
+                    `${
+                      newCouponType === "PERCENT" ? `${newCouponValue}% OFF` : `Flat ₹${newCouponValue} OFF`
+                    } on orders ₹${newCouponMin}+`,
+                  discountType: newCouponType,
+                  discountValue: Number(newCouponValue),
+                  minOrderAmount: Number(newCouponMin),
+                }),
+              });
+              if (res.ok) {
+                setNewCouponCode("");
+                setNewCouponDesc("");
+                fetchSettings();
+              } else {
+                const err = await res.json();
+                setErrorMsg(err.error || "Sign in to Admin first to add coupons");
+              }
+            }}
+            className="btn-maroon-gold py-2.5 px-4 rounded-xl font-black flex items-center justify-center space-x-1"
+          >
+            <Plus className="w-3.5 h-3.5 text-[#DFC17B]" />
+            <span>Add Offer</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          {coupons.map((cp) => (
+            <div
+              key={cp.id}
+              className="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] flex items-center justify-between gap-2"
+            >
+              <div>
+                <span className="font-mono font-black text-sm text-[#580D1A] block">
+                  {cp.code}
+                </span>
+                <span className="text-[11px] text-stone-600 block">{cp.description}</span>
+                <span className="text-[10px] text-stone-400">Used {cp.usageCount} times</span>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const res = await fetch("/api/coupons", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: cp.id, isActive: !cp.isActive }),
+                  });
+                  if (res.ok) fetchSettings();
+                }}
+                className={`px-3 py-1 rounded-xl text-[11px] font-black transition ${
+                  cp.isActive
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-stone-200 text-stone-600"
+                }`}
+              >
+                {cp.isActive ? "Active" : "Paused"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

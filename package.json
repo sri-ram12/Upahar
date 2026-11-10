@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node test-endpoints.mjs",
+    "test:e2e": "node test-e2e-suite.js",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio"

@@ -52,7 +52,7 @@ export default function HeroSection({ storeStatus }: HeroSectionProps) {
             <span>
               {storeStatus?.isOpen
                 ? `${storeStatus.statusText} • ${storeStatus.subText}`
-                : "Morning 6:00 AM – 10:00 AM • Evening 6:00 PM – 10:30 PM"}
+                : "Morning 6:00 AM – 10:30 AM • Afternoon & Evening 12:00 PM – 10:30 PM"}
             </span>
           </div>
 
@@ -138,11 +138,11 @@ export default function HeroSection({ storeStatus }: HeroSectionProps) {
         <div className="mt-12 pt-8 border-t border-[#D4AF37]/25 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 text-center text-xs text-stone-300 font-medium">
           <div className="flex flex-col items-center">
             <span className="text-[#DFC17B] font-bold text-sm">Morning Tiffins</span>
-            <span className="text-[11px] text-stone-400 mt-0.5">6:00 AM – 10:00 AM</span>
+            <span className="text-[11px] text-stone-400 mt-0.5">6:00 AM – 10:30 AM</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-[#DFC17B] font-bold text-sm">Evening Fast Food</span>
-            <span className="text-[11px] text-stone-400 mt-0.5">6:00 PM – 10:30 PM</span>
+            <span className="text-[#DFC17B] font-bold text-sm">Fast Food &amp; Tiffins</span>
+            <span className="text-[11px] text-stone-400 mt-0.5">12:00 PM – 10:30 PM</span>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-[#DFC17B] font-bold text-sm">Pure Desi Ghee</span>

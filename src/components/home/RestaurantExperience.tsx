@@ -119,7 +119,7 @@ export default function RestaurantExperience() {
               Join Us For Fresh Morning Tiffins or Evening Fast Food
             </h3>
             <p className="text-stone-300 text-xs sm:text-sm">
-              Located conveniently at 1-1, Sangivalasa, ANITS College Road, beside SBI. Open daily 6 AM-10 AM and 6 PM-10:30 PM.
+              Located conveniently at 1-1, Sangivalasa, ANITS College Road, beside SBI. Open daily 6:00 AM–10:30 AM and 12:00 PM–10:30 PM.
             </p>
           </div>
 

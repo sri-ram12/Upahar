@@ -58,9 +58,9 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-24">
+    <div className="min-h-screen bg-brand-cream pb-24">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-[#380A11] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
+      <div className="bg-gradient-to-br from-brand-900 via-brand-700 to-brand-950 text-brand-cream py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
         <div className="max-w-3xl mx-auto relative z-10 space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
             <Compass className="w-3.5 h-3.5 text-[#DFC17B]" />
@@ -79,15 +79,15 @@ export default function ContactPage() {
         {/* Contact Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Phone Card */}
-          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
-            <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-brand-border shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+            <div className="w-12 h-12 rounded-2xl bg-brand-700 text-[#DFC17B] flex items-center justify-center shadow-md">
               <Phone className="w-6 h-6" />
             </div>
             <div>
               <span className="text-[11px] uppercase font-extrabold tracking-widest text-stone-400 block">
                 Direct Telephone & WhatsApp
               </span>
-              <h3 className="text-xl font-black text-[#2B070E] mt-1 font-display">
+              <h3 className="text-xl font-black text-brand-950 mt-1 font-display">
                 +91 9885455342
               </h3>
             </div>
@@ -96,7 +96,7 @@ export default function ContactPage() {
             </p>
             <a
               href="tel:+919885455342"
-              className="inline-flex items-center space-x-2 text-xs font-bold text-[#580D1A] hover:text-[#74171E] pt-2"
+              className="inline-flex items-center space-x-2 text-xs font-bold text-brand-700 hover:text-brand-600 pt-2"
             >
               <span>Dial 9885455342</span>
               <span>→</span>
@@ -104,15 +104,15 @@ export default function ContactPage() {
           </div>
 
           {/* Address Card */}
-          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
-            <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-brand-border shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+            <div className="w-12 h-12 rounded-2xl bg-brand-700 text-[#DFC17B] flex items-center justify-center shadow-md">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
               <span className="text-[11px] uppercase font-extrabold tracking-widest text-stone-400 block">
                 Restaurant Location
               </span>
-              <h3 className="text-base font-bold text-[#2B070E] mt-1">
+              <h3 className="text-base font-bold text-brand-950 mt-1">
                 Sangivalasa, Visakhapatnam
               </h3>
             </div>
@@ -123,7 +123,7 @@ export default function ContactPage() {
               href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 text-xs font-bold text-[#580D1A] hover:text-[#74171E] pt-2"
+              className="inline-flex items-center space-x-2 text-xs font-bold text-brand-700 hover:text-brand-600 pt-2"
             >
               <span>Open in Google Maps</span>
               <span>→</span>
@@ -131,20 +131,20 @@ export default function ContactPage() {
           </div>
 
           {/* Hours Card */}
-          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-[#EADBCE] shadow-lg space-y-4 hover:border-[#D4AF37] transition">
-            <div className="w-12 h-12 rounded-2xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center shadow-md">
+          <div className="p-5 sm:p-8 rounded-3xl bg-white border border-brand-border shadow-lg space-y-4 hover:border-[#D4AF37] transition">
+            <div className="w-12 h-12 rounded-2xl bg-brand-700 text-[#DFC17B] flex items-center justify-center shadow-md">
               <Clock className="w-6 h-6" />
             </div>
             <div>
               <span className="text-[11px] uppercase font-extrabold tracking-widest text-stone-400 block">
                 Operating Schedule
               </span>
-              <h3 className="text-base font-bold text-[#2B070E] mt-1">
+              <h3 className="text-base font-bold text-brand-950 mt-1">
                 Two Daily Sessions
               </h3>
             </div>
             <p className="text-xs text-stone-600 leading-relaxed">
-              Morning Tiffins: 6:00 AM – 10:00 AM<br />Evening Fast Food: 6:00 PM – 10:30 PM
+              Morning Tiffins: 6:00 AM – 10:30 AM<br />Afternoon &amp; Evening: 12:00 PM – 10:30 PM
             </p>
             <span className="inline-block text-xs font-bold text-[#2D5A27] bg-[#EBF3E8] px-3 py-1 rounded-xl">
               Open Monday to Sunday
@@ -155,13 +155,13 @@ export default function ContactPage() {
         {/* Form and Map Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Inquiry Form */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-5 sm:p-8 border border-[#EADBCE] shadow-lg space-y-6">
+          <div className="lg:col-span-6 bg-white rounded-3xl p-5 sm:p-8 border border-brand-border shadow-lg space-y-6">
             <div className="space-y-1">
-              <span className="text-xs uppercase font-extrabold tracking-widest text-[#74171E] flex items-center space-x-1.5">
+              <span className="text-xs uppercase font-extrabold tracking-widest text-brand-600 flex items-center space-x-1.5">
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>Guest Inquiry Form</span>
               </span>
-              <h2 className="text-2xl font-black text-[#2B070E] font-display">
+              <h2 className="text-2xl font-black text-brand-950 font-display">
                 Send Us A Note
               </h2>
               <p className="text-xs text-stone-500">
@@ -197,7 +197,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Ramesh Kumar"
-                    className="w-full px-4 py-2.5 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
+                    className="w-full px-4 py-2.5 bg-brand-cream border border-brand-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-700"
                   />
                 </div>
 
@@ -211,7 +211,7 @@ export default function ContactPage() {
                     value={formData.contact}
                     onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                     placeholder="e.g. 9876543210"
-                    className="w-full px-4 py-2.5 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
+                    className="w-full px-4 py-2.5 bg-brand-cream border border-brand-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-700"
                   />
                 </div>
               </div>
@@ -225,7 +225,7 @@ export default function ContactPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="e.g. ramesh@gmail.com"
-                  className="w-full px-4 py-2.5 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
+                  className="w-full px-4 py-2.5 bg-brand-cream border border-brand-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
 
@@ -238,7 +238,7 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="e.g. Bulk Morning Tiffins / Dining Experience"
-                  className="w-full px-4 py-2.5 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
+                  className="w-full px-4 py-2.5 bg-brand-cream border border-brand-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
 
@@ -252,7 +252,7 @@ export default function ContactPage() {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Share your thoughts or inquiry with our kitchen..."
-                  className="w-full px-4 py-2.5 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
+                  className="w-full px-4 py-2.5 bg-brand-cream border border-brand-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
 
@@ -268,8 +268,8 @@ export default function ContactPage() {
           </div>
 
           {/* Interactive Map Embed */}
-          <div className="lg:col-span-6 rounded-3xl overflow-hidden border border-[#EADBCE] shadow-lg flex flex-col bg-white min-h-[350px] sm:min-h-[450px]">
-            <div className="p-4 bg-[#2B070E] text-[#FAF7F2] flex items-center justify-between border-b border-[#D4AF37]/30">
+          <div className="lg:col-span-6 rounded-3xl overflow-hidden border border-brand-border shadow-lg flex flex-col bg-white min-h-[350px] sm:min-h-[450px]">
+            <div className="p-4 bg-brand-950 text-brand-cream flex items-center justify-between border-b border-[#D4AF37]/30">
               <span className="text-xs font-bold">Interactive Navigation Map</span>
               <a
                 href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"

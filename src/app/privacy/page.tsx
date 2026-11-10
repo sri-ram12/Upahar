@@ -46,14 +46,14 @@ export default function PrivacyPage() {
             3. Payment Security
           </h3>
           <p>
-            We do not store your credit/debit card numbers or UPI PINs on our servers. All online payment transactions are processed securely through certified payment gateway providers.
+            We do not store card numbers, bank details, or UPI PINs on our servers. Customers pay either via Cash on Delivery or directly to our verified business Paytm / UPI QR code (paytm.s2fno8y@pty) via their chosen UPI app (Paytm, PhonePe, Google Pay).
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">
             4. Contact Us
           </h3>
           <p>
-            If you have questions regarding this policy, please reach out to us at contact@upaharrestaurant.com or visit our restaurant at 1-1, Sangivalasa, ANITS College Road.
+            If you have questions regarding this policy, please reach out to us at contact@upahar.com, call +91 98854 55342, or visit our restaurant at 1-1, Sangivalasa, ANITS College Road, beside SBI.
           </p>
         </div>
       </div>

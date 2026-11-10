@@ -4,12 +4,12 @@ import { Sparkles, MessageSquare, Compass, ArrowRight, UtensilsCrossed } from "l
 
 export default function SensoryCTASection() {
   return (
-    <section className="py-20 sm:py-28 bg-gradient-to-b from-[#141210] via-[#2B070E] to-[#141210] text-[#FAF7F2] relative overflow-hidden border-t border-[#D4AF37]/30">
+    <section className="py-20 sm:py-28 bg-gradient-to-b from-[var(--upahar-dark-stage)] via-brand-950 to-[var(--upahar-dark-stage)] text-brand-cream relative overflow-hidden border-t border-[#D4AF37]/30">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest shadow-lg">
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-brand-700 border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest shadow-lg">
           <UtensilsCrossed className="w-3.5 h-3.5" />
           <span>The Tables Are Set • The Tawas Are Sizzling</span>
         </div>
@@ -47,7 +47,7 @@ export default function SensoryCTASection() {
             href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-[#FAF7F2] bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 backdrop-blur-md transition flex items-center justify-center space-x-2 shadow-md hover:scale-105"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-brand-cream bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 backdrop-blur-md transition flex items-center justify-center space-x-2 shadow-md hover:scale-105"
           >
             <Compass className="w-4 h-4 text-[#DFC17B]" />
             <span>Get Directions (Google Maps)</span>

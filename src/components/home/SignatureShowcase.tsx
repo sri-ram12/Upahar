@@ -110,16 +110,16 @@ export default function SignatureShowcase() {
   const [activeDish, setActiveDish] = useState<Dish>(signatureDishes[0]);
 
   return (
-    <section className="py-20 sm:py-28 bg-[#141210] text-[#FAF7F2] relative overflow-hidden">
+    <section className="py-20 sm:py-28 bg-[var(--upahar-dark-stage)] text-brand-cream relative overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#580D1A]/35 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-brand-700/35 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-widest mb-3">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-700 text-[#DFC17B] border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-widest mb-3">
               <Sparkles className="w-3.5 h-3.5 text-[#DFC17B]" />
               <span>Chef&apos;s Signature Tava Craft Showcase</span>
             </div>
@@ -141,7 +141,7 @@ export default function SignatureShowcase() {
         </div>
 
         {/* Main Stage Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#1C1917]/90 rounded-3xl p-4 sm:p-8 lg:p-10 border border-[#D4AF37]/25 shadow-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[var(--upahar-dark-card)]/90 rounded-3xl p-4 sm:p-8 lg:p-10 border border-[#D4AF37]/25 shadow-2xl">
           {/* Featured Large Visual */}
           <div className="lg:col-span-7 relative h-72 sm:h-96 lg:h-[440px] rounded-2xl overflow-hidden border border-[#D4AF37]/20 group">
             <Image
@@ -152,11 +152,11 @@ export default function SignatureShowcase() {
               sizes="(max-width: 1024px) 100vw, 60vw"
               className="object-cover transition-all duration-700 ease-out group-hover:scale-105 relative z-10"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-transparent to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--upahar-dark-stage)] via-transparent to-transparent z-10" />
 
             {/* Badges on Visual */}
             <div className="absolute top-4 left-4 flex items-center space-x-2 z-20">
-              <span className="bg-[#580D1A] text-[#DFC17B] text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-[#D4AF37]/40 shadow-lg">
+              <span className="bg-brand-700 text-[#DFC17B] text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-[#D4AF37]/40 shadow-lg">
                 Signature Plate
               </span>
               {activeDish.isSpicy && (
@@ -198,7 +198,7 @@ export default function SignatureShowcase() {
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-1 text-xs text-stone-300 font-semibold bg-[#141210] px-3 py-1.5 rounded-xl border border-stone-800">
+                <div className="flex items-center space-x-1 text-xs text-stone-300 font-semibold bg-[var(--upahar-dark-stage)] px-3 py-1.5 rounded-xl border border-stone-800">
                   <Clock className="w-4 h-4 text-[#DFC17B]" />
                   <span>{activeDish.prepTime}</span>
                 </div>
@@ -210,14 +210,14 @@ export default function SignatureShowcase() {
 
               {/* Portion & Ingredients */}
               <div className="space-y-2 text-xs pt-2">
-                <div className="p-3 rounded-xl bg-[#141210] border border-stone-800">
+                <div className="p-3 rounded-xl bg-[var(--upahar-dark-stage)] border border-stone-800">
                   <span className="text-stone-400 font-medium block text-[10px] uppercase tracking-wider">
                     Portion Served
                   </span>
-                  <span className="text-[#FAF7F2] font-semibold">{activeDish.portionSize}</span>
+                  <span className="text-brand-cream font-semibold">{activeDish.portionSize}</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#141210] border border-stone-800">
+                <div className="p-3 rounded-xl bg-[var(--upahar-dark-stage)] border border-stone-800">
                   <span className="text-stone-400 font-medium block text-[10px] uppercase tracking-wider">
                     Key Ingredients
                   </span>
@@ -272,8 +272,8 @@ export default function SignatureShowcase() {
                   onClick={() => setActiveDish(dish)}
                   className={`p-3 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between ${
                     isSelected
-                      ? "bg-[#2B070E] border-[#D4AF37] shadow-lg shadow-[#4A0E17]/40 scale-102"
-                      : "bg-[#1C1917]/70 border-stone-800 hover:border-stone-700 hover:bg-[#1C1917]"
+                      ? "bg-brand-950 border-[#D4AF37] shadow-lg shadow-brand-800/40 scale-102"
+                      : "bg-[var(--upahar-dark-card)]/70 border-stone-800 hover:border-stone-700 hover:bg-[var(--upahar-dark-card)]"
                   }`}
                 >
                   <div className="flex justify-between items-start">

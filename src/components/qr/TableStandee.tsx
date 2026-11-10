@@ -87,9 +87,9 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
   return (
     <div className="space-y-8">
       {/* Action Controls Bar (Hidden during print) */}
-      <div className="print:hidden bg-white p-5 sm:p-6 rounded-3xl border border-[#EADBCE] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="print:hidden bg-white p-5 sm:p-6 rounded-3xl border border-brand-border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-black text-[#2B070E] font-display flex items-center gap-2">
+          <h2 className="text-lg font-black text-brand-950 font-display flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#D4AF37]" />
             <span>Official Website QR Code</span>
           </h2>
@@ -111,7 +111,7 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
             onClick={handleDownload}
             className="btn-gold-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 cursor-pointer"
           >
-            <Download className="w-4 h-4 text-[#580D1A]" />
+            <Download className="w-4 h-4 text-brand-700" />
             <span>Download PNG</span>
           </button>
 
@@ -139,14 +139,14 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
         <div
           ref={printCardRef}
           id="printable-standee"
-          className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl border-2 border-[#D4AF37] shadow-2xl p-4 sm:p-8 text-[#2B070E] relative overflow-hidden print:shadow-none print:border-2 print:border-black print:m-0 print:p-8 print:w-full print:max-w-none"
+          className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl border-2 border-[#D4AF37] shadow-2xl p-4 sm:p-8 text-brand-950 relative overflow-hidden print:shadow-none print:border-2 print:border-black print:m-0 print:p-8 print:w-full print:max-w-none"
         >
           {/* Subtle top gold accent line */}
-          <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#580D1A] to-[#D4AF37] -mt-4 sm:-mt-8 -mx-4 sm:-mx-8 mb-6" />
+          <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-brand-700 to-[#D4AF37] -mt-4 sm:-mt-8 -mx-4 sm:-mx-8 mb-6" />
 
           {/* Card Header with Brand Crest */}
           <div className="text-center space-y-2">
-            <div className="relative mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md bg-[#580D1A] flex items-center justify-center">
+            <div className="relative mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md bg-brand-700 flex items-center justify-center">
               <img
                 src="/images/upahar_logo.jpg"
                 alt="Upahar Logo"
@@ -155,11 +155,11 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
             </div>
 
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[#2B070E] flex items-center justify-center gap-1.5">
+              <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-brand-950 flex items-center justify-center gap-1.5">
                 UPAHAR
                 <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
               </h1>
-              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-extrabold text-[#74171E]">
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-extrabold text-brand-600">
                 Tiffins & Fast Food
               </p>
               <p className="text-[11px] text-stone-500 font-medium italic mt-0.5">
@@ -169,7 +169,7 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
 
             {/* Official Website Badge */}
             <div className="pt-2">
-              <div className="inline-flex items-center space-x-1.5 bg-[#580D1A] text-[#FAF7F2] border border-[#D4AF37]/50 px-4 py-1.5 rounded-full shadow-sm text-xs font-black uppercase tracking-wider">
+              <div className="inline-flex items-center space-x-1.5 bg-brand-700 text-brand-cream border border-[#D4AF37]/50 px-4 py-1.5 rounded-full shadow-sm text-xs font-black uppercase tracking-wider">
                 <Globe className="w-3.5 h-3.5 text-[#DFC17B]" />
                 <span>Scan To Open Website</span>
               </div>
@@ -180,14 +180,14 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
           <div className="my-6 relative flex justify-center">
             <div className="relative w-56 h-56 sm:w-64 sm:h-64 p-3.5 bg-white rounded-2xl border-2 border-[#D4AF37] shadow-inner flex items-center justify-center">
               {/* Corner Accents */}
-              <div className="absolute top-1.5 left-1.5 w-3.5 h-3.5 border-t-2 border-l-2 border-[#580D1A]" />
-              <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 border-t-2 border-r-2 border-[#580D1A]" />
-              <div className="absolute bottom-1.5 left-1.5 w-3.5 h-3.5 border-b-2 border-l-2 border-[#580D1A]" />
-              <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 border-b-2 border-r-2 border-[#580D1A]" />
+              <div className="absolute top-1.5 left-1.5 w-3.5 h-3.5 border-t-2 border-l-2 border-brand-700" />
+              <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 border-t-2 border-r-2 border-brand-700" />
+              <div className="absolute bottom-1.5 left-1.5 w-3.5 h-3.5 border-b-2 border-l-2 border-brand-700" />
+              <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 border-b-2 border-r-2 border-brand-700" />
 
               {loading ? (
                 <div className="flex flex-col items-center space-y-2">
-                  <RefreshCw className="w-8 h-8 text-[#580D1A] animate-spin" />
+                  <RefreshCw className="w-8 h-8 text-brand-700 animate-spin" />
                   <span className="text-xs text-stone-500">Preparing QR...</span>
                 </div>
               ) : qrDataUrl ? (
@@ -206,7 +206,7 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
 
           {/* Call to Action Prompt */}
           <div className="text-center space-y-2">
-            <h3 className="text-sm sm:text-base font-black text-[#580D1A] tracking-tight">
+            <h3 className="text-sm sm:text-base font-black text-brand-700 tracking-tight">
               SCAN WITH YOUR PHONE CAMERA
             </h3>
             <p className="text-xs text-stone-600 max-w-xs mx-auto leading-relaxed">
@@ -215,8 +215,8 @@ export default function TableStandee({ baseUrl }: TableStandeeProps) {
           </div>
 
           {/* Pledge & Footnote */}
-          <div className="mt-5 pt-4 border-t border-[#EADBCE] space-y-2.5 text-center">
-            <div className="inline-flex items-center space-x-1.5 text-[11px] font-bold text-[#580D1A] bg-[#F4EFE6] px-3 py-1 rounded-full">
+          <div className="mt-5 pt-4 border-t border-brand-border space-y-2.5 text-center">
+            <div className="inline-flex items-center space-x-1.5 text-[11px] font-bold text-brand-700 bg-brand-surface px-3 py-1 rounded-full">
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>100% Pure Veg • Pure Desi Ghee • Stone-Ground</span>
             </div>

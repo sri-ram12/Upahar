@@ -100,13 +100,13 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md bg-[#FAF7F2] rounded-3xl shadow-2xl border border-[#D4AF37]/40 overflow-hidden text-[#2B070E]"
+        className="relative w-full max-w-md bg-brand-cream rounded-3xl shadow-2xl border border-[#D4AF37]/40 overflow-hidden text-brand-950"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Luxury Maroon Header */}
-        <div className="bg-gradient-to-r from-[#2B070E] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] px-6 py-5 relative flex items-center justify-between border-b border-[#D4AF37]/30">
+        <div className="bg-gradient-to-r from-brand-950 via-brand-700 to-brand-950 text-brand-cream px-6 py-5 relative flex items-center justify-between border-b border-[#D4AF37]/30">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full border border-[#D4AF37] overflow-hidden bg-[#580D1A] flex-shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-full border border-[#D4AF37] overflow-hidden bg-brand-700 flex-shrink-0 shadow-md">
               <img
                 src="/images/upahar_logo.jpg"
                 alt="Upahar Logo"
@@ -129,7 +129,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
           <button
             onClick={onClose}
             aria-label="Close Modal"
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF7F2] transition border border-white/10"
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-brand-cream transition border border-white/10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -139,14 +139,14 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
           {/* Single Official QR Code Presentation Box */}
           <div className="relative mx-auto w-64 h-64 sm:w-72 sm:h-72 bg-white rounded-2xl p-4 shadow-lg border-2 border-[#D4AF37]/40 flex items-center justify-center">
             {/* Elegant Corner Brackets */}
-            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#580D1A] rounded-tl-sm pointer-events-none" />
-            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#580D1A] rounded-tr-sm pointer-events-none" />
-            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#580D1A] rounded-bl-sm pointer-events-none" />
-            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#580D1A] rounded-br-sm pointer-events-none" />
+            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-700 rounded-tl-sm pointer-events-none" />
+            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-brand-700 rounded-tr-sm pointer-events-none" />
+            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-brand-700 rounded-bl-sm pointer-events-none" />
+            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-brand-700 rounded-br-sm pointer-events-none" />
 
             {loading ? (
               <div className="flex flex-col items-center space-y-3">
-                <div className="animate-spin rounded-full h-9 w-9 border-b-2 border-[#580D1A]" />
+                <div className="animate-spin rounded-full h-9 w-9 border-b-2 border-brand-700" />
                 <span className="text-xs text-stone-500 font-medium">
                   Generating QR code...
                 </span>
@@ -165,8 +165,8 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
           </div>
 
           {/* User Guidance Banner */}
-          <div className="bg-[#F4EFE6] border border-[#D4AF37]/30 rounded-xl p-3 text-center flex items-center justify-center space-x-2 text-xs text-stone-700">
-            <Smartphone className="w-4 h-4 text-[#580D1A] flex-shrink-0 animate-bounce" />
+          <div className="bg-brand-surface border border-[#D4AF37]/30 rounded-xl p-3 text-center flex items-center justify-center space-x-2 text-xs text-stone-700">
+            <Smartphone className="w-4 h-4 text-brand-700 flex-shrink-0 animate-bounce" />
             <span>
               Aim your phone camera at this QR code to open the website instantly.
             </span>
@@ -176,7 +176,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <button
               onClick={handleCopyLink}
-              className="py-2.5 px-3 rounded-xl border border-[#D4AF37]/50 text-xs font-bold bg-white hover:bg-stone-50 text-[#2B070E] transition flex items-center justify-center space-x-1.5 shadow-sm"
+              className="py-2.5 px-3 rounded-xl border border-[#D4AF37]/50 text-xs font-bold bg-white hover:bg-stone-50 text-brand-950 transition flex items-center justify-center space-x-1.5 shadow-sm"
             >
               {copied ? (
                 <>
@@ -185,7 +185,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5 text-[#580D1A]" />
+                  <Copy className="w-3.5 h-3.5 text-brand-700" />
                   <span>Copy Website Link</span>
                 </>
               )}
@@ -193,19 +193,19 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
 
             <button
               onClick={handleDownload}
-              className="py-2.5 px-3 rounded-xl border border-[#D4AF37]/50 text-xs font-bold bg-white hover:bg-stone-50 text-[#2B070E] transition flex items-center justify-center space-x-1.5 shadow-sm"
+              className="py-2.5 px-3 rounded-xl border border-[#D4AF37]/50 text-xs font-bold bg-white hover:bg-stone-50 text-brand-950 transition flex items-center justify-center space-x-1.5 shadow-sm"
             >
-              <Download className="w-3.5 h-3.5 text-[#580D1A]" />
+              <Download className="w-3.5 h-3.5 text-brand-700" />
               <span>Download QR</span>
             </button>
           </div>
 
           {/* Bottom Standee Link */}
-          <div className="pt-2 border-t border-[#EADBCE] text-center">
+          <div className="pt-2 border-t border-brand-border text-center">
             <Link
               href="/qr"
               onClick={onClose}
-              className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#580D1A] hover:text-[#2B070E] hover:underline"
+              className="inline-flex items-center space-x-1.5 text-xs font-bold text-brand-700 hover:text-brand-950 hover:underline"
             >
               <Printer className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Print Official Table Standee</span>

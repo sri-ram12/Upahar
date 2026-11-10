@@ -49,7 +49,7 @@ export default function HeroCinematic({ storeStatus }: HeroCinematicProps) {
             <span>
               {storeStatus?.isOpen
                 ? `${storeStatus.statusText} • ${storeStatus.currentSession || "Breakfast Session"}`
-                : "Open Daily: 6am - 10am | 6pm - 10:30pm"}
+                : "Open Daily: 6:00 AM – 10:30 AM | 12:00 PM – 10:30 PM"}
             </span>
           </div>
 

@@ -28,18 +28,18 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-[#FAF7F2] text-[#141210] relative">
+    <section className="py-16 sm:py-24 bg-brand-cream text-[#141210] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#580D1A]/10 text-[#580D1A] text-xs font-bold uppercase tracking-widest mb-3">
+          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-brand-700/10 text-brand-700 text-xs font-bold uppercase tracking-widest mb-3">
             <HeartHandshake className="w-3.5 h-3.5" />
             <span>Our Heritage Commitment</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black font-display text-[#2B070E]">
+          <h2 className="text-3xl sm:text-4xl font-black font-display text-brand-950">
             Four Pillars of Upahar Freshness
           </h2>
           <p className="text-stone-600 text-sm mt-2">
-            Why families and food enthusiasts across Secunderabad have trusted us since 1994.
+            Why ANITS students, Sangivalasa families, and morning tiffin lovers visit us daily.
           </p>
         </div>
 
@@ -47,13 +47,13 @@ export default function WhyChooseUs() {
           {pillars.map((p) => (
             <div
               key={p.title}
-              className="p-6 rounded-3xl bg-white border border-[#EADBCE] hover:border-[#D4AF37] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+              className="p-6 rounded-3xl bg-white border border-brand-border hover:border-[#D4AF37] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#580D1A] to-[#2B070E] border border-[#D4AF37]/50 flex items-center justify-center mb-5 shadow-md group-hover:scale-105 transition">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-950 border border-[#D4AF37]/50 flex items-center justify-center mb-5 shadow-md group-hover:scale-105 transition">
                   {p.icon}
                 </div>
-                <h3 className="font-bold font-display text-lg text-[#2B070E] group-hover:text-[#580D1A] transition">
+                <h3 className="font-bold font-display text-lg text-brand-950 group-hover:text-brand-700 transition">
                   {p.title}
                 </h3>
                 <p className="text-xs text-stone-600 mt-2.5 leading-relaxed">
@@ -61,7 +61,7 @@ export default function WhyChooseUs() {
                 </p>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-[#F4EFE6] flex items-center space-x-1.5 text-[11px] font-bold text-[#2D5A27]">
+              <div className="mt-5 pt-3 border-t border-brand-surface flex items-center space-x-1.5 text-[11px] font-bold text-[#2D5A27]">
                 <CheckCircle className="w-3.5 h-3.5" />
                 <span>Verified Kitchen Standard</span>
               </div>

@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
+import {
+  calculateStoreStatus,
+  getCategorySessionPriority,
+  getEffectiveSessionType,
+  getItemSessionAvailability,
+} from "@/lib/store-hours";
 
 function filterFallbackItems(searchParams: URLSearchParams) {
   const category = searchParams.get("category");
@@ -61,6 +67,9 @@ export async function GET(req: NextRequest) {
     const bestsellerOnly = searchParams.get("bestsellerOnly") === "true";
     const signatureOnly = searchParams.get("signatureOnly") === "true";
     const includeInactive = searchParams.get("includeInactive") === "true";
+    const respectSession = searchParams.get("respectSession") === "true";
+    const includeLocked = searchParams.get("includeLocked") !== "false";
+    const previewSession = searchParams.get("previewSession");
     const sort = searchParams.get("sort"); // "price-asc", "price-desc", "popular"
 
     const whereClause: any = {};
@@ -117,6 +126,48 @@ export async function GET(req: NextRequest) {
     if (!items || items.length === 0) {
       const fallbackFiltered = filterFallbackItems(searchParams);
       return NextResponse.json({ items: fallbackFiltered });
+    }
+
+    if (respectSession && !includeInactive) {
+      const settings = await prisma.restaurantSetting.findUnique({ where: { id: "default" } });
+      const enforceHours = settings?.enforceStoreHours !== false;
+      const status = calculateStoreStatus(
+        settings?.openingTime,
+        settings?.closingTime,
+        settings?.isEmergencyClosed
+      );
+      const effectiveSession = getEffectiveSessionType(status.sessionType, previewSession);
+
+      const enriched = items.map((it) => {
+        const availability = getItemSessionAvailability(
+          it.category?.slug,
+          effectiveSession,
+          enforceHours
+        );
+        return {
+          ...it,
+          isSessionLocked: availability.isLocked,
+          lockReason: availability.lockMessage,
+          availableAtText: availability.availableAtText,
+        };
+      });
+
+      const visible = includeLocked ? enriched : enriched.filter((it) => !it.isSessionLocked);
+
+      // Sort by session relevance cleanly unless user chose explicit price/name sort
+      if (!sort || sort === "popular") {
+        visible.sort((a, b) => {
+          if (Boolean(a.isSessionLocked) !== Boolean(b.isSessionLocked)) {
+            return a.isSessionLocked ? 1 : -1;
+          }
+          const pa = getCategorySessionPriority(a.category?.slug, effectiveSession);
+          const pb = getCategorySessionPriority(b.category?.slug, effectiveSession);
+          if (pa !== pb) return pa - pb;
+          return (a.displayOrder || 0) - (b.displayOrder || 0);
+        });
+      }
+
+      return NextResponse.json({ items: visible });
     }
 
     return NextResponse.json({ items });

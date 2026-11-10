@@ -1,18 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+@theme inline {
+  --color-brand-950: var(--upahar-950);
+  --color-brand-900: var(--upahar-900);
+  --color-brand-800: var(--upahar-800);
+  --color-brand-700: var(--upahar-700);
+  --color-brand-600: var(--upahar-600);
+  --color-brand-cream: var(--upahar-cream);
+  --color-brand-surface: var(--upahar-surface);
+  --color-brand-border: var(--upahar-border);
+}
 
 @layer base {
   :root {
     --font-display: 'Playfair Display', 'Cinzel', Georgia, serif;
     --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-script: 'Dancing Script', 'Playfair Display', Georgia, cursive;
 
-    /* Primary: Deep Maroon & Warm Crimson */
-    --color-maroon-950: #2B070E;
-    --color-maroon-900: #380A11;
-    --color-maroon-800: #4A0E17;
-    --color-maroon-700: #580D1A;
-    --color-maroon-600: #74171E;
+    /* Session-responsive semantic palette (Defaults to Original Maroon: 12:00 PM – 10:30 PM) */
+    --upahar-950: #2B070E;
+    --upahar-900: #380A11;
+    --upahar-800: #4A0E17;
+    --upahar-700: #580D1A;
+    --upahar-600: #74171E;
+    --upahar-cream: #FAF7F2;
+    --upahar-surface: #F4EFE6;
+    --upahar-border: #EADBCE;
+    --upahar-footer: #141210;
+    --upahar-dark-stage: #141210;
+    --upahar-dark-card: #1C1917;
+    --upahar-dark-mid: #3D0A13;
+    --upahar-dark-deep: #1A0307;
+    --upahar-glow-rgb: 88, 13, 26;
+
+    /* Primary tokens mapped dynamically */
+    --color-maroon-950: var(--upahar-950);
+    --color-maroon-900: var(--upahar-900);
+    --color-maroon-800: var(--upahar-800);
+    --color-maroon-700: var(--upahar-700);
+    --color-maroon-600: var(--upahar-600);
     --color-crimson-600: #8B1E26;
     --color-crimson-500: #A31D24;
 
@@ -24,10 +52,10 @@
     --color-gold-700: #A37F38;
 
     /* Base: Warm Heritage Cream & Ivory */
-    --color-cream-base: #FAF7F2;
-    --color-cream-surface: #F4EFE6;
+    --color-cream-base: var(--upahar-cream);
+    --color-cream-surface: var(--upahar-surface);
     --color-cream-card: #FFFFFF;
-    --color-cream-border: #EADBCE;
+    --color-cream-border: var(--upahar-border);
 
     /* Dark: Cast Iron & Charcoal */
     --color-charcoal-950: #0C0A09;
@@ -44,6 +72,24 @@
     --foreground: var(--color-charcoal-900);
   }
 
+  /* Morning Tiffins Session Theme (6:00 AM – 10:30 AM IST): Authentic Banana-Leaf & Ribbon Green from Upahar Logo */
+  html[data-upahar-theme="morning-green"] {
+    --upahar-950: #071D06;
+    --upahar-900: #092607;
+    --upahar-800: #0E2F0A;
+    --upahar-700: #153B10;
+    --upahar-600: #32491B;
+    --upahar-cream: #FAF6EC;
+    --upahar-surface: #F2ECE0;
+    --upahar-border: #DFD7C2;
+    --upahar-footer: #071D06;
+    --upahar-dark-stage: #071D06;
+    --upahar-dark-card: #0C290A;
+    --upahar-dark-mid: #153B10;
+    --upahar-dark-deep: #051404;
+    --upahar-glow-rgb: 21, 59, 16;
+  }
+
   html {
     scroll-behavior: smooth;
     font-family: var(--font-body);
@@ -51,7 +97,7 @@
     color: var(--foreground);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
 
@@ -59,10 +105,14 @@
     background-color: var(--color-cream-base);
     color: var(--foreground);
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
     width: 100%;
     position: relative;
+  }
+
+  .font-script {
+    font-family: var(--font-script);
   }
 
   h1, h2, .font-display {
@@ -78,11 +128,11 @@
 
 /* Luxury Glass & Surface Styling */
 .luxury-glass-nav {
-  background: rgba(250, 247, 242, 0.92);
+  background: color-mix(in srgb, var(--upahar-cream) 92%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(197, 160, 89, 0.25);
-  box-shadow: 0 4px 20px -2px rgba(74, 14, 23, 0.06);
+  box-shadow: 0 4px 20px -2px rgba(var(--upahar-glow-rgb), 0.08);
 }
 
 .luxury-glass-dark {
@@ -92,37 +142,56 @@
   border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-/* Tactile Brand Buttons */
+/* Tactile Brand Buttons (Session Theme-Aware) */
 .btn-maroon-gold {
-  background: linear-gradient(135deg, #580D1A 0%, #380A11 100%);
+  background: linear-gradient(135deg, var(--upahar-700) 0%, var(--upahar-900) 100%);
   color: #FDFBF7;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 8px 24px -4px rgba(74, 14, 23, 0.35), 0 2px 6px 0 rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 8px 24px -4px rgba(var(--upahar-glow-rgb), 0.35), 0 2px 6px 0 rgba(197, 160, 89, 0.15);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-maroon-gold:hover {
-  background: linear-gradient(135deg, #74171E 0%, #4A0E17 100%);
+  background: linear-gradient(135deg, var(--upahar-600) 0%, var(--upahar-800) 100%);
   border-color: rgba(212, 175, 55, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px -4px rgba(74, 14, 23, 0.45), 0 4px 12px 0 rgba(197, 160, 89, 0.3);
+  box-shadow: 0 14px 28px -4px rgba(var(--upahar-glow-rgb), 0.45), 0 4px 12px 0 rgba(197, 160, 89, 0.3);
 }
 
 .btn-maroon-gold:active {
   transform: translateY(1px) scale(0.98);
 }
 
+.btn-emerald-gold {
+  background: linear-gradient(135deg, #153B10 0%, #092607 100%);
+  color: #FAF6EC;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  box-shadow: 0 8px 24px -4px rgba(9, 38, 7, 0.35), 0 2px 6px 0 rgba(197, 160, 89, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-emerald-gold:hover {
+  background: linear-gradient(135deg, #32491B 0%, #153B10 100%);
+  border-color: rgba(212, 175, 55, 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -4px rgba(9, 38, 7, 0.45), 0 4px 12px 0 rgba(197, 160, 89, 0.3);
+}
+
+.btn-emerald-gold:active {
+  transform: translateY(1px) scale(0.98);
+}
+
 .btn-gold-outline {
   background: transparent;
-  color: #380A11;
+  color: var(--upahar-900);
   border: 1.5px solid #C5A059;
   transition: all 0.25s ease;
 }
 
 .btn-gold-outline:hover {
-  background: #F4EFE6;
-  border-color: #580D1A;
-  color: #580D1A;
+  background: var(--upahar-surface);
+  border-color: var(--upahar-700);
+  color: var(--upahar-700);
   transform: translateY(-1px);
 }
 
@@ -134,7 +203,7 @@
 }
 
 .text-gradient-maroon {
-  background: linear-gradient(135deg, #74171E 0%, #4A0E17 60%, #2B070E 100%);
+  background: linear-gradient(135deg, var(--upahar-600) 0%, var(--upahar-800) 60%, var(--upahar-950) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -428,7 +497,30 @@
 }
 
 .ring-glow-gold   { box-shadow: 0 0 25px 2px rgba(212,175,55,0.45), inset 0 0 15px rgba(212,175,55,0.2); }
-.ring-glow-maroon { box-shadow: 0 0 30px 4px rgba(88,13,26,0.5),    inset 0 0 20px rgba(88,13,26,0.25); }
+.ring-glow-maroon { box-shadow: 0 0 30px 4px rgba(var(--upahar-glow-rgb),0.5), inset 0 0 20px rgba(var(--upahar-glow-rgb),0.25); }
+
+/* Realistic Hero Dish Rising Fog & Steam Plumes */
+.hero-steam-plume {
+  background: radial-gradient(
+    ellipse 55% 85% at 50% 65%,
+    rgba(255, 252, 245, 0.85) 0%,
+    rgba(255, 246, 228, 0.45) 45%,
+    transparent 76%
+  );
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.hero-fog-veil {
+  background: radial-gradient(
+    ellipse 80% 55% at 50% 50%,
+    rgba(255, 250, 240, 0.65) 0%,
+    rgba(255, 244, 220, 0.25) 45%,
+    transparent 78%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+}
 
 /* Accessibility: Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {

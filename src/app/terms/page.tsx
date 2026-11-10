@@ -32,28 +32,28 @@ export default function TermsPage() {
             1. Ordering & Availability
           </h3>
           <p>
-            All food items are subject to daily kitchen availability. Orders can only be fulfilled during our operational business hours (6:30 AM – 11:00 PM IST). We reserve the right to decline or cancel an order if items become unavailable.
+            All food items are subject to daily kitchen availability. Orders are fulfilled during our active dining &amp; delivery sessions: Morning Tiffins (6:00 AM – 10:30 AM IST) and Afternoon &amp; Evening Fast Food &amp; Tiffins (12:00 PM – 10:30 PM IST). Fast food specials (Noodles, Fried Rice &amp; Starters) open exclusively from 12:00 PM onwards.
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">
             2. Pricing & Payments
           </h3>
           <p>
-            All prices are in Indian Rupees (₹) and include applicable taxes (GST) unless specified. Payment can be made via Cash on Delivery, UPI, or online card payments.
+            All prices are in Indian Rupees (₹). A small parcel packaging charge and distance-based delivery fee (free above qualifying subtotals within 5km of Sangivalasa / Tagarapuvalasa) apply cleanly before confirmation. Payment can be made via Cash on Delivery or scanning our official Paytm / UPI Business QR.
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">
             3. Delivery & Pickup Policy
           </h3>
           <p>
-            Delivery times are estimates and may vary based on weather, kitchen rush, and distance. For counter pickups, please present your order reference number at our takeaway counter.
+            Doorstep delivery operates within a 5.0 km radius around Sangivalasa &amp; Tagarapuvalasa (minimum delivery subtotal ₹60). Customers receive a 4-digit secret Delivery OTP on their live order screen to confirm handover upon delivery.
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">
             4. Cancellation & Refund Policy
           </h3>
           <p>
-            Because food items are freshly prepared to order, cancellations cannot be accepted once the kitchen has begun preparation. In the rare event of quality issues or missing items, please contact our restaurant immediately at +91 98765 43210 for prompt resolution.
+            Customers can self-cancel an order directly from the tracking page while it is in PENDING status before the kitchen starts preparation. Once preparation begins, please contact +91 98854 55342 immediately for assistance.
           </p>
         </div>
       </div>

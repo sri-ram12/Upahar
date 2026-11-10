@@ -38,6 +38,40 @@ interface DishFlyer {
 
 const MOTION_DISHES: DishFlyer[] = [
   {
+    id: "chicken-dum-biryani",
+    name: "Chicken Dum Biryani",
+    subtitle: "Slow-Cooked Saffron Copper Handi",
+    tagline: "AROMATIC • SPICY • HANDI DUM",
+    badge: "👑 AFTERNOON & EVENING FAVORITE",
+    price: 150,
+    originalPrice: 170,
+    image: "/images/dishes/chicken-dum-biryani.jpg",
+    category: "Fast Food",
+    isVeg: false,
+    spicyLevel: 2,
+    ingredients: ["Aged Basmati Rice", "Marinated Chicken", "Saffron & Mint", "Desi Ghee & Fried Onions"],
+    accentColor: "#D4AF37",
+    bgWord: "DUM BIRYANI",
+    highlights: "Served piping hot from 12:00 PM – 10:30 PM with cool onion raita & rich salan.",
+  },
+  {
+    id: "chicken-fry-piece-biryani",
+    name: "Chicken Fry Piece Biryani",
+    subtitle: "Spicy Andhra Roasted Fry Pieces",
+    tagline: "ANDHRA STYLE • CRISP FRY • BASMATI",
+    badge: "🔥 CHEF'S BIRYANI SPECIAL",
+    price: 170,
+    originalPrice: 195,
+    image: "/images/dishes/chicken-fry-piece-biryani.jpg",
+    category: "Fast Food",
+    isVeg: false,
+    spicyLevel: 3,
+    ingredients: ["Roasted Fry Chicken", "Fragrant Basmati", "Curry Leaves", "Roasted Cashews"],
+    accentColor: "#EF4444",
+    bgWord: "FRY BIRYANI",
+    highlights: "Golden spicy fry chicken tossed in curry leaves atop spiced dum rice.",
+  },
+  {
     id: "ghee-karam-dosa",
     name: "Ghee Karam Dosa",
     subtitle: "Tava-Roasted with Pure Desi Ghee",
@@ -145,9 +179,16 @@ const GARNISHES = [
   { id: 4, emoji: "✨", initialX: 320, yOffset: 90, duration: 4.8, delay: 0.2 },
 ];
 
-export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
+export default function MotionFlyerShowcase({
+  isMorningSession = false,
+}: {
+  items?: any[];
+  isMorningSession?: boolean;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedFilter, setSelectedFilter] = useState<"All" | "Tiffins" | "Fast Food">("All");
+  const [selectedFilter, setSelectedFilter] = useState<"All" | "Tiffins" | "Fast Food">(
+    isMorningSession ? "Tiffins" : "All"
+  );
   const [highlightProgress, setHighlightProgress] = useState(0);
 
   const filteredDishes =
@@ -196,7 +237,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
 
   return (
     <section
-      className="relative w-full min-h-[90vh] bg-gradient-to-b from-[#120B0B] via-[#1A0E10] to-[#0E0909] text-[#FAF7F2] overflow-hidden py-14 sm:py-20 select-none flex flex-col justify-between"
+      className="relative w-full min-h-[85vh] bg-gradient-to-b from-[var(--upahar-dark-stage)] via-[var(--upahar-dark-card)] to-[var(--upahar-dark-deep)] text-brand-cream overflow-hidden py-14 sm:py-20 select-none flex flex-col justify-between transition-colors duration-300"
       aria-label="What's on our Plate Horizontal Motion Showcase"
     >
       {/* Background Kinetic Watermark Typography */}
@@ -279,7 +320,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
           {/* Navigation Glide Buttons */}
           <button
             onClick={handlePrev}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-brand-700 text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
             aria-label="Previous Dish"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -287,7 +328,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
 
           <button
             onClick={handleNext}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 p-3 sm:p-4 rounded-full bg-[#1C1213]/90 hover:bg-brand-700 text-[#DFC17B] border border-[#D4AF37]/50 shadow-2xl transition hover:scale-110 active:scale-95 backdrop-blur-md"
             aria-label="Next Dish"
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -327,7 +368,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
                 >
                   {/* Plate Container with soft realistic drop shadow (NO 360 rotation!) */}
                   <div
-                    className={`relative rounded-full overflow-hidden transition-all duration-500 bg-[#141210] ${
+                    className={`relative rounded-full overflow-hidden transition-all duration-500 bg-[var(--upahar-dark-stage)] ${
                       isCenter
                         ? "w-52 h-52 sm:w-72 sm:h-72 md:w-80 md:h-80 border-4 sm:border-6 border-[#D4AF37] shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
                         : "w-36 h-36 sm:w-48 sm:h-48 border-2 border-white/20 shadow-xl"
@@ -388,7 +429,7 @@ export default function MotionFlyerShowcase({ items }: { items?: any[] }) {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             
             <div className="text-center sm:text-left space-y-1.5">
-              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-brand-700 border border-[#D4AF37]/40 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider">
                 <Flame className="w-3 h-3 text-[#DFC17B]" />
                 <span>{activeDish.badge}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping ml-1" />

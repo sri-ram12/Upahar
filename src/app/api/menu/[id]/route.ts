@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
+import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 export async function GET(
   req: NextRequest,
@@ -46,14 +47,17 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     const { id } = await params;
     const body = await req.json();
+    const session = await getAdminSession();
+    const isOnlyAvailabilityToggle = Object.keys(body).every(
+      (k) => k === "isAvailable" || k === "source"
+    );
+
+    if (!session && !isOnlyAvailabilityToggle) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const item = await prisma.foodItem.update({
       where: { id },
@@ -73,6 +77,13 @@ export async function PUT(
         ...(body.ingredients !== undefined && { ingredients: body.ingredients }),
         ...(body.displayOrder !== undefined && { displayOrder: parseInt(body.displayOrder, 10) }),
       },
+    });
+
+    broadcastRealtimeEvent("MENU_ITEM_UPDATED", {
+      itemId: item.id,
+      name: item.name,
+      isAvailable: item.isAvailable,
+      price: item.price,
     });
 
     return NextResponse.json({ item });

@@ -1,8 +1,10 @@
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/effects/CustomCursor";
+import ThemeSync from "@/components/layout/ThemeSync";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://upahar.onrender.com"),
@@ -48,6 +50,11 @@ export const metadata: Metadata = {
 };
 
 import FloatingWhatsAppButton from "@/components/layout/FloatingWhatsAppButton";
+import { CartProvider } from "@/context/CartContext";
+import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
+import CartDrawer from "@/components/cart/CartDrawer";
+import FloatingCartBar from "@/components/cart/FloatingCartBar";
+import CustomerAuthModal from "@/components/auth/CustomerAuthModal";
 
 export default function RootLayout({
   children,
@@ -85,7 +92,7 @@ export default function RootLayout({
           "Sunday",
         ],
         opens: "06:00",
-        closes: "10:00",
+        closes: "10:30",
       },
       {
         "@type": "OpeningHoursSpecification",
@@ -98,27 +105,65 @@ export default function RootLayout({
           "Saturday",
           "Sunday",
         ],
-        opens: "18:00",
+        opens: "12:00",
         closes: "22:30",
       },
     ],
     hasMenu: "/menu",
   };
 
+  const themeBootScript = `
+    (function() {
+      try {
+        var path = window.location.pathname || "";
+        if (/^\\/(admin|kitchen|delivery|portal|dev)(\\/|$)/.test(path)) {
+          document.documentElement.setAttribute("data-upahar-theme", "original-maroon");
+          return;
+        }
+        var params = new URLSearchParams(window.location.search);
+        var q = (params.get("theme") || "").toLowerCase().trim();
+        if (q === "morning" || q === "green") {
+          document.documentElement.setAttribute("data-upahar-theme", "morning-green");
+          return;
+        }
+        if (q === "maroon" || q === "evening" || q === "original") {
+          document.documentElement.setAttribute("data-upahar-theme", "original-maroon");
+          return;
+        }
+        var now = new Date();
+        var ist = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + 5.5 * 3600000);
+        var mins = ist.getHours() * 60 + ist.getMinutes();
+        var theme = (mins >= 360 && mins < 630) ? "morning-green" : "original-maroon";
+        document.documentElement.setAttribute("data-upahar-theme", theme);
+      } catch (e) {}
+    })();
+  `;
+
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-[#FAF7F2] text-[#141210] flex flex-col min-h-screen selection:bg-[#4A0E17] selection:text-[#DFC17B]">
-        <Navbar />
-        <div className="flex-1">{children}</div>
-        <Footer />
-        <CustomCursor />
-        <FloatingWhatsAppButton />
+      <body className="antialiased bg-brand-cream text-[#141210] flex flex-col min-h-screen selection:bg-brand-800 selection:text-[#DFC17B]">
+        <Suspense fallback={null}>
+          <ThemeSync />
+        </Suspense>
+        <CustomerAuthProvider>
+          <CartProvider>
+            <Navbar />
+            <div className="flex-1">{children}</div>
+            <Footer />
+            <CustomCursor />
+            <FloatingCartBar />
+            <CartDrawer />
+            <CustomerAuthModal />
+            <FloatingWhatsAppButton />
+          </CartProvider>
+        </CustomerAuthProvider>
       </body>
     </html>
   );

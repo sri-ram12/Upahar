@@ -41,9 +41,9 @@ export default function OwnerHotelShowcase() {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-[#141210] text-[#FAF7F2] relative overflow-hidden">
+    <section className="py-20 sm:py-28 bg-[var(--upahar-dark-stage)] text-brand-cream relative overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#580D1A]/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-700/30 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-20">
@@ -53,7 +53,7 @@ export default function OwnerHotelShowcase() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Owner Portrait Card */}
           <div className="lg:col-span-5">
-            <div className="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-2xl bg-[#1C1917] p-2">
+            <div className="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-2xl bg-[var(--upahar-dark-card)] p-2">
               <div className="relative h-96 sm:h-[450px] w-full rounded-2xl overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=85"
@@ -62,16 +62,16 @@ export default function OwnerHotelShowcase() {
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-top filter contrast-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--upahar-dark-stage)] via-transparent to-transparent" />
 
                 {/* Floating Experience Badge */}
-                <div className="absolute top-4 left-4 bg-[#580D1A]/90 backdrop-blur-md text-[#DFC17B] border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-lg">
+                <div className="absolute top-4 left-4 bg-brand-700/90 backdrop-blur-md text-[#DFC17B] border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-lg">
                   <Award className="w-4 h-4 text-[#DFC17B]" />
                   <span>Sunrise To Sunset Taste</span>
                 </div>
 
                 {/* Owner Name Tag */}
-                <div className="absolute bottom-4 left-4 right-4 bg-[#141210]/95 backdrop-blur-md p-4 rounded-2xl border border-stone-800">
+                <div className="absolute bottom-4 left-4 right-4 bg-[var(--upahar-dark-stage)]/95 backdrop-blur-md p-4 rounded-2xl border border-stone-800">
                   <span className="text-[10px] uppercase font-bold text-[#DFC17B] tracking-widest block">
                     Proprietor & Master Host
                   </span>
@@ -92,7 +92,7 @@ export default function OwnerHotelShowcase() {
 
           {/* Owner Story & Direct WhatsApp Line */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#580D1A] border border-[#D4AF37]/30 text-[#DFC17B] text-xs font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-700 border border-[#D4AF37]/30 text-[#DFC17B] text-xs font-bold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Meet The Owner & Management</span>
             </div>
@@ -103,7 +103,7 @@ export default function OwnerHotelShowcase() {
 
             <div className="space-y-4 text-stone-300 text-sm sm:text-base leading-relaxed">
               <p>
-                Welcome to <strong>UPAHAR TIFFINS AND FAST FOOD</strong>, conveniently located at <strong>1-1, Sangivalasa, ANITS College Road, beside SBI</strong>. Our kitchen operates on two dedicated daily sessions designed for your routine: hearty, steaming tiffins from <strong>6:00 AM to 10:00 AM</strong>, and sizzling fast food & Chinese delicacies from <strong>6:00 PM to 10:30 PM</strong>.
+                Welcome to <strong>UPAHAR TIFFINS AND FAST FOOD</strong>, conveniently located at <strong>1-1, Sangivalasa, ANITS College Road, beside SBI</strong>. Our kitchen operates on two dedicated daily sessions designed for your routine: hearty, steaming tiffins from <strong>6:00 AM to 10:30 AM</strong>, and sizzling fast food &amp; Chinese delicacies from <strong>12:00 PM to 10:30 PM</strong>.
               </p>
               <p>
                 Under the personal direction of Sri Vamsi, every tawa dosa is roasted with pure desi ghee, every idli is steamed from freshly ground batter, and every wok of noodles is tossed hot with vibrant fresh vegetables and tender chicken.
@@ -112,13 +112,13 @@ export default function OwnerHotelShowcase() {
 
             {/* Direct Owner Guarantees */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-              <div className="p-3.5 rounded-2xl bg-[#1C1917] border border-stone-800 flex items-start space-x-3">
+              <div className="p-3.5 rounded-2xl bg-[var(--upahar-dark-card)] border border-stone-800 flex items-start space-x-3">
                 <CheckCircle2 className="w-4 h-4 text-[#2D5A27] mt-0.5 flex-shrink-0" />
                 <span className="text-xs text-stone-200">
                   <strong>Daily Fresh Batter:</strong> Stone-ground fresh every dawn without preservatives.
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-[#1C1917] border border-stone-800 flex items-start space-x-3">
+              <div className="p-3.5 rounded-2xl bg-[var(--upahar-dark-card)] border border-stone-800 flex items-start space-x-3">
                 <CheckCircle2 className="w-4 h-4 text-[#2D5A27] mt-0.5 flex-shrink-0" />
                 <span className="text-xs text-stone-200">
                   <strong>Pure Desi Ghee & Fresh Oil:</strong> Authentic roasting on traditional cast-iron tavas.
@@ -140,7 +140,7 @@ export default function OwnerHotelShowcase() {
 
               <a
                 href="tel:+919885455342"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-xs sm:text-sm tracking-wide text-[#FAF7F2] bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 transition flex items-center justify-center space-x-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-xs sm:text-sm tracking-wide text-brand-cream bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 transition flex items-center justify-center space-x-2"
               >
                 <Phone className="w-4 h-4 text-[#DFC17B]" />
                 <span>Call Sri Vamsi (9885455342)</span>
@@ -171,7 +171,7 @@ export default function OwnerHotelShowcase() {
             {hotelPhotos.map((photo) => (
               <div
                 key={photo.title}
-                className="group rounded-2xl overflow-hidden border border-stone-800 bg-[#1C1917] hover:border-[#D4AF37]/60 transition-all duration-300 flex flex-col justify-between"
+                className="group rounded-2xl overflow-hidden border border-stone-800 bg-[var(--upahar-dark-card)] hover:border-[#D4AF37]/60 transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="relative h-60 w-full overflow-hidden">
                   <Image
@@ -181,14 +181,14 @@ export default function OwnerHotelShowcase() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-106 transition duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#141210]/80 via-transparent to-transparent" />
-                  <span className="absolute top-3 left-3 bg-[#580D1A]/90 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-[#D4AF37]/30 shadow-md">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--upahar-dark-stage)]/80 via-transparent to-transparent" />
+                  <span className="absolute top-3 left-3 bg-brand-700/90 text-[#DFC17B] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-[#D4AF37]/30 shadow-md">
                     {photo.tag}
                   </span>
                 </div>
 
                 <div className="p-4">
-                  <h4 className="font-bold text-base text-[#FAF7F2] font-display">
+                  <h4 className="font-bold text-base text-brand-cream font-display">
                     {photo.title}
                   </h4>
                   <p className="text-xs text-stone-400 mt-1">
@@ -223,11 +223,11 @@ export default function OwnerHotelShowcase() {
                 setSelectedMenuCard("tiffins");
                 setActiveMenuModal(true);
               }}
-              className="bg-gradient-to-br from-[#2B070E] to-[#1C1917] rounded-3xl p-6 border border-[#D4AF37]/40 shadow-xl cursor-pointer group hover:border-[#D4AF37] transition flex flex-col justify-between"
+              className="bg-gradient-to-br from-brand-950 to-[var(--upahar-dark-card)] rounded-3xl p-6 border border-[#D4AF37]/40 shadow-xl cursor-pointer group hover:border-[#D4AF37] transition flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/50 text-[10px] font-black uppercase px-2.5 py-1 rounded-lg">
+                  <span className="bg-brand-700 text-[#DFC17B] border border-[#D4AF37]/50 text-[10px] font-black uppercase px-2.5 py-1 rounded-lg">
                     Tiffins Tariff Board
                   </span>
                   <span className="text-xs text-stone-400">Door Delivery Available</span>
@@ -249,7 +249,7 @@ export default function OwnerHotelShowcase() {
                   className="object-cover group-hover:scale-105 transition duration-500"
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition flex items-center justify-center">
-                  <div className="bg-[#141210]/95 border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold text-[#DFC17B] flex items-center space-x-2 shadow-xl group-hover:scale-105 transition">
+                  <div className="bg-[var(--upahar-dark-stage)]/95 border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold text-[#DFC17B] flex items-center space-x-2 shadow-xl group-hover:scale-105 transition">
                     <ZoomIn className="w-4 h-4" />
                     <span>Click to Zoom Tiffins Menu</span>
                   </div>
@@ -289,7 +289,7 @@ export default function OwnerHotelShowcase() {
                   className="object-cover group-hover:scale-105 transition duration-500"
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition flex items-center justify-center">
-                  <div className="bg-[#141210]/95 border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold text-[#DFC17B] flex items-center space-x-2 shadow-xl group-hover:scale-105 transition">
+                  <div className="bg-[var(--upahar-dark-stage)]/95 border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold text-[#DFC17B] flex items-center space-x-2 shadow-xl group-hover:scale-105 transition">
                     <ZoomIn className="w-4 h-4" />
                     <span>Click to Zoom Fast Food Menu</span>
                   </div>
@@ -308,7 +308,7 @@ export default function OwnerHotelShowcase() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-5xl w-full bg-[#1C1917] rounded-3xl overflow-hidden border border-[#D4AF37]/50 shadow-2xl p-4 sm:p-6 space-y-4 max-h-[92vh] flex flex-col"
+            className="relative max-w-5xl w-full bg-[var(--upahar-dark-card)] rounded-3xl overflow-hidden border border-[#D4AF37]/50 shadow-2xl p-4 sm:p-6 space-y-4 max-h-[92vh] flex flex-col"
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center pb-3 border-b border-stone-800">
@@ -317,7 +317,7 @@ export default function OwnerHotelShowcase() {
                   onClick={() => setSelectedMenuCard("tiffins")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
                     selectedMenuCard === "tiffins"
-                      ? "bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]"
+                      ? "bg-brand-700 text-[#DFC17B] border border-[#D4AF37]"
                       : "bg-white/10 text-stone-300 hover:bg-white/15"
                   }`}
                 >

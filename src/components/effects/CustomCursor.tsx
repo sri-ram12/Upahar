@@ -79,7 +79,7 @@ export default function CustomCursor() {
           top: `${position.y}px`,
           width: isHoveringInteractive ? "6px" : "4px",
           height: isHoveringInteractive ? "6px" : "4px",
-          backgroundColor: isHoveringInteractive ? "#D4AF37" : "#580D1A",
+          backgroundColor: isHoveringInteractive ? "#D4AF37" : "var(--upahar-700)",
           boxShadow: isHoveringInteractive
             ? "0 0 8px rgba(212, 175, 55, 0.7)"
             : "0 0 4px rgba(88, 13, 26, 0.4)",

@@ -1,11 +1,17 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
-import { calculateStoreStatus } from "@/lib/store-hours";
+import {
+  calculateStoreStatus,
+  getCategorySessionPriority,
+  getEffectiveSessionType,
+  getItemSessionAvailability,
+  getWebsiteTheme,
+} from "@/lib/store-hours";
 import { FALLBACK_CATEGORIES, FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
-import HeroSection from "@/components/home/HeroSection";
+import HomeLandingClient from "@/components/home/HomeLandingClient";
 import CategoryChips from "@/components/home/CategoryChips";
-import FeaturedSection from "@/components/home/FeaturedSection";
 import MotionFlyerShowcase from "@/components/home/MotionFlyerShowcase";
+import FeaturedSection from "@/components/home/FeaturedSection";
 import SignatureShowcase from "@/components/home/SignatureShowcase";
 import OffersBanner from "@/components/home/OffersBanner";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
@@ -14,9 +20,17 @@ import CustomerReviews from "@/components/home/CustomerReviews";
 import LocationSection from "@/components/home/LocationSection";
 import SensoryCTASection from "@/components/home/SensoryCTASection";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const rawThemeParam = resolvedSearchParams?.theme;
+  const themeParam = Array.isArray(rawThemeParam) ? rawThemeParam[0] : rawThemeParam;
+
   let categories: any[] = [];
   let foodItems: any[] = [];
   let settings: any = null;
@@ -63,40 +77,79 @@ export default async function HomePage() {
     settings?.isEmergencyClosed || false
   );
 
+  const effectiveSession = getEffectiveSessionType(storeStatus.sessionType, themeParam);
+  const themeMode = getWebsiteTheme(storeStatus.sessionType, themeParam);
+  const enforceHours = settings?.enforceStoreHours !== false;
+
+  // Sort categories so Biryanis & Fast Food come UPWARD in afternoon/evening,
+  // while Morning Tiffins & Dosas lead cleanly in the morning session.
+  const sessionSortedCategories = [...categories].sort(
+    (a, b) =>
+      getCategorySessionPriority(a.slug, effectiveSession) -
+      getCategorySessionPriority(b.slug, effectiveSession)
+  );
+
+  // Enrich & prioritize food items by active session
+  const sessionSortedItems = foodItems
+    .map((item) => {
+      const avail = getItemSessionAvailability(item.category?.slug, effectiveSession, enforceHours);
+      return {
+        ...item,
+        isSessionLocked: avail.isLocked,
+        lockReason: avail.lockMessage,
+        availableAtText: avail.availableAtText,
+      };
+    })
+    .sort((a, b) => {
+      if (Boolean(a.isSessionLocked) !== Boolean(b.isSessionLocked)) {
+        return a.isSessionLocked ? 1 : -1;
+      }
+      const pa = getCategorySessionPriority(a.category?.slug, effectiveSession);
+      const pb = getCategorySessionPriority(b.category?.slug, effectiveSession);
+      if (pa !== pb) return pa - pb;
+      if (Boolean(b.isSignature) !== Boolean(a.isSignature)) {
+        return b.isSignature ? 1 : -1;
+      }
+      if (Boolean(b.isBestseller) !== Boolean(a.isBestseller)) {
+        return b.isBestseller ? 1 : -1;
+      }
+      return (a.displayOrder || 0) - (b.displayOrder || 0);
+    });
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[#FAF7F2] text-[#141210]">
-      {/* 1. Hero Section with Authentic Heritage Visuals */}
-      <HeroSection storeStatus={storeStatus} />
-
-      {/* 2. Menu Category Navigator */}
-      <CategoryChips categories={categories} />
-
-      {/* 3. What's on our Plate - Interactive Horizontal Gliding Showcase */}
-      <MotionFlyerShowcase items={foodItems} />
-
-      {/* 4. Popular Food / Bestseller Dishes (Editorial Food Cards) */}
-      <FeaturedSection items={foodItems} />
-
-      {/* 5. Chef's Signature Tava Craft Showcase with Plate Selector */}
-      <SignatureShowcase />
-
-      {/* 6. Special Daily Combos & Culinary Highlights Banner */}
-      <OffersBanner />
-
-      {/* 7. About Upahar: 4 Pillars of Freshness */}
-      <WhyChooseUs />
-
-      {/* 8. Owner Profile, Hotel Pics & Physical Menu Pic Showcase */}
-      <OwnerHotelShowcase />
-
-      {/* 9. Diner Reviews & Ratings */}
-      <CustomerReviews />
-
-      {/* 10. Location, Timings & Google Maps Embed */}
-      <LocationSection settings={settings} storeStatus={storeStatus} />
-
-      {/* 11. Final Sensory Call-to-Action */}
-      <SensoryCTASection />
-    </main>
+    <HomeLandingClient
+      themeMode={themeMode}
+      urlThemeParam={themeParam ?? null}
+      storeStatus={storeStatus}
+      categories={sessionSortedCategories}
+      menuSlot={
+        <>
+          <CategoryChips
+            categories={sessionSortedCategories}
+            effectiveSession={effectiveSession}
+            themeParam={themeParam ?? null}
+          />
+          <MotionFlyerShowcase
+            items={sessionSortedItems}
+            isMorningSession={effectiveSession === "MORNING"}
+          />
+          <FeaturedSection
+            items={sessionSortedItems}
+            isMorningSession={effectiveSession === "MORNING"}
+          />
+          <SignatureShowcase />
+          <OffersBanner />
+        </>
+      }
+      storySlot={
+        <>
+          <WhyChooseUs />
+          <OwnerHotelShowcase />
+          <LocationSection settings={settings} storeStatus={storeStatus} />
+          <SensoryCTASection />
+          <CustomerReviews />
+        </>
+      }
+    />
   );
 }

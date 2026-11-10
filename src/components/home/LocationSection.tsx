@@ -27,23 +27,23 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
   const sessions = [
     {
       name: "Morning Tiffins Session",
-      time: "6:00 AM – 10:00 AM",
+      time: "6:00 AM – 10:30 AM",
       highlights: "Steaming Idlys, Tatte Idly, Ghee Podi Idly, Plain/Onion/Masala Dosas, Poori & Wada",
       tag: "Fresh Morning Start",
     },
     {
-      name: "Evening Fast Food & Tiffins",
-      time: "6:00 PM – 10:30 PM",
+      name: "Afternoon & Evening Fast Food",
+      time: "12:00 PM – 10:30 PM",
       highlights: "Veg & Non-Veg Noodles, Fried Rice, Manchurian, Sizzling Dosas, Chapati & Paratha",
-      tag: "Evening Favorites",
+      tag: "Session 2 Favorites",
     },
   ];
 
   return (
-    <section id="location" className="py-16 sm:py-24 bg-[#141210] text-[#FAF7F2] relative">
+    <section id="location" className="py-16 sm:py-24 bg-[var(--upahar-dark-stage)] text-brand-cream relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-widest mb-3">
+          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-brand-700 text-[#DFC17B] border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-widest mb-3">
             <MapPin className="w-3.5 h-3.5" />
             <span>Visit The Restaurant</span>
           </div>
@@ -58,7 +58,7 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Column: Address, Phone & Sessions */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1917] border border-[#D4AF37]/30 shadow-2xl space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[var(--upahar-dark-card)] border border-[#D4AF37]/30 shadow-2xl space-y-6">
               <div>
                 <span className="text-[10px] uppercase font-bold text-[#DFC17B] tracking-widest block mb-1">
                   Exact Restaurant Location
@@ -75,7 +75,7 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
               </div>
 
               {/* Operating Status Pill */}
-              <div className="p-4 rounded-2xl bg-[#2B070E] border border-[#D4AF37]/40 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-brand-950 border border-[#D4AF37]/40 flex items-center justify-between">
                 <div className="flex items-center space-x-2.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
                   <div>
@@ -83,7 +83,7 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
                       {storeStatus ? storeStatus.statusText : "OPEN FOR SERVICE"}
                     </span>
                     <span className="text-[10px] text-[#DFC17B]">
-                      Morning: 6:00 AM – 10:00 AM • Evening: 6:00 PM – 10:30 PM
+                      Morning: 6:00 AM – 10:30 AM • Session 2: 12:00 PM – 10:30 PM
                     </span>
                   </div>
                 </div>
@@ -152,10 +152,10 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
               {sessions.map((session) => (
                 <div
                   key={session.name}
-                  className="p-5 rounded-2xl bg-[#1C1917] border border-[#D4AF37]/20 flex flex-col justify-between"
+                  className="p-5 rounded-2xl bg-[var(--upahar-dark-card)] border border-[#D4AF37]/20 flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[#DFC17B] bg-[#580D1A] px-2 py-0.5 rounded-md inline-block mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#DFC17B] bg-brand-700 px-2 py-0.5 rounded-md inline-block mb-2">
                       {session.tag}
                     </span>
                     <h4 className="font-bold text-sm text-white font-display">
@@ -186,7 +186,7 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
               />
 
               {/* Floating Map Pin Overlay */}
-              <div className="absolute top-4 left-4 bg-[#141210]/90 backdrop-blur-md p-3 rounded-xl border border-[#D4AF37]/50 shadow-lg text-xs pointer-events-none">
+              <div className="absolute top-4 left-4 bg-[var(--upahar-dark-stage)]/90 backdrop-blur-md p-3 rounded-xl border border-[#D4AF37]/50 shadow-lg text-xs pointer-events-none">
                 <span className="font-bold text-white block">UPAHAR TIFFINS AND FAST FOOD</span>
                 <span className="text-[#DFC17B] text-[11px]">1-1, Sangivalasa, Beside SBI</span>
               </div>
@@ -195,7 +195,7 @@ export default function LocationSection({ settings, storeStatus }: LocationSecti
                 href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-4 right-4 bg-[#580D1A] hover:bg-[#74171E] text-[#DFC17B] border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-xl transition"
+                className="absolute bottom-4 right-4 bg-brand-700 hover:bg-brand-600 text-[#DFC17B] border border-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-xl transition"
               >
                 <span>Open in Google Maps</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

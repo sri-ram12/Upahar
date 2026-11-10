@@ -27,7 +27,7 @@ export default function OffersBanner() {
   const specials = [
     {
       title: "Upahar Grand Morning Combo",
-      timing: "6:30 AM – 11:30 AM",
+      timing: "6:00 AM – 10:30 AM",
       desc: "Signature Ghee Karam Dosa + Chitti Idly with Ghee Podi + Crispy Medu Wada (1 Pc) served with drumstick sambar & 3 freshly ground chutneys.",
       tag: "Breakfast Bestseller",
       price: "₹99 Only",
@@ -37,10 +37,10 @@ export default function OffersBanner() {
       whatsappText: "Hello Upahar Tiffins, I would like to order the Upahar Grand Morning Combo (Ghee Karam Dosa + Chitti Idly + Wada) for ₹99.",
     },
     {
-      title: "Evening Street Wok Sizzle",
-      timing: "4:00 PM – 10:30 PM",
+      title: "Afternoon & Evening Wok Sizzle",
+      timing: "12:00 PM – 10:30 PM",
       desc: "High-Flame Wok Veg Fried Rice (or Noodles) + Sizzling Veg Manchurian + Layered Flaky Paratha. (Chicken Fried Rice + Chilli Chicken Combo: ₹190)",
-      tag: "Evening Special",
+      tag: "Session 2 Special",
       price: "₹130 Only",
       originalPrice: "₹155 Value",
       image: "/veg-manchurian-noodles.jpg",
@@ -121,7 +121,7 @@ export default function OffersBanner() {
   }, [isMuted]);
 
   return (
-    <section className="py-16 sm:py-24 bg-gradient-to-br from-[#2B070E] via-[#3D0A13] to-[#1A0307] text-[#FAF7F2] relative overflow-hidden border-y border-[#D4AF37]/30">
+    <section className="py-16 sm:py-24 bg-gradient-to-br from-brand-950 via-[var(--upahar-dark-mid)] to-[var(--upahar-dark-deep)] text-brand-cream relative overflow-hidden border-y border-[#D4AF37]/30">
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-black/60 rounded-full blur-3xl pointer-events-none" />
@@ -132,7 +132,7 @@ export default function OffersBanner() {
         {/* SECTION HEADER                                           */}
         {/* ======================================================== */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#141210]/80 border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest mb-3 shadow-lg">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[var(--upahar-dark-stage)]/80 border border-[#D4AF37]/40 text-[#DFC17B] text-xs font-bold uppercase tracking-widest mb-3 shadow-lg">
             <Sparkles className="w-4 h-4 text-[#DFC17B] animate-pulse" />
             <span>Authentic Menu Highlights & Daily Specials</span>
           </div>
@@ -147,12 +147,12 @@ export default function OffersBanner() {
         {/* ======================================================== */}
         {/* ANIMATED VIDEO ADS SHOWCASE                              */}
         {/* ======================================================== */}
-        <div className="mb-16 bg-gradient-to-r from-[#1E0409]/95 via-[#2E0710]/95 to-[#1A0307]/95 rounded-3xl border border-[#D4AF37]/40 p-5 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div className="mb-16 bg-gradient-to-r from-[var(--upahar-dark-stage)]/95 via-[var(--upahar-dark-mid)]/95 to-[var(--upahar-dark-deep)]/95 rounded-3xl border border-[#D4AF37]/40 p-5 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
           
           {/* Header Banner */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10 mb-6">
             <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#580D1A] border border-[#D4AF37]/40 text-[#DFC17B] shadow-md">
+              <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-brand-700 border border-[#D4AF37]/40 text-[#DFC17B] shadow-md">
                 <Video className="w-5 h-5 text-[#DFC17B]" />
               </div>
               <div>
@@ -235,7 +235,7 @@ export default function OffersBanner() {
                     {currentVideo.badge}
                   </span>
 
-                  <span className="px-3 py-1 rounded-full bg-[#580D1A]/90 border border-[#D4AF37]/40 text-[#DFC17B] text-[11px] font-bold shadow-lg">
+                  <span className="px-3 py-1 rounded-full bg-brand-700/90 border border-[#D4AF37]/40 text-[#DFC17B] text-[11px] font-bold shadow-lg">
                     {currentVideo.duration}
                   </span>
                 </div>
@@ -244,7 +244,7 @@ export default function OffersBanner() {
                 <div className="absolute inset-0 flex items-center justify-center z-30">
                   <button
                     onClick={togglePlayPause}
-                    className="w-16 h-16 rounded-full bg-black/60 hover:bg-[#580D1A] text-white border-2 border-[#D4AF37] flex items-center justify-center backdrop-blur-md transition-all duration-300 transform group-hover:scale-110 shadow-2xl"
+                    className="w-16 h-16 rounded-full bg-black/60 hover:bg-brand-700 text-white border-2 border-[#D4AF37] flex items-center justify-center backdrop-blur-md transition-all duration-300 transform group-hover:scale-110 shadow-2xl"
                     aria-label={isPlaying ? "Pause video" : "Play video"}
                   >
                     {isPlaying ? (
@@ -303,7 +303,7 @@ export default function OffersBanner() {
 
             {/* Right: Video Ad Copy, Dish Highlights & Direct Action */}
             <div className="lg:col-span-6 flex flex-col justify-center space-y-4 sm:space-y-5">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-[#580D1A]/80 border border-[#D4AF37]/30 text-[#DFC17B] text-xs font-bold w-fit">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-brand-700/80 border border-[#D4AF37]/30 text-[#DFC17B] text-xs font-bold w-fit">
                 <Flame className="w-3.5 h-3.5 text-amber-400" />
                 <span>Featured Animated Cooking Reel</span>
               </div>
@@ -348,7 +348,7 @@ export default function OffersBanner() {
 
                 <Link
                   href="/menu"
-                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF7F2] font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-brand-cream font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition"
                 >
                   <Utensils className="w-4 h-4 text-[#DFC17B]" />
                   <span>View Complete Menu</span>
@@ -366,7 +366,7 @@ export default function OffersBanner() {
           {specials.map((sp) => (
             <div
               key={sp.title}
-              className="rounded-3xl bg-[#141210]/90 border border-[#D4AF37]/30 shadow-2xl flex flex-col justify-between hover:border-[#D4AF37] transition-all duration-300 group overflow-hidden hover:translate-y-[-4px]"
+              className="rounded-3xl bg-[var(--upahar-dark-stage)]/90 border border-[#D4AF37]/30 shadow-2xl flex flex-col justify-between hover:border-[#D4AF37] transition-all duration-300 group overflow-hidden hover:translate-y-[-4px]"
             >
               {/* Dish Visual Header */}
               <div className="relative h-44 w-full overflow-hidden bg-black/40">
@@ -377,7 +377,7 @@ export default function OffersBanner() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-transparent to-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--upahar-dark-stage)] via-transparent to-black/50" />
                 
                 {/* Tag & Timing Badges */}
                 <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
@@ -432,7 +432,7 @@ export default function OffersBanner() {
         <div className="mt-12 text-center">
           <Link
             href="/menu"
-            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-[#DFC17B] hover:text-white transition py-2 px-4 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] bg-[#141210]/60"
+            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-[#DFC17B] hover:text-white transition py-2 px-4 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] bg-[var(--upahar-dark-stage)]/60"
           >
             <span>Explore All 42+ Authentic Menu Items</span>
             <ArrowRight className="w-3.5 h-3.5" />

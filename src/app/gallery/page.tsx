@@ -161,9 +161,9 @@ export default function GalleryPage() {
   }, [lightboxIndex, filteredImages.length]);
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-24">
+    <div className="min-h-screen bg-brand-cream pb-24">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-[#380A11] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
+      <div className="bg-gradient-to-br from-brand-900 via-brand-700 to-brand-950 text-brand-cream py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
         <div className="max-w-3xl mx-auto relative z-10 space-y-3">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
             <Camera className="w-3.5 h-3.5 text-[#DFC17B]" />
@@ -180,7 +180,7 @@ export default function GalleryPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20 space-y-8">
         {/* Category Tabs */}
-        <div className="bg-white p-3 rounded-2xl shadow-xl border border-[#EADBCE] flex items-center justify-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="bg-white p-3 rounded-2xl shadow-xl border border-brand-border flex items-center justify-center gap-2 overflow-x-auto no-scrollbar">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -190,8 +190,8 @@ export default function GalleryPage() {
               }}
               className={`px-5 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider transition whitespace-nowrap ${
                 selectedCategory === cat
-                  ? "bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37] shadow-sm"
-                  : "bg-[#FAF7F2] text-stone-700 hover:bg-[#EADBCE]"
+                  ? "bg-brand-700 text-[#DFC17B] border border-[#D4AF37] shadow-sm"
+                  : "bg-brand-cream text-stone-700 hover:bg-brand-border"
               }`}
             >
               {cat}
@@ -206,14 +206,14 @@ export default function GalleryPage() {
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <div
                   key={n}
-                  className="bg-white rounded-3xl h-64 shimmer-gold border border-[#EADBCE]"
+                  className="bg-white rounded-3xl h-64 shimmer-gold border border-brand-border"
                 />
               ))}
             </div>
           ) : filteredImages.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-[#EADBCE] p-8 space-y-3">
+            <div className="text-center py-20 bg-white rounded-3xl border border-brand-border p-8 space-y-3">
               <Camera className="w-10 h-10 text-[#C5A059] mx-auto opacity-60" />
-              <h3 className="text-lg font-bold text-[#2B070E]">No images found</h3>
+              <h3 className="text-lg font-bold text-brand-950">No images found</h3>
               <p className="text-stone-500 text-xs">
                 No photographs in this category yet.
               </p>
@@ -224,7 +224,7 @@ export default function GalleryPage() {
                 <div
                   key={img.id}
                   onClick={() => setLightboxIndex(idx)}
-                  className="brand-card group relative h-72 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border border-[#EADBCE] bg-[#141210]"
+                  className="brand-card group relative h-72 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer border border-brand-border bg-[#141210]"
                 >
                   <Image
                     src={img.imageUrl}
@@ -238,7 +238,7 @@ export default function GalleryPage() {
                     <span className="text-[10px] text-[#DFC17B] font-black uppercase tracking-wider">
                       {img.category}
                     </span>
-                    <h4 className="font-bold text-sm text-[#FAF7F2] font-heading mt-0.5 line-clamp-1">
+                    <h4 className="font-bold text-sm text-brand-cream font-heading mt-0.5 line-clamp-1">
                       {img.title}
                     </h4>
                     {img.caption && (

@@ -35,7 +35,7 @@ export default function ExperiencePage() {
       image: "/ghee-karam-dosa.jpg",
     },
     {
-      time: "06:00 PM",
+      time: "12:00 PM",
       title: "The Upahar Front Counter & Ambience",
       desc: "Our iconic Warli-painted exterior counter lights up on ANITS College Road beside SBI, welcoming guests for evening tiffins and hot takeaway parcels.",
       image: "/images/upahar_hotel_counter.jpg",
@@ -49,9 +49,9 @@ export default function ExperiencePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-24">
+    <div className="min-h-screen bg-brand-cream pb-24">
       {/* Banner */}
-      <div className="bg-gradient-to-br from-[#380A11] via-[#580D1A] to-[#2B070E] text-[#FAF7F2] py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
+      <div className="bg-gradient-to-br from-brand-900 via-brand-700 to-brand-950 text-brand-cream py-20 px-4 text-center relative overflow-hidden border-b border-[#D4AF37]/30">
         <div className="max-w-3xl mx-auto relative z-10 space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-black/40 border border-[#D4AF37]/40 text-[#DFC17B]">
             <Sparkles className="w-3.5 h-3.5 text-[#DFC17B]" />
@@ -68,9 +68,9 @@ export default function ExperiencePage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 space-y-16">
         {/* Atmosphere Overview */}
-        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-[#EADBCE] shadow-xl space-y-8">
+        <div className="bg-white rounded-3xl p-5 sm:p-12 border border-brand-border shadow-xl space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-black text-[#2B070E] font-display">
+            <h2 className="text-2xl sm:text-3xl font-black text-brand-950 font-display">
               A Day in the Life of Our Restaurant
             </h2>
             <p className="text-stone-600 text-xs sm:text-sm">
@@ -82,7 +82,7 @@ export default function ExperiencePage() {
             {moments.map((m, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-[#EADBCE] overflow-hidden bg-[#FAF7F2] flex flex-col justify-between group hover:border-[#D4AF37] transition duration-300"
+                className="rounded-2xl border border-brand-border overflow-hidden bg-brand-cream flex flex-col justify-between group hover:border-[#D4AF37] transition duration-300"
               >
                 <div className="relative h-56 w-full overflow-hidden">
                   <Image
@@ -92,13 +92,13 @@ export default function ExperiencePage() {
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-3 left-3 bg-[#2B070E]/90 text-[#DFC17B] text-[10px] font-black uppercase px-2.5 py-1 rounded-md border border-[#D4AF37]/40 shadow-sm">
+                  <div className="absolute top-3 left-3 bg-brand-950/90 text-[#DFC17B] text-[10px] font-black uppercase px-2.5 py-1 rounded-md border border-[#D4AF37]/40 shadow-sm">
                     {m.time}
                   </div>
                 </div>
 
                 <div className="p-5 space-y-2">
-                  <h3 className="text-base font-bold text-[#2B070E] font-heading">
+                  <h3 className="text-base font-bold text-brand-950 font-heading">
                     {m.title}
                   </h3>
                   <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
@@ -112,11 +112,11 @@ export default function ExperiencePage() {
 
         {/* Visiting Practicalities */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-brand-border shadow-md space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-700 text-[#DFC17B] flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-base text-[#2B070E]">
+            <h3 className="font-bold text-base text-brand-950">
               Walk-in Dining
             </h3>
             <p className="text-xs text-stone-600 leading-relaxed">
@@ -124,11 +124,11 @@ export default function ExperiencePage() {
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-brand-border shadow-md space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-700 text-[#DFC17B] flex items-center justify-center">
               <ShoppingBag className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-base text-[#2B070E]">
+            <h3 className="font-bold text-base text-brand-950">
               Takeaway Counter
             </h3>
             <p className="text-xs text-stone-600 leading-relaxed">
@@ -136,11 +136,11 @@ export default function ExperiencePage() {
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#EADBCE] shadow-md space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#580D1A] text-[#DFC17B] flex items-center justify-center">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-brand-border shadow-md space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-700 text-[#DFC17B] flex items-center justify-center">
               <Compass className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-base text-[#2B070E]">
+            <h3 className="font-bold text-base text-brand-950">
               Landmark & Parking
             </h3>
             <p className="text-xs text-stone-600 leading-relaxed">

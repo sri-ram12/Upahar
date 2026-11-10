@@ -15,6 +15,8 @@ import {
   ExternalLink,
   Menu,
   X,
+  ShoppingBag,
+  Bike,
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -24,6 +26,8 @@ export default function AdminSidebar() {
 
   const links = [
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
+    { name: "Live Orders", href: "/admin/orders", icon: ShoppingBag, badge: "Live" },
+    { name: "Delivery Agents", href: "/admin/delivery-agents", icon: Bike },
     { name: "Menu Dishes", href: "/admin/menu", icon: UtensilsCrossed },
     { name: "Categories", href: "/admin/categories", icon: FolderTree },
     { name: "QR Standees", href: "/admin/qr", icon: QrCode },
@@ -85,14 +89,21 @@ export default function AdminSidebar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
                     isActive
                       ? "bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/40 shadow-md"
                       : "text-stone-400 hover:text-white hover:bg-stone-800/60"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{link.name}</span>
+                  <div className="flex items-center space-x-3">
+                    <Icon className="w-4 h-4" />
+                    <span>{link.name}</span>
+                  </div>
+                  {link.badge && (
+                    <span className="bg-red-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full animate-pulse">
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -151,14 +162,21 @@ export default function AdminSidebar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
                     isActive
                       ? "bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/40 shadow-md"
                       : "text-stone-400 hover:text-white hover:bg-stone-800/60"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{link.name}</span>
+                  <div className="flex items-center space-x-3">
+                    <Icon className="w-4 h-4" />
+                    <span>{link.name}</span>
+                  </div>
+                  {link.badge && (
+                    <span className="bg-red-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full animate-pulse">
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}

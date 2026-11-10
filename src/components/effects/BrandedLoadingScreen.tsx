@@ -42,7 +42,7 @@ export default function BrandedLoadingScreen() {
   return (
     <div
       onClick={dismiss}
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#141210] text-[#FAF7F2] cursor-pointer transition-opacity duration-300 select-none ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#141210] text-brand-cream cursor-pointer transition-opacity duration-300 select-none ${
         phase === "exit" ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
       aria-hidden="true"
@@ -53,14 +53,14 @@ export default function BrandedLoadingScreen() {
       {/* Center Brand Crest */}
       <div className="relative flex flex-col items-center">
         {/* Heritage Emblem */}
-        <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-[#580D1A] via-[#4A0E17] to-[#2B070E] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shadow-2xl shadow-[#4A0E17]/60 mb-4 transition-transform duration-500 scale-100">
+        <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shadow-2xl shadow-brand-800/60 mb-4 transition-transform duration-500 scale-100">
           <UtensilsCrossed className="w-8 h-8" />
           <Sparkles className="w-3.5 h-3.5 absolute -top-1 -right-1 text-[#DFC17B] animate-pulse" />
         </div>
 
         {/* Brand Typography */}
         <div className="flex flex-col items-center text-center">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-wider text-[#FAF7F2] font-display flex items-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-wider text-brand-cream font-display flex items-center gap-2">
             <span>UPAHAR</span>
           </h1>
           <div className="flex items-center gap-2 mt-1">

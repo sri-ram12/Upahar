@@ -84,9 +84,92 @@ model RestaurantSetting {
   eveningHours      String   @default("4:00 PM – 8:00 PM")
   dinnerHours       String   @default("8:00 PM – 11:00 PM")
   isEmergencyClosed Boolean  @default(false)
-  instagramUrl      String   @default("https://instagram.com/upahartiffins")
-  pureVegPledge     String   @default("100% Pure Vegetarian Kitchen • Pure Desi Ghee • RO Purified Water")
-  updatedAt         DateTime @updatedAt
+  isEmergencyWebsiteStopped Boolean @default(false)
+  emergencyStopMessage    String   @default("Upahar online ordering is temporarily paused by administration. We will be back shortly!")
+  isOnlineOrderingEnabled Boolean  @default(true)
+  enforceStoreHours       Boolean  @default(true)
+  deliveryRadiusKm        Float    @default(5.0)
+  deliveryBaseFee         Float    @default(25.0)
+  minOrderFreeDelivery    Float    @default(199.0)
+  minDeliveryOrderAmount  Float    @default(60.0)
+  packagingFee            Float    @default(10.0)
+  upiId                   String   @default("paytm.s2fno8y@pty")
+  upiMerchantName         String   @default("Suravajjula Sai Sri Vamsi")
+  paymentQrUrl            String   @default("/images/payment-qr.jpg")
+  fssaiNumber             String?
+  instagramUrl            String   @default("https://instagram.com/upahartiffins")
+  pureVegPledge           String   @default("100% Pure Vegetarian Kitchen • Pure Desi Ghee • RO Purified Water")
+  updatedAt               DateTime @updatedAt
+}
+
+model CustomerUser {
+  id           String            @id @default(cuid())
+  name         String
+  phone        String            @unique
+  email        String?
+  passwordHash String
+  address      String?
+  landmark     String?
+  locality     String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  orders       Order[]
+  addresses    CustomerAddress[]
+}
+
+model CustomerAddress {
+  id         String       @id @default(cuid())
+  customerId String
+  customer   CustomerUser @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label      String       @default("Home") // "Home" | "ANITS Hostel" | "Work" | "Other"
+  address    String
+  landmark   String?
+  locality   String       @default("ANITS Campus & Hostels")
+  lat        Float?
+  lng        Float?
+  distanceKm Float?
+  isDefault  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+}
+
+model CustomerOtp {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  purpose   String   @default("LOGIN") // "LOGIN" | "SIGNUP"
+  verified  Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  description    String
+  discountType   String   @default("FLAT") // "FLAT" | "PERCENT"
+  discountValue  Float
+  minOrderAmount Float    @default(0)
+  maxDiscount    Float?
+  isActive       Boolean  @default(true)
+  usageCount     Int      @default(0)
+  createdAt      DateTime @default(now())
+}
+
+model DeliveryAgent {
+  id              String    @id @default(cuid())
+  name            String
+  phone           String    @unique
+  vehicleNumber   String
+  passwordHash    String    // PIN or password for delivery boy login
+  status          String    @default("ACTIVE") // "ACTIVE" | "ON_DELIVERY" | "OFFLINE" | "INACTIVE"
+  approvalStatus  String    @default("APPROVED") // "PENDING_APPROVAL" | "APPROVED" | "REJECTED"
+  isActive        Boolean   @default(true)
+  totalDeliveries Int       @default(0)
+  cashInHand      Float     @default(0)
+  totalEarnings   Float     @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  orders          Order[]
 }
 
 model ContactMessage {
@@ -98,4 +181,64 @@ model ContactMessage {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Order {
+  id                      String         @id @default(cuid())
+  orderNumber             String         @unique
+  customerId              String?
+  customer                CustomerUser?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerName            String
+  customerPhone           String
+  orderType               String         @default("DELIVERY") // "DELIVERY" | "TAKEAWAY" | "DINE_IN"
+  tableNumber             String?
+  deliveryAddress         String?
+  landmark                String?
+  locality                String?
+  lat                     Float?
+  lng                     Float?
+  distanceKm              Float?
+  deliveryFee             Float          @default(0)
+  packagingFee            Float          @default(0)
+  couponCode              String?
+  discountAmount          Float          @default(0)
+  subtotal                Float
+  totalAmount             Float
+  specialInstructions     String?
+  paymentMethod           String         @default("COD") // "COD" | "UPI" | "QR_ON_DELIVERY"
+  paymentStatus           String         @default("PENDING") // "PENDING" | "VERIFICATION_PENDING" | "PAID"
+  upiTransactionId        String?
+  paymentConfirmedBy      String?
+  status                  String         @default("PENDING") // "PENDING" | "CONFIRMED" | "PREPARING" | "FOOD_READY" | "OUT_FOR_DELIVERY" | "ARRIVED" | "DELIVERED" | "CANCELLED"
+  deliveryOtp             String         @default("1234") // 4-digit code shown to customer and verified by delivery boy
+  deliveryAgentId         String?
+  deliveryAgent           DeliveryAgent? @relation(fields: [deliveryAgentId], references: [id], onDelete: SetNull)
+  riderLat                Float?
+  riderLng                Float?
+  riderLocationUpdatedAt  DateTime?
+  estimatedTime           String?        @default("20-25 mins")
+  rejectionReason         String?
+  cancelledBy             String?
+  cancelledAt             DateTime?
+  rating                  Int?
+  deliveryRating          Int?
+  reviewComment           String?
+  reviewedAt              DateTime?
+  paymentCollectedAt      DateTime?
+  deliveredAt             DateTime?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  items                   OrderItem[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  foodItemId  String?
+  name        String
+  price       Float
+  quantity    Int
+  portionSize String?
+  createdAt   DateTime @default(now())
 }

@@ -11,8 +11,13 @@ import {
   Compass,
   Phone,
   MessageSquare,
+  Plus,
+  Minus,
+  ShoppingBag,
+  Lock,
 } from "lucide-react";
 import { FoodItem } from "@/types";
+import { useCart } from "@/context/CartContext";
 
 interface DishDetailModalProps {
   item: FoodItem | null;
@@ -20,6 +25,8 @@ interface DishDetailModalProps {
 }
 
 export default function DishDetailModal({ item, onClose }: DishDetailModalProps) {
+  const { addToCart, updateQuantity, getItemQuantity, setIsCartOpen } = useCart();
+  const quantity = item ? getItemQuantity(item.id) : 0;
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -46,12 +53,12 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-[#FAF7F2] rounded-3xl overflow-hidden border border-[#D4AF37]/50 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col"
+        className="relative w-full max-w-2xl bg-brand-cream rounded-3xl overflow-hidden border border-[#D4AF37]/50 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[#141210]/70 hover:bg-[#141210] text-[#FAF7F2] flex items-center justify-center transition border border-white/20"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[#141210]/70 hover:bg-[#141210] text-brand-cream flex items-center justify-center transition border border-white/20"
           aria-label="Close details"
         >
           <X className="w-5 h-5" />
@@ -71,12 +78,12 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           {/* Badges */}
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             {item.isSignature && (
-              <span className="bg-[#580D1A] text-[#DFC17B] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-[#D4AF37]/60 shadow-md">
+              <span className="bg-brand-700 text-[#DFC17B] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-[#D4AF37]/60 shadow-md">
                 Chef's Signature
               </span>
             )}
             {item.isBestseller && !item.isSignature && (
-              <span className="bg-[#A37F38] text-[#FAF7F2] text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg shadow-md flex items-center space-x-1">
+              <span className="bg-[#A37F38] text-brand-cream text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg shadow-md flex items-center space-x-1">
                 <Sparkles className="w-3 h-3" />
                 <span>Popular Choice</span>
               </span>
@@ -98,35 +105,106 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
 
         {/* Modal Scrollable Body */}
         <div className="p-4 sm:p-8 space-y-5 sm:space-y-6 overflow-y-auto no-scrollbar">
+          {item.isSessionLocked && (
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-xs flex items-start space-x-3 shadow-sm">
+              <Lock className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <span className="font-black block text-sm">
+                  Available from 12:00 PM – 10:30 PM IST (Upahar Biryanis &amp; Fast Food)
+                </span>
+                <p className="text-amber-900 leading-relaxed">
+                  {item.lockReason ||
+                    "During Morning Session (6:00 AM – 10:30 AM IST), only fresh Tiffins & Dosas can be ordered. Biryanis and Fast Food dishes unlock at 12:00 PM."}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Price & Meta Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#EADBCE]">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">
-                Menu Price
-              </span>
-              <span className="text-2xl font-black text-[#2B070E] font-display">
-                ₹{item.price}
-              </span>
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-brand-border">
+            <div className="flex items-center space-x-4">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider block">
+                  Menu Price
+                </span>
+                <span className="text-2xl font-black text-brand-950 font-display">
+                  ₹{item.price}
+                </span>
+              </div>
+
+              {/* Add / Stepper CTA */}
+              {item.isSessionLocked ? (
+                <span className="text-xs font-extrabold text-amber-900 bg-amber-100 border border-amber-300 px-3.5 py-2 rounded-xl flex items-center space-x-1.5">
+                  <Lock className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Opens 12:00 PM – 10:30 PM</span>
+                </span>
+              ) : item.isAvailable !== false ? (
+                quantity === 0 ? (
+                  <button
+                    onClick={() => addToCart(item, 1)}
+                    className="btn-maroon-gold px-4 py-2 rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md hover:scale-105 transition"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-[#DFC17B]" />
+                    <span>ADD TO ORDER</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center space-x-2 bg-brand-700 text-white rounded-xl px-2.5 py-1.5 shadow-md">
+                    <button
+                      onClick={() => updateQuantity(item.id, -1)}
+                      className="w-6 h-6 flex items-center justify-center text-[#DFC17B] hover:text-white transition"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="w-6 text-center text-xs font-black text-white">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(item.id, 1)}
+                      className="w-6 h-6 flex items-center justify-center text-[#DFC17B] hover:text-white transition"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )
+              ) : (
+                <span className="text-xs font-bold text-stone-400 bg-stone-100 px-3 py-1.5 rounded-xl">
+                  Currently Sold Out
+                </span>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600">
               <span className="flex items-center space-x-1 font-semibold">
-                <Clock className="w-4 h-4 text-[#580D1A]" />
+                <Clock className="w-4 h-4 text-brand-700" />
                 <span>{item.prepTime || "10-15 mins"}</span>
               </span>
 
-              <div className="flex items-center space-x-1.5 font-bold text-[#2D5A27] bg-[#EBF3E8] px-2.5 py-1 rounded-lg">
-                <div className="w-3 h-3 border-2 border-[#2D5A27] rounded-xs flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#2D5A27]" />
+              <div
+                className={`flex items-center space-x-1.5 font-bold px-2.5 py-1 rounded-lg ${
+                  item.isVeg
+                    ? "text-[#2D5A27] bg-[#EBF3E8]"
+                    : "text-[#8B1E26] bg-red-50 border border-red-200"
+                }`}
+              >
+                <div
+                  className={`w-3.5 h-3.5 border-2 ${
+                    item.isVeg ? "border-[#2D5A27]" : "border-[#8B1E26]"
+                  } rounded-xs flex items-center justify-center`}
+                >
+                  <div
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      item.isVeg ? "bg-[#2D5A27]" : "bg-[#8B1E26]"
+                    }`}
+                  />
                 </div>
-                <span>100% Pure Veg</span>
+                <span>{item.isVeg ? "Pure Veg" : "Non-Veg"}</span>
               </div>
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <h4 className="text-xs uppercase font-extrabold tracking-wider text-[#74171E]">
+            <h4 className="text-xs uppercase font-extrabold tracking-wider text-brand-600">
               Culinary Description
             </h4>
             <p className="text-stone-700 text-sm leading-relaxed">
@@ -137,22 +215,22 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           {/* Portion & Ingredients */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             {item.portionSize && (
-              <div className="p-3.5 rounded-2xl bg-white border border-[#EADBCE]">
+              <div className="p-3.5 rounded-2xl bg-white border border-brand-border">
                 <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
                   Portion Served
                 </span>
-                <span className="text-xs font-bold text-[#2B070E] mt-0.5 block">
+                <span className="text-xs font-bold text-brand-950 mt-0.5 block">
                   {item.portionSize}
                 </span>
               </div>
             )}
 
             {item.ingredients && (
-              <div className="p-3.5 rounded-2xl bg-white border border-[#EADBCE]">
+              <div className="p-3.5 rounded-2xl bg-white border border-brand-border">
                 <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
                   Key Ingredients
                 </span>
-                <span className="text-xs font-bold text-[#580D1A] mt-0.5 block">
+                <span className="text-xs font-bold text-brand-700 mt-0.5 block">
                   {item.ingredients}
                 </span>
               </div>
@@ -160,7 +238,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           </div>
 
           {/* Kitchen Guarantee */}
-          <div className="p-3.5 rounded-2xl bg-[#EADBCE]/40 border border-[#D4AF37]/30 flex items-center space-x-3 text-xs text-stone-700">
+          <div className="p-3.5 rounded-2xl bg-brand-border/40 border border-[#D4AF37]/30 flex items-center space-x-3 text-xs text-stone-700">
             <ShieldCheck className="w-5 h-5 text-[#2D5A27] flex-shrink-0" />
             <span>
               Prepared fresh per order with stone-ground batter, pure desi ghee, and RO-purified cooking water.
@@ -168,7 +246,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
           </div>
 
           {/* Action Row */}
-          <div className="pt-3 border-t border-[#EADBCE] flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="pt-3 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-2.5">
             <a
               href={`https://wa.me/919885455342?text=${encodeURIComponent(
                 `Hello Sri Vamsi, I would like more details about ${item.name} (₹${item.price}) at Upahar Tiffins.`
@@ -195,7 +273,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
               href="tel:+919885455342"
               className="btn-gold-outline w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5"
             >
-              <Phone className="w-3.5 h-3.5 text-[#580D1A]" />
+              <Phone className="w-3.5 h-3.5 text-brand-700" />
               <span>Call (+91 9885455342)</span>
             </a>
           </div>
