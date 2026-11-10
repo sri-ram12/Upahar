@@ -277,7 +277,11 @@ export default function PortalHubPage() {
       badge: "Public Access",
       primaryLink: { label: "Open Menu & Order", href: "/menu" },
       subLinks: [
-        { label: "Homepage", href: "/" },
+        { label: "Light Hub (/)", href: "/" },
+        { label: "01. Tiffins", href: "/tiffins" },
+        { label: "02. Biryanis", href: "/biryanis" },
+        { label: "03. Fast Foods", href: "/fast-food" },
+        { label: "04. Pickles (24×7)", href: "/pickles" },
         { label: "My Orders", href: "/orders" },
         { label: "Checkout", href: "/checkout" },
         { label: "Live Tracker", href: latestOrder ? `/orders/${latestOrder.orderNumber}` : "/orders" },
@@ -293,6 +297,8 @@ export default function PortalHubPage() {
       badge: "Heart of System",
       primaryLink: { label: "Open Admin Dashboard", href: "/admin" },
       subLinks: [
+        { label: "4 Websites Control", href: "/admin/websites" },
+        { label: "Menu & Photos", href: "/admin/menu" },
         { label: "Live Order Desk", href: "/admin/orders" },
         { label: "Register Riders", href: "/admin/delivery-agents" },
         { label: "5km Store Settings", href: "/admin/settings" },

@@ -19,6 +19,7 @@ import {
   Bike,
   DollarSign,
   ShieldAlert,
+  Globe,
 } from "lucide-react";
 import { FoodItem, Category, GalleryImage, ContactMessage, Order } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
@@ -32,6 +33,7 @@ export default function AdminDashboardPage() {
   const [orderStats, setOrderStats] = useState<any>(null);
   const [storeSettings, setStoreSettings] = useState<any>(null);
   const [storeStatus, setStoreStatus] = useState<any>(null);
+  const [subsites, setSubsites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -62,6 +64,7 @@ export default function AdminDashboardPage() {
       if (msgData.messages) setMessages(msgData.messages);
       if (restData.settings) setStoreSettings(restData.settings);
       if (restData.storeStatus) setStoreStatus(restData.storeStatus);
+      if (Array.isArray(restData.subsites)) setSubsites(restData.subsites);
       if (ordersData.orders) setOrders(ordersData.orders);
       if (ordersData.stats) setOrderStats(ordersData.stats);
     } catch (e) {
@@ -256,6 +259,55 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
+      {/* 4 Sub-Websites Quick Control Strip */}
+      {subsites.length > 0 && (
+        <div className="bg-white p-5 rounded-3xl border border-[#EADBCE] shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-[#580D1A]" />
+              <h2 className="text-sm font-black text-[#2B070E] font-display">
+                4 Upahar Sub-Websites Live Status
+              </h2>
+            </div>
+            <Link
+              href="/admin/websites"
+              className="text-xs font-bold text-[#580D1A] hover:underline flex items-center gap-1"
+            >
+              <span>Manage All 4 Websites, Photos, Prices &amp; Timings</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {subsites.map((site) => (
+              <Link
+                key={site.id}
+                href="/admin/websites"
+                className="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] hover:border-[#D4AF37] transition flex items-center gap-3"
+              >
+                <img
+                  src={site.heroImage}
+                  alt={site.title}
+                  className="w-11 h-11 rounded-full object-cover border border-[#D4AF37]/60 flex-shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-black text-[#2B070E] truncate">{site.title}</div>
+                  <div className="text-[10px] text-stone-500 truncate">{site.status?.timingText}</div>
+                  <span
+                    className={`inline-block mt-1 text-[9px] font-black px-2 py-0.5 rounded-full ${
+                      site.status?.isOpen
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-amber-100 text-amber-900"
+                    }`}
+                  >
+                    {site.status?.statusLabel} • {site.itemCount} items
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Live Orders Highlight Banner */}
       <div className="p-5 rounded-3xl bg-gradient-to-r from-[#580D1A] to-[#2B070E] text-white shadow-lg border border-[#D4AF37]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-3.5">
@@ -393,7 +445,7 @@ export default function AdminDashboardPage() {
             {categories.length}
           </div>
           <span className="text-[11px] text-stone-500 font-medium block">
-            Tiffins, Dosas, Fast Food & Drinks
+            Tiffins, Biryanis, Fast Foods &amp; Pickles
           </span>
         </div>
 

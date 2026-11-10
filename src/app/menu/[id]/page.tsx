@@ -14,7 +14,8 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import DishOrderControls from "@/components/menu/DishOrderControls";
-import { calculateStoreStatus, isCategoryAvailableInSession } from "@/lib/store-hours";
+import { evaluateDivisionStatus, getDivisionForCategory } from "@/lib/store-hours";
+import { getSubsitesAndSettings } from "@/lib/subsite-data";
 
 interface DishPageProps {
   params: Promise<{ id: string }>;
@@ -55,23 +56,22 @@ export default async function DishDetailPage({ params }: DishPageProps) {
     notFound();
   }
 
-  // Check live session rules (hide ordering for evening dishes during morning 6-10 AM or closed hours)
-  const settings = await prisma.restaurantSetting.findUnique({ where: { id: "default" } });
-  const storeStatus = calculateStoreStatus(
-    settings?.openingTime,
-    settings?.closingTime,
-    settings?.isEmergencyClosed
-  );
+  // Check live per-division operating hours (Pickles 24x7, Tiffins 6-10:30 AM & 5-10:30 PM, Biryanis 12-10:30 PM, Fast Foods 5-10:30 PM)
+  const { settings, subsiteMap } = await getSubsitesAndSettings();
+  const divKey = getDivisionForCategory(item.category);
+  const divStatus = evaluateDivisionStatus(divKey, {
+    isEmergencyClosed: Boolean(settings?.isEmergencyClosed),
+    enforceStoreHours: settings?.enforceStoreHours !== false,
+    dbConfig: subsiteMap[divKey],
+  });
+
   let sessionBlockReason: string | null = null;
   if (settings?.isEmergencyWebsiteStopped) {
     sessionBlockReason = settings.emergencyStopMessage || "Online orders temporarily paused.";
-  } else if (settings?.enforceStoreHours !== false) {
-    if (!storeStatus.isOpen) {
-      sessionBlockReason = `${storeStatus.statusText} • ${storeStatus.subText}`;
-    } else if (!isCategoryAvailableInSession(item.category?.slug, storeStatus.sessionType)) {
-      sessionBlockReason =
-        "Available during Upahar Biryanis & Fast Food Session (12:00 PM – 10:30 PM IST). During Morning Session (6:00 AM – 10:30 AM IST), only Tiffins & Dosas can be ordered.";
-    }
+  } else if (!item.isAvailable) {
+    sessionBlockReason = "This item is currently marked Not Available by restaurant management.";
+  } else if (divStatus.isLocked) {
+    sessionBlockReason = divStatus.lockBanner;
   }
 
   // Related dishes from the same category

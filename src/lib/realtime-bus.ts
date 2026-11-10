@@ -20,7 +20,8 @@ export type RealtimeEventType =
   | "EMERGENCY_STOP_CHANGED"
   | "RIDER_STATUS_CHANGED"
   | "RIDER_LOCATION_UPDATED"
-  | "MENU_ITEM_UPDATED";
+  | "MENU_ITEM_UPDATED"
+  | "SUBSITE_UPDATED";
 
 export interface RealtimeMessage {
   event: RealtimeEventType;

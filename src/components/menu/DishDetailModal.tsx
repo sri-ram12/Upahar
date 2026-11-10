@@ -110,11 +110,11 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
               <Lock className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <span className="font-black block text-sm">
-                  Available from 12:00 PM – 10:30 PM IST (Upahar Biryanis &amp; Fast Food)
+                  Available During {item.availableAtText || "Scheduled Kitchen Hours"}
                 </span>
                 <p className="text-amber-900 leading-relaxed">
                   {item.lockReason ||
-                    "During Morning Session (6:00 AM – 10:30 AM IST), only fresh Tiffins & Dosas can be ordered. Biryanis and Fast Food dishes unlock at 12:00 PM."}
+                    `This dish is served exclusively during ${item.availableAtText || "scheduled hours"} IST. Upahar Pickles is open 24×7 anytime!`}
                 </p>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function DishDetailModal({ item, onClose }: DishDetailModalProps)
               {item.isSessionLocked ? (
                 <span className="text-xs font-extrabold text-amber-900 bg-amber-100 border border-amber-300 px-3.5 py-2 rounded-xl flex items-center space-x-1.5">
                   <Lock className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Opens 12:00 PM – 10:30 PM</span>
+                  <span>{item.availableAtText || "Closed Now"}</span>
                 </span>
               ) : item.isAvailable !== false ? (
                 quantity === 0 ? (

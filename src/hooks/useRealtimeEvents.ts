@@ -12,6 +12,7 @@ interface RealtimeHookOptions {
   onRiderStatusChanged?: (payload: any) => void;
   onRiderLocationUpdated?: (payload: any) => void;
   onMenuItemUpdated?: (payload: any) => void;
+  onSubsiteUpdated?: (payload: any) => void;
   enabled?: boolean;
 }
 
@@ -25,6 +26,7 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
     onRiderStatusChanged,
     onRiderLocationUpdated,
     onMenuItemUpdated,
+    onSubsiteUpdated,
     enabled = true,
   } = options;
 
@@ -42,6 +44,7 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
     onRiderStatusChanged,
     onRiderLocationUpdated,
     onMenuItemUpdated,
+    onSubsiteUpdated,
   });
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
       onRiderStatusChanged,
       onRiderLocationUpdated,
       onMenuItemUpdated,
+      onSubsiteUpdated,
     };
   });
 
@@ -91,6 +95,7 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
               onRiderStatusChanged,
               onRiderLocationUpdated,
               onMenuItemUpdated,
+              onSubsiteUpdated,
             } = callbacksRef.current;
 
             if (onEvent) onEvent(data.event, data.payload, data);
@@ -116,6 +121,9 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
                 break;
               case "MENU_ITEM_UPDATED":
                 if (onMenuItemUpdated) onMenuItemUpdated(data.payload);
+                break;
+              case "SUBSITE_UPDATED":
+                if (onSubsiteUpdated) onSubsiteUpdated(data.payload);
                 break;
             }
           } catch (err) {

@@ -115,26 +115,46 @@ export default function RootLayout({
   const themeBootScript = `
     (function() {
       try {
-        var path = window.location.pathname || "";
+        var path = (window.location.pathname || "/").toLowerCase();
         if (/^\\/(admin|kitchen|delivery|portal|dev)(\\/|$)/.test(path)) {
           document.documentElement.setAttribute("data-upahar-theme", "original-maroon");
           return;
         }
+        if (path.indexOf("/tiffins") === 0) {
+          document.documentElement.setAttribute("data-upahar-theme", "tiffins-green");
+          return;
+        }
+        if (path.indexOf("/biryanis") === 0) {
+          document.documentElement.setAttribute("data-upahar-theme", "biryanis-maroon");
+          return;
+        }
+        if (path.indexOf("/fast-food") === 0) {
+          document.documentElement.setAttribute("data-upahar-theme", "fastfood-gold");
+          return;
+        }
+        if (path.indexOf("/pickles") === 0) {
+          document.documentElement.setAttribute("data-upahar-theme", "pickles-red");
+          return;
+        }
         var params = new URLSearchParams(window.location.search);
         var q = (params.get("theme") || "").toLowerCase().trim();
-        if (q === "morning" || q === "green") {
-          document.documentElement.setAttribute("data-upahar-theme", "morning-green");
+        if (q === "morning" || q === "green" || q === "tiffins") {
+          document.documentElement.setAttribute("data-upahar-theme", "tiffins-green");
           return;
         }
-        if (q === "maroon" || q === "evening" || q === "original") {
-          document.documentElement.setAttribute("data-upahar-theme", "original-maroon");
+        if (q === "maroon" || q === "biryanis") {
+          document.documentElement.setAttribute("data-upahar-theme", "biryanis-maroon");
           return;
         }
-        var now = new Date();
-        var ist = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + 5.5 * 3600000);
-        var mins = ist.getHours() * 60 + ist.getMinutes();
-        var theme = (mins >= 360 && mins < 630) ? "morning-green" : "original-maroon";
-        document.documentElement.setAttribute("data-upahar-theme", theme);
+        if (q === "fast-food" || q === "gold" || q === "yellow") {
+          document.documentElement.setAttribute("data-upahar-theme", "fastfood-gold");
+          return;
+        }
+        if (q === "pickles" || q === "red") {
+          document.documentElement.setAttribute("data-upahar-theme", "pickles-red");
+          return;
+        }
+        document.documentElement.setAttribute("data-upahar-theme", "light-hub");
       } catch (e) {}
     })();
   `;

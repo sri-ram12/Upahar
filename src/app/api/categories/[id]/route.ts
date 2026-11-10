@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 
+import { isValidDivisionKey } from "@/lib/store-hours";
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -20,6 +22,8 @@ export async function PUT(
       data: {
         ...(body.name && { name: body.name }),
         ...(body.description !== undefined && { description: body.description }),
+        ...(body.division !== undefined && isValidDivisionKey(body.division) && { division: body.division }),
+        ...(body.image !== undefined && { image: body.image ? String(body.image).trim() : null }),
         ...(body.icon && { icon: body.icon }),
         ...(body.displayOrder !== undefined && { displayOrder: parseInt(body.displayOrder, 10) }),
         ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),

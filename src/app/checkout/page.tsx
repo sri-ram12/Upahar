@@ -27,6 +27,7 @@ import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import PaymentQRCard from "@/components/payment/PaymentQRCard";
 import { Coupon, RestaurantSetting, CustomerAddress } from "@/types";
+import { getDivisionForCategory } from "@/lib/store-hours";
 import {
   TAGARAPUVALASA_LOCALITIES,
   PopularLocality,
@@ -43,8 +44,9 @@ export default function CheckoutPage() {
   const { items, subtotal, specialNotes, clearCart } = useCart();
   const { customer, setIsAuthModalOpen, saveAddress, deleteAddress } = useCustomerAuth();
 
-  // Restaurant Live Settings
+  // Restaurant Live Settings & Subsite Statuses
   const [storeSettings, setStoreSettings] = useState<RestaurantSetting | null>(null);
+  const [subsitesData, setSubsitesData] = useState<any[]>([]);
   const [emergencyStopNotice, setEmergencyStopNotice] = useState<string | null>(null);
   const [closedHoursNotice, setClosedHoursNotice] = useState<string | null>(null);
 
@@ -117,18 +119,9 @@ export default function CheckoutPage() {
               "Online ordering is currently paused by the restaurant. Please try again soon."
             );
           }
-
-          if (
-            restData.settings.enforceStoreHours !== false &&
-            restData.storeStatus &&
-            !restData.storeStatus.isOpen
-          ) {
-            setClosedHoursNotice(
-              `${restData.storeStatus.statusText} — ${restData.storeStatus.subText}`
-            );
-          } else {
-            setClosedHoursNotice(null);
-          }
+        }
+        if (Array.isArray(restData?.subsites)) {
+          setSubsitesData(restData.subsites);
         }
         if (coupData?.coupons) {
           setAvailableCoupons(coupData.coupons);
@@ -136,6 +129,30 @@ export default function CheckoutPage() {
       })
       .catch(console.error);
   }, []);
+
+  // Recompute per-division closed notice whenever cart items or settings load
+  useEffect(() => {
+    if (!storeSettings || storeSettings.enforceStoreHours === false || subsitesData.length === 0) {
+      setClosedHoursNotice(null);
+      return;
+    }
+    const subsiteStatusMap = new Map<string, any>(subsitesData.map((s: any) => [s.id, s]));
+    const blockedDivisions = new Set<string>();
+    for (const cartItem of items) {
+      const divKey = getDivisionForCategory(
+        cartItem.foodItem.category || cartItem.foodItem.categoryId
+      );
+      const subInfo = subsiteStatusMap.get(divKey);
+      if (subInfo?.status?.isLocked) {
+        blockedDivisions.add(
+          subInfo.status.lockBanner || `${subInfo.title} is only open ${subInfo.status.timingText}`
+        );
+      }
+    }
+    setClosedHoursNotice(
+      blockedDivisions.size > 0 ? Array.from(blockedDivisions).join(" ") : null
+    );
+  }, [items, storeSettings, subsitesData]);
 
   // Instant real-time listener: if admin hits Emergency Website Stop, lock checkout immediately!
   useRealtimeEvents({

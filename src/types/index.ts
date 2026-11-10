@@ -1,13 +1,47 @@
+export type DivisionType = "tiffins" | "biryanis" | "fast-food" | "pickles";
+
 export interface Category {
   id: string;
   name: string;
   slug: string;
+  division?: DivisionType | string;
+  image?: string | null;
   description?: string | null;
   icon?: string | null;
   displayOrder: number;
   isActive: boolean;
   items?: FoodItem[];
   _count?: { items: number };
+}
+
+export interface SubsiteTimeWindow {
+  start: string;
+  end: string;
+}
+
+export interface SubsiteConfigItem {
+  id: DivisionType;
+  title: string;
+  shortTitle: string;
+  tagline: string;
+  quote: string;
+  description: string;
+  heroImage: string;
+  theme: string;
+  scheduleLabel: string;
+  timeWindowsJson: string;
+  alwaysOpen: boolean;
+  isOpenOverride?: boolean | null;
+  isActive: boolean;
+  pausedMessage?: string | null;
+  displayOrder: number;
+  status?: {
+    isOpen: boolean;
+    isLocked: boolean;
+    statusLabel: string;
+    timingText: string;
+    lockBanner: string | null;
+  };
 }
 
 export interface FoodItem {

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { RestaurantSetting, Coupon } from "@/types";
+import Link from "next/link";
 import {
   Save,
   CheckCircle2,
@@ -14,6 +15,7 @@ import {
   QrCode,
   Tag,
   Plus,
+  Globe,
 } from "lucide-react";
 
 export default function AdminSettingsPage() {
@@ -101,9 +103,17 @@ export default function AdminSettingsPage() {
             Restaurant Settings & Timings
           </h1>
           <p className="text-xs text-stone-500 mt-1">
-            Configure contact details, physical address, daily dining sessions, and homepage statements.
+            Configure contact details, physical address, delivery fees, and global controls.
           </p>
         </div>
+
+        <Link
+          href="/admin/websites"
+          className="btn-maroon-gold px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2"
+        >
+          <Globe className="w-4 h-4 text-[#DFC17B]" />
+          <span>4 Sub-Websites Controls</span>
+        </Link>
       </div>
 
       {successMsg && (
@@ -379,10 +389,10 @@ export default function AdminSettingsPage() {
               />
               <div>
                 <span className="font-bold text-[#2B070E] block">
-                  Enforce Session Hours &amp; Morning/Evening Menus
+                  Enforce Sub-Website Operating Schedules
                 </span>
                 <span className="text-[11px] text-stone-500">
-                  Locks checkout outside 6–10:30 AM &amp; 12–10:30 PM IST, and hides Noodles, Fried Rice &amp; Starters during Morning Tiffins.
+                  Enforces Tiffins (6–10:30 AM &amp; 5–10:30 PM), Biryanis (12–10:30 PM), Fast Foods (5–10:30 PM), and Pickles (24×7 Anytime).
                 </span>
               </div>
             </label>

@@ -5,12 +5,16 @@ import { FALLBACK_MENU_ITEMS } from "@/lib/fallback-menu";
 import {
   calculateStoreStatus,
   getCategorySessionPriority,
+  getDivisionForCategory,
   getEffectiveSessionType,
   getItemSessionAvailability,
+  isValidDivisionKey,
 } from "@/lib/store-hours";
+import { ensureSubsitesInitialized, getSubsitesAndSettings } from "@/lib/subsite-data";
 
 function filterFallbackItems(searchParams: URLSearchParams) {
   const category = searchParams.get("category");
+  const division = searchParams.get("division");
   const search = searchParams.get("search");
   const vegOnly = searchParams.get("vegOnly") === "true";
   const bestsellerOnly = searchParams.get("bestsellerOnly") === "true";
@@ -18,6 +22,12 @@ function filterFallbackItems(searchParams: URLSearchParams) {
   const sort = searchParams.get("sort");
 
   let filtered = [...FALLBACK_MENU_ITEMS];
+
+  if (division && isValidDivisionKey(division)) {
+    filtered = filtered.filter(
+      (item) => getDivisionForCategory(item.category || item.categoryId) === division
+    );
+  }
 
   if (category && category !== "all") {
     filtered = filtered.filter((item) => item.category?.slug === category || item.categoryId === category);
@@ -60,8 +70,10 @@ function filterFallbackItems(searchParams: URLSearchParams) {
 
 export async function GET(req: NextRequest) {
   try {
+    await ensureSubsitesInitialized();
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
+    const division = searchParams.get("division");
     const search = searchParams.get("search");
     const vegOnly = searchParams.get("vegOnly") === "true";
     const bestsellerOnly = searchParams.get("bestsellerOnly") === "true";
@@ -81,6 +93,10 @@ export async function GET(req: NextRequest) {
     if (category && category !== "all") {
       whereClause.category = {
         slug: category,
+      };
+    } else if (division && isValidDivisionKey(division)) {
+      whereClause.category = {
+        division,
       };
     }
 
@@ -117,32 +133,34 @@ export async function GET(req: NextRequest) {
       where: whereClause,
       include: {
         category: {
-          select: { id: true, name: true, slug: true },
+          select: { id: true, name: true, slug: true, division: true, image: true },
         },
       },
       orderBy,
     });
 
     if (!items || items.length === 0) {
+      const hasAnyFilter = Boolean((category && category !== "all") || division || search || vegOnly || bestsellerOnly || signatureOnly);
+      if (hasAnyFilter) {
+        return NextResponse.json({ items: [] });
+      }
       const fallbackFiltered = filterFallbackItems(searchParams);
       return NextResponse.json({ items: fallbackFiltered });
     }
 
     if (respectSession && !includeInactive) {
-      const settings = await prisma.restaurantSetting.findUnique({ where: { id: "default" } });
+      const { settings, storeStatus, subsiteMap } = await getSubsitesAndSettings();
       const enforceHours = settings?.enforceStoreHours !== false;
-      const status = calculateStoreStatus(
-        settings?.openingTime,
-        settings?.closingTime,
-        settings?.isEmergencyClosed
-      );
-      const effectiveSession = getEffectiveSessionType(status.sessionType, previewSession);
+      const effectiveSession = getEffectiveSessionType(storeStatus.sessionType, previewSession);
 
       const enriched = items.map((it) => {
         const availability = getItemSessionAvailability(
           it.category?.slug,
           effectiveSession,
-          enforceHours
+          enforceHours,
+          it.category?.division,
+          subsiteMap,
+          Boolean(settings?.isEmergencyClosed)
         );
         return {
           ...it,

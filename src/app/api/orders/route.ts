@@ -4,7 +4,12 @@ import crypto from "crypto";
 import { getDeliveryFee, calculateDistanceKm, UPAHAR_COORDINATES } from "@/lib/delivery-zones";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 import { calculateCouponDiscount } from "@/lib/coupons";
-import { calculateStoreStatus, isCategoryAvailableInSession } from "@/lib/store-hours";
+import {
+  evaluateDivisionStatus,
+  getDivisionForCategory,
+  type DivisionKey,
+} from "@/lib/store-hours";
+import { getSubsitesAndSettings } from "@/lib/subsite-data";
 
 export async function GET(req: NextRequest) {
   try {
@@ -161,14 +166,10 @@ export async function POST(req: NextRequest) {
       items,
     } = body;
 
-    // 0b. Enforce Upahar Sessions (Morning 6-10 AM / Evening 6-10:30 PM)
-    const storeStatus = calculateStoreStatus(
-      settings?.openingTime,
-      settings?.closingTime,
-      settings?.isEmergencyClosed
-    );
+    // 0b. Enforce Emergency Closed + Per-Subsite Operating Hours (Pickles 24x7, Tiffins 6-10:30 AM & 5-10:30 PM, Biryanis 12-10:30 PM, Fast Foods 5-10:30 PM)
+    const { storeStatus, subsiteMap } = await getSubsitesAndSettings();
 
-    if (settings?.enforceStoreHours !== false && !simulatorBypassHours && !storeStatus.isOpen) {
+    if (settings?.isEmergencyClosed && !simulatorBypassHours) {
       return NextResponse.json(
         {
           error: `Kitchen is currently closed (${storeStatus.statusText}). ${storeStatus.subText}`,
@@ -200,21 +201,66 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1b. Enforce Morning Session Category Availability (hide Noodles, Fried Rice & Starters during 6-10:30 AM)
-    if (settings?.enforceStoreHours !== false && !simulatorBypassHours && storeStatus.sessionType === "MORNING") {
-      const foodIds = items.map((it: any) => it.foodItemId || it.id).filter(Boolean);
-      if (foodIds.length > 0) {
-        const dbItems = await prisma.foodItem.findMany({
-          where: { id: { in: foodIds } },
-          include: { category: { select: { slug: true, name: true } } },
+    // 1b. Enforce Per-Division Operating Hours & Item Availability
+    const foodIds = items.map((it: any) => it.foodItemId || it.id).filter(Boolean);
+    const dbItems =
+      foodIds.length > 0
+        ? await prisma.foodItem.findMany({
+            where: { id: { in: foodIds } },
+            include: { category: { select: { slug: true, name: true, division: true } } },
+          })
+        : [];
+    const dbItemMap = new Map(dbItems.map((d) => [d.id, d]));
+
+    const soldOutItem = dbItems.find((d) => !d.isAvailable);
+    if (soldOutItem) {
+      return NextResponse.json(
+        { error: `"${soldOutItem.name}" is currently Not Available. Please remove it from your bag.` },
+        { status: 400 }
+      );
+    }
+
+    const enforceHours = settings?.enforceStoreHours !== false && !simulatorBypassHours;
+    if (enforceHours) {
+      for (const it of items) {
+        const dbMatch = dbItemMap.get(it.foodItemId || it.id);
+        let divKey: DivisionKey;
+        if (dbMatch?.category) {
+          divKey = getDivisionForCategory(dbMatch.category);
+        } else {
+          const itemName = String(it.name || "").toLowerCase();
+          if (itemName.includes("pickle") || itemName.includes("avakaya") || itemName.includes("gongura") || itemName.includes("magaya")) {
+            divKey = "pickles";
+          } else if (itemName.includes("biryani")) {
+            divKey = "biryanis";
+          } else if (
+            itemName.includes("noodle") ||
+            itemName.includes("rice") ||
+            itemName.includes("manchurian") ||
+            itemName.includes("chilli") ||
+            itemName.includes("mughlai") ||
+            itemName.includes("parotta") ||
+            itemName.includes("chapati") ||
+            itemName.includes("roti")
+          ) {
+            divKey = "fast-food";
+          } else {
+            divKey = "tiffins";
+          }
+        }
+
+        const divEval = evaluateDivisionStatus(divKey, {
+          isEmergencyClosed: Boolean(settings?.isEmergencyClosed),
+          enforceStoreHours: true,
+          dbConfig: subsiteMap[divKey],
         });
-        const blocked = dbItems.find((d) => !isCategoryAvailableInSession(d.category?.slug, "MORNING"));
-        if (blocked) {
+
+        if (!divEval.isOpen) {
           return NextResponse.json(
             {
-              error: `"${blocked.name}" (${blocked.category?.name}) is prepared exclusively during Afternoon & Evening Session (12:00 PM – 10:30 PM IST). Only Morning Tiffins & Dosas are available from 6:00 AM – 10:30 AM.`,
+              error: divEval.lockBanner || `"${it.name}" is only available during ${divEval.timingText}.`,
             },
-            { status: 400 }
+            { status: 403 }
           );
         }
       }

@@ -17,6 +17,7 @@ import {
   X,
   ShoppingBag,
   Bike,
+  Globe,
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -26,6 +27,7 @@ export default function AdminSidebar() {
 
   const links = [
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
+    { name: "4 Sub-Websites", href: "/admin/websites", icon: Globe, badge: "4 Sites" },
     { name: "Live Orders", href: "/admin/orders", icon: ShoppingBag, badge: "Live" },
     { name: "Delivery Agents", href: "/admin/delivery-agents", icon: Bike },
     { name: "Menu Dishes", href: "/admin/menu", icon: UtensilsCrossed },

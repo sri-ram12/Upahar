@@ -140,11 +140,13 @@ export default function ContactPage() {
                 Operating Schedule
               </span>
               <h3 className="text-base font-bold text-brand-950 mt-1">
-                Two Daily Sessions
+                Sub-Website Operating Hours
               </h3>
             </div>
             <p className="text-xs text-stone-600 leading-relaxed">
-              Morning Tiffins: 6:00 AM – 10:30 AM<br />Afternoon &amp; Evening: 12:00 PM – 10:30 PM
+              Tiffins: 6:00–10:30 AM &amp; 5:00–10:30 PM<br />
+              Biryanis: 12:00 PM – 10:30 PM<br />
+              Fast Foods: 5:00 PM – 10:30 PM • Pickles: 24×7
             </p>
             <span className="inline-block text-xs font-bold text-[#2D5A27] bg-[#EBF3E8] px-3 py-1 rounded-xl">
               Open Monday to Sunday

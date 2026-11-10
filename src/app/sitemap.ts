@@ -5,19 +5,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes = [
     "",
+    "/tiffins",
+    "/biryanis",
+    "/fast-food",
+    "/pickles",
     "/menu",
-    "/offers",
     "/about",
+    "/experience",
     "/gallery",
     "/contact",
-    "/order-tracking",
+    "/orders",
+    "/qr",
     "/privacy",
     "/terms",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : 0.85,
   }));
 
   return routes;

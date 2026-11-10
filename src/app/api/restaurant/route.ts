@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { calculateStoreStatus, getDiningSessions } from "@/lib/store-hours";
+import { getSubsitesAndSettings } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 export async function GET() {
@@ -16,18 +17,14 @@ export async function GET() {
       });
     }
 
-    const storeStatus = calculateStoreStatus(
-      settings.openingTime,
-      settings.closingTime,
-      settings.isEmergencyClosed
-    );
-
+    const { storeStatus, subsites } = await getSubsitesAndSettings();
     const diningSessions = getDiningSessions();
 
     return NextResponse.json({
       settings,
       storeStatus,
       diningSessions,
+      subsites,
     });
   } catch (error) {
     console.error("Error fetching restaurant settings:", error);

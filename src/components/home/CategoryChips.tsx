@@ -2,16 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  Flame,
-  Sparkles,
-  UtensilsCrossed,
-  Soup,
-  Coffee,
-  CupSoda,
-  ChevronRight,
-  Lock,
-} from "lucide-react";
+import Image from "next/image";
+import { ChevronRight, Lock } from "lucide-react";
 import { Category } from "@/types";
 import { isCategoryAvailableInSession, type SessionType } from "@/lib/store-hours";
 
@@ -21,20 +13,21 @@ interface CategoryChipsProps {
   themeParam?: string | null;
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  biryanis: <Flame className="w-4 h-4 text-[#D4AF37]" />,
-  "fried-rice": <Flame className="w-4 h-4 text-[#D4AF37]" />,
-  noodles: <Soup className="w-4 h-4 text-[#D4AF37]" />,
-  starters: <Sparkles className="w-4 h-4 text-[#D4AF37]" />,
-  "evening-specials": <UtensilsCrossed className="w-4 h-4 text-[#D4AF37]" />,
-  dosa: <Flame className="w-4 h-4 text-[#D4AF37]" />,
-  tiffins: <Coffee className="w-4 h-4 text-[#D4AF37]" />,
-  "crispy-dosas": <Flame className="w-4 h-4 text-[#D4AF37]" />,
-  "idli-and-vada": <Sparkles className="w-4 h-4 text-[#D4AF37]" />,
-  "poori-and-tiffins": <UtensilsCrossed className="w-4 h-4 text-[#D4AF37]" />,
-  "fast-food-chinese": <Soup className="w-4 h-4 text-[#D4AF37]" />,
-  "evening-snacks": <Coffee className="w-4 h-4 text-[#D4AF37]" />,
-  beverages: <CupSoda className="w-4 h-4 text-[#D4AF37]" />,
+const FALLBACK_CATEGORY_IMAGES: Record<string, string> = {
+  tiffins: "/images/upahar_chitti_idly.jpg",
+  dosa: "/ghee-karam-dosa.jpg",
+  biryanis: "/images/dishes/chicken-dum-biryani.jpg",
+  "evening-specials": "/images/dishes/parotta.jpg",
+  noodles: "/veg-manchurian-noodles.jpg",
+  "veg-noodles": "/veg-manchurian-noodles.jpg",
+  "nonveg-noodles": "/images/dishes/chicken-noodles.jpg",
+  "fried-rice": "/chicken-fried-rice.jpg",
+  "veg-rice": "/images/dishes/veg-fried-rice.jpg",
+  "nonveg-rice": "/chicken-fried-rice.jpg",
+  starters: "/images/dishes/chicken-manchurian.jpg",
+  "veg-starters": "/images/dishes/paneer-manchurian.jpg",
+  "nonveg-starters": "/images/dishes/chicken-manchurian.jpg",
+  pickles: "/images/dishes/mango-avakaya.jpg",
 };
 
 export default function CategoryChips({
@@ -51,9 +44,9 @@ export default function CategoryChips({
   return (
     <section className="py-8 bg-brand-cream border-b border-brand-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-5">
           <span className="text-xs uppercase font-extrabold tracking-widest text-brand-700">
-            Explore By Culinary Category
+            Explore By Category
           </span>
           <Link
             href={withTheme("/menu")}
@@ -64,44 +57,57 @@ export default function CategoryChips({
           </Link>
         </div>
 
-        {/* Scrollable Category Chips Container */}
-        <div className="flex items-center space-x-3 overflow-x-auto pb-2 no-scrollbar">
+        {/* Circular Image + Down Name Selector Strip (Matches Visual Reference) */}
+        <div className="flex items-start space-x-5 sm:space-x-7 overflow-x-auto pb-3 no-scrollbar">
           <Link
             href={withTheme("/menu")}
-            className="flex-shrink-0 px-4 py-2.5 rounded-2xl bg-brand-700 text-[#DFC17B] font-bold text-xs tracking-wide shadow-md hover:bg-brand-600 transition flex items-center space-x-2 border border-[#D4AF37]/50"
+            className="flex-shrink-0 flex flex-col items-center gap-2 group min-w-[72px]"
           >
-            <UtensilsCrossed className="w-3.5 h-3.5 text-[#DFC17B]" />
-            <span>Complete Menu</span>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-brand-700 shadow-md group-hover:scale-105 transition">
+              <Image
+                src="/images/upahar_logo.jpg"
+                alt="All Menu"
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
+            </div>
+            <span className="text-xs font-extrabold text-brand-950 text-center leading-tight group-hover:text-brand-700">
+              All
+            </span>
           </Link>
 
           {categories.map((cat) => {
-            const isLocked =
-              effectiveSession === "MORNING" && !isCategoryAvailableInSession(cat.slug, "MORNING");
+            const isLocked = !isCategoryAvailableInSession(cat.slug, effectiveSession, cat.division);
+            const imgSrc =
+              cat.image || FALLBACK_CATEGORY_IMAGES[cat.slug] || "/ghee-karam-dosa.jpg";
             return (
               <Link
                 key={cat.id}
                 href={withTheme(`/menu?category=${cat.slug}`)}
-                className={`flex-shrink-0 px-4 py-2.5 rounded-2xl font-bold text-xs tracking-wide border transition shadow-xs hover:shadow-md flex items-center space-x-2 group ${
-                  isLocked
-                    ? "bg-amber-50/75 hover:bg-amber-100 text-amber-950 border-amber-300/70"
-                    : "bg-white hover:bg-brand-surface text-brand-950 border-brand-border hover:border-[#D4AF37]"
-                }`}
-                title={isLocked ? "Opens 12:00 PM – 10:30 PM IST" : cat.name}
+                className="flex-shrink-0 flex flex-col items-center gap-2 group min-w-[78px] max-w-[96px]"
               >
-                <span>{iconMap[cat.slug] || <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />}</span>
-                <span className="group-hover:text-brand-700">{cat.name}</span>
-                {isLocked ? (
-                  <span className="text-[10px] bg-amber-200/80 text-amber-950 px-1.5 py-0.5 rounded-md font-bold flex items-center gap-0.5">
-                    <Lock className="w-2.5 h-2.5" />
-                    <span>12 PM</span>
-                  </span>
-                ) : (
-                  cat._count?.items !== undefined && (
-                    <span className="text-[10px] bg-brand-cream group-hover:bg-brand-700 group-hover:text-white px-1.5 py-0.5 rounded-md text-stone-500 font-bold border border-brand-border">
-                      {cat._count.items}
+                <div
+                  className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 shadow-md group-hover:scale-105 transition ${
+                    isLocked ? "border-amber-400/80" : "border-[#D4AF37]/70 group-hover:border-brand-700"
+                  }`}
+                >
+                  <Image
+                    src={imgSrc}
+                    alt={cat.name}
+                    fill
+                    sizes="80px"
+                    className={`object-cover ${isLocked ? "grayscale-[20%] brightness-90" : ""}`}
+                  />
+                  {isLocked && (
+                    <span className="absolute inset-0 bg-black/25 flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-[#DFC17B]" />
                     </span>
-                  )
-                )}
+                  )}
+                </div>
+                <span className="text-[11px] sm:text-xs font-bold text-stone-800 group-hover:text-brand-700 text-center leading-tight line-clamp-2">
+                  {cat.name}
+                </span>
               </Link>
             );
           })}

@@ -15,7 +15,7 @@ function isStaffRoute(pathname: string | null): boolean {
   );
 }
 
-/** Keeps <html data-upahar-theme> aligned sitewide across sessions & routes. */
+/** Keeps <html data-upahar-theme> aligned by route/sub-website (NO automatic time theme flipping). */
 export default function ThemeSync() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,29 +28,17 @@ export default function ThemeSync() {
       if (!active) return;
       const resolved = isStaffRoute(pathname)
         ? "original-maroon"
-        : getWebsiteTheme(sessionType, urlTheme);
+        : getWebsiteTheme(sessionType, urlTheme, pathname);
 
       document.documentElement.setAttribute("data-upahar-theme", resolved);
       window.dispatchEvent(
         new CustomEvent("upahar-theme-change", {
-          detail: { theme: resolved, urlTheme },
+          detail: { theme: resolved, urlTheme, pathname },
         })
       );
     };
 
-    // Instant client IST calculation while waiting for API refresh
-    const now = new Date();
-    const istDate = new Date(
-      now.getTime() + now.getTimezoneOffset() * 60000 + 5.5 * 3600000
-    );
-    const mins = istDate.getHours() * 60 + istDate.getMinutes();
-    const localSession: SessionType =
-      mins >= 360 && mins < 630
-        ? "MORNING"
-        : mins >= 720 && mins < 1350
-        ? "EVENING"
-        : "CLOSED";
-    applyTheme(localSession);
+    applyTheme(null);
 
     const syncFromApi = () => {
       fetch("/api/restaurant")
@@ -74,4 +62,3 @@ export default function ThemeSync() {
 
   return null;
 }
-

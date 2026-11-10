@@ -61,7 +61,12 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
             {isLocked && (
               <span className="bg-amber-950/90 text-[#DFC17B] text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border border-[#D4AF37]/60 shadow-md flex items-center space-x-1">
                 <Lock className="w-2.5 h-2.5" />
-                <span>Opens 12:00 PM</span>
+                <span>{item.availableAtText ? `Opens ${item.availableAtText}` : "Closed Now"}</span>
+              </span>
+            )}
+            {!isAvailable && (
+              <span className="bg-red-700 text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md shadow-md">
+                Not Available
               </span>
             )}
             {item.isSignature && (
@@ -148,14 +153,14 @@ export default function MenuDishCard({ item, onSelectDish }: MenuDishCardProps) 
                 type="button"
                 onClick={() => onSelectDish(item)}
                 className="px-3 py-1.5 rounded-xl text-[11px] font-extrabold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 flex items-center space-x-1 transition"
-                title={item.lockReason || "Available from 12:00 PM – 10:30 PM"}
+                title={item.lockReason || (item.availableAtText ? `Available ${item.availableAtText}` : "Closed outside operating hours")}
               >
-                <Lock className="w-3 h-3 text-amber-700" />
-                <span>12 PM Onwards</span>
+                <Lock className="w-3 h-3 text-amber-700 flex-shrink-0" />
+                <span className="max-w-[110px] truncate">{item.availableAtText || "Closed Now"}</span>
               </button>
             ) : !isAvailable ? (
-              <span className="text-[11px] font-bold text-stone-400 bg-stone-100 px-3 py-1.5 rounded-xl">
-                Sold Out
+              <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+                Not Available
               </span>
             ) : quantity === 0 ? (
               <button

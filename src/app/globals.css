@@ -72,8 +72,27 @@
     --foreground: var(--color-charcoal-900);
   }
 
-  /* Morning Tiffins Session Theme (6:00 AM – 10:30 AM IST): Authentic Banana-Leaf & Ribbon Green from Upahar Logo */
-  html[data-upahar-theme="morning-green"] {
+  /* Main Hub Light Theme: Clean Ivory / Crisp Light Colour */
+  html[data-upahar-theme="light-hub"] {
+    --upahar-950: #1C1917;
+    --upahar-900: #292524;
+    --upahar-800: #44403C;
+    --upahar-700: #580D1A;
+    --upahar-600: #8B1E26;
+    --upahar-cream: #FFFFFF;
+    --upahar-surface: #F7F4EE;
+    --upahar-border: #E7E0D3;
+    --upahar-footer: #FAF8F4;
+    --upahar-dark-stage: #F5F1E8;
+    --upahar-dark-card: #FFFFFF;
+    --upahar-dark-mid: #EDE5D7;
+    --upahar-dark-deep: #E5DCCB;
+    --upahar-glow-rgb: 197, 160, 89;
+  }
+
+  /* Upahar Tiffins Green Theme: Authentic Banana-Leaf & Ribbon Green from Upahar Logo */
+  html[data-upahar-theme="morning-green"],
+  html[data-upahar-theme="tiffins-green"] {
     --upahar-950: #071D06;
     --upahar-900: #092607;
     --upahar-800: #0E2F0A;
@@ -88,6 +107,61 @@
     --upahar-dark-mid: #153B10;
     --upahar-dark-deep: #051404;
     --upahar-glow-rgb: 21, 59, 16;
+  }
+
+  /* Upahar Biryanis Maroon Theme: Royal Upahar Maroon & Gold */
+  html[data-upahar-theme="original-maroon"],
+  html[data-upahar-theme="biryanis-maroon"] {
+    --upahar-950: #2B070E;
+    --upahar-900: #380A11;
+    --upahar-800: #4A0E17;
+    --upahar-700: #580D1A;
+    --upahar-600: #74171E;
+    --upahar-cream: #FAF7F2;
+    --upahar-surface: #F4EFE6;
+    --upahar-border: #EADBCE;
+    --upahar-footer: #141210;
+    --upahar-dark-stage: #141210;
+    --upahar-dark-card: #1C1917;
+    --upahar-dark-mid: #3D0A13;
+    --upahar-dark-deep: #1A0307;
+    --upahar-glow-rgb: 88, 13, 26;
+  }
+
+  /* Upahar Fast Foods Golden Yellow Theme */
+  html[data-upahar-theme="fastfood-gold"] {
+    --upahar-950: #422006;
+    --upahar-900: #713F12;
+    --upahar-800: #A16207;
+    --upahar-700: #CA8A04;
+    --upahar-600: #EAB308;
+    --upahar-cream: #FFFDF0;
+    --upahar-surface: #FEF3C7;
+    --upahar-border: #FDE047;
+    --upahar-footer: #5C3404;
+    --upahar-dark-stage: #713F12;
+    --upahar-dark-card: #854D0E;
+    --upahar-dark-mid: #A16207;
+    --upahar-dark-deep: #422006;
+    --upahar-glow-rgb: 234, 179, 8;
+  }
+
+  /* Upahar Pickles Reference Red Theme (#FF0000 Chilli Red) */
+  html[data-upahar-theme="pickles-red"] {
+    --upahar-950: #450000;
+    --upahar-900: #6E0000;
+    --upahar-800: #A80000;
+    --upahar-700: #DB0000;
+    --upahar-600: #FF0000;
+    --upahar-cream: #FFF7F7;
+    --upahar-surface: #FFE5E5;
+    --upahar-border: #FFBDBD;
+    --upahar-footer: #5C0000;
+    --upahar-dark-stage: #5C0000;
+    --upahar-dark-card: #7A0000;
+    --upahar-dark-mid: #A80000;
+    --upahar-dark-deep: #3D0000;
+    --upahar-glow-rgb: 255, 0, 0;
   }
 
   html {
@@ -192,6 +266,18 @@
   background: var(--upahar-surface);
   border-color: var(--upahar-700);
   color: var(--upahar-700);
+  transform: translateY(-1px);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #F3DEAB 0%, #D4AF37 100%);
+  color: #1C1917;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, #FFF3C4 0%, #DFC17B 100%);
   transform: translateY(-1px);
 }
 
