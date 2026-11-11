@@ -39,11 +39,11 @@ export default function LiveTrackingMap({
   const destLng = customerLng || matchedLoc?.lng || 83.417;
   const effectiveDist = distanceKm || matchedLoc?.distanceKm || 1.8;
 
-  // Map geo bounding box around Sangivalasa / Tagarapuvalasa (covers ~6km across)
-  const minLat = 17.898;
-  const maxLat = 17.956;
-  const minLng = 83.395;
-  const maxLng = 83.455;
+  // Map geo bounding box around Sangivalasa / Tagarapuvalasa (covers ~7km delivery service radius)
+  const minLat = 17.882;
+  const maxLat = 17.972;
+  const minLng = 83.378;
+  const maxLng = 83.470;
 
   const project = (lat: number, lng: number) => {
     const x = Math.min(90, Math.max(10, ((lng - minLng) / (maxLng - minLng)) * 100));

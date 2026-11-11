@@ -280,7 +280,7 @@ export default function HomeLandingClient({
               </h3>
               <p className="text-xs sm:text-sm text-[#57534E] max-w-2xl">
                 {customer
-                  ? `Signed in with ${customer.phone}${
+                  ? `Signed in with ${customer.phone || customer.email || "Upahar Account"}${
                       customer.addresses?.length
                         ? ` • ${customer.addresses.length} saved delivery address${customer.addresses.length > 1 ? "es" : ""}`
                         : ""

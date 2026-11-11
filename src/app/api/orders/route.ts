@@ -10,6 +10,8 @@ import {
   type DivisionKey,
 } from "@/lib/store-hours";
 import { getSubsitesAndSettings } from "@/lib/subsite-data";
+import { getAuthenticatedCustomer } from "@/lib/customer-auth";
+import { sendOrderConfirmationEmail } from "@/lib/mailer";
 
 export async function GET(req: NextRequest) {
   try {
@@ -359,11 +361,14 @@ export async function POST(req: NextRequest) {
 
     const initialPaymentStatus = cleanUtr ? "VERIFICATION_PENDING" : "PENDING";
 
+    const authenticatedCustomer = await getAuthenticatedCustomer();
+    const resolvedCustomerId = authenticatedCustomer?.id || customerId || null;
+
     // 6. Create Order & Items in DB
     const order = await prisma.order.create({
       data: {
         orderNumber,
-        customerId: customerId || null,
+        customerId: resolvedCustomerId,
         customerName: customerName.trim(),
         customerPhone: cleanPhone,
         orderType,
@@ -403,6 +408,35 @@ export async function POST(req: NextRequest) {
         deliveryAgent: true,
       },
     });
+
+    // If Google/Email-registered customer had no saved phone yet, link this checkout phone if unclaimed
+    if (authenticatedCustomer && !authenticatedCustomer.phone) {
+      const existingByPhone = await prisma.customerUser.findUnique({ where: { phone: cleanPhone } });
+      if (!existingByPhone) {
+        await prisma.customerUser.update({
+          where: { id: authenticatedCustomer.id },
+          data: { phone: cleanPhone },
+        }).catch(() => {});
+      }
+    }
+
+    // Fire-and-forget order confirmation email if customer has verified/known email
+    const notifyEmail = authenticatedCustomer?.email || (body.customerEmail ? String(body.customerEmail).trim().toLowerCase() : null);
+    if (notifyEmail) {
+      sendOrderConfirmationEmail({
+        to: notifyEmail,
+        order: {
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          orderType: order.orderType,
+          totalAmount: order.totalAmount,
+          deliveryOtp: order.deliveryOtp,
+          paymentMethod: order.paymentMethod,
+          deliveryAddress: order.deliveryAddress,
+          items: order.items,
+        },
+      }).catch(() => {});
+    }
 
     // Broadcast instant real-time event to Admin & Kitchen panels (<50ms latency)
     broadcastRealtimeEvent("ORDER_CREATED", {

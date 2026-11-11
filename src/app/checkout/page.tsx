@@ -358,6 +358,7 @@ export default function CheckoutPage() {
         customerId: customer?.id || null,
         customerName: customerName.trim(),
         customerPhone: cleanPhone,
+        customerEmail: customer?.email || null,
         orderType,
         deliveryAddress:
           orderType === "DELIVERY"

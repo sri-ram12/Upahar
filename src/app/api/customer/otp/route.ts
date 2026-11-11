@@ -1,120 +1,222 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "upahar-customer-secret-key-2026";
+import { prisma } from "@/lib/prisma";
+import {
+  sanitizeCustomerForClient,
+  setCustomerAuthCookie,
+  signCustomerToken,
+} from "@/lib/customer-auth";
+import {
+  generateAndSendCustomerOtp,
+  normalizeEmail,
+  normalizePhone,
+  verifyStoredCustomerOtp,
+} from "@/lib/customer-otp";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, phone, code, name, address, landmark, locality } = body;
+    const {
+      action,
+      channel: rawChannel,
+      email,
+      phone,
+      code,
+      purpose,
+      name,
+      password,
+      newPassword,
+      address,
+      landmark,
+      locality,
+    } = body;
 
-    const cleanPhone = phone ? String(phone).replace(/\D/g, "") : "";
-    if (!cleanPhone || cleanPhone.length < 10) {
-      return NextResponse.json(
-        { error: "Valid 10-digit mobile number is required" },
-        { status: 400 }
-      );
-    }
+    const cleanEmail = normalizeEmail(email);
+    const cleanPhone = normalizePhone(phone);
+    const channel: "EMAIL" | "SMS" =
+      rawChannel === "EMAIL" || (!rawChannel && cleanEmail.includes("@")) ? "EMAIL" : "SMS";
 
     if (action === "send") {
-      // Check if customer exists to help UI know whether they are new or returning
-      const existingCustomer = await prisma.customerUser.findUnique({
-        where: { phone: cleanPhone },
-        select: { id: true, name: true },
+      const existingCustomer =
+        channel === "EMAIL"
+          ? await prisma.customerUser.findUnique({
+              where: { email: cleanEmail },
+              select: { id: true, name: true },
+            })
+          : await prisma.customerUser.findUnique({
+              where: { phone: cleanPhone },
+              select: { id: true, name: true },
+            });
+
+      const resolvedPurpose =
+        purpose === "RESET_PASSWORD"
+          ? "RESET_PASSWORD"
+          : purpose === "VERIFY_EMAIL"
+          ? "VERIFY_EMAIL"
+          : existingCustomer
+          ? "LOGIN"
+          : "SIGNUP";
+
+      if (resolvedPurpose === "RESET_PASSWORD" && !existingCustomer) {
+        return NextResponse.json(
+          { error: `No account found for ${channel === "EMAIL" ? cleanEmail : cleanPhone}.` },
+          { status: 404 }
+        );
+      }
+
+      const sendResult = await generateAndSendCustomerOtp({
+        channel,
+        email: cleanEmail,
+        phone: cleanPhone,
+        purpose: resolvedPurpose,
+        customerName: existingCustomer?.name || name || null,
       });
 
-      const otpCode = crypto.randomInt(1000, 10000).toString();
-      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
-
-      // Invalidate older unverified OTPs for this phone
-      await prisma.customerOtp.updateMany({
-        where: { phone: cleanPhone, verified: false },
-        data: { verified: true },
-      });
-
-      await prisma.customerOtp.create({
-        data: {
-          phone: cleanPhone,
-          code: otpCode,
-          purpose: existingCustomer ? "LOGIN" : "SIGNUP",
-          expiresAt,
-        },
-      });
-
-      // Hook for live SMS provider when configured (e.g. Fast2SMS / MSG91)
-      // For local/zero-cost testing until DLT SMS API key is provided, we return sandboxOtp cleanly.
-      const smsGatewayConfigured = Boolean(process.env.FAST2SMS_API_KEY || process.env.MSG91_AUTH_KEY);
+      if (!sendResult.ok) {
+        return NextResponse.json(
+          {
+            error: sendResult.error,
+            retryAfterSeconds: sendResult.retryAfterSeconds,
+          },
+          { status: sendResult.status }
+        );
+      }
 
       return NextResponse.json({
         success: true,
+        channel,
+        delivered: sendResult.delivered,
+        provider: sendResult.provider,
         isExistingUser: Boolean(existingCustomer),
         existingName: existingCustomer?.name || null,
-        message: smsGatewayConfigured
-          ? `4-digit OTP sent via SMS to +91 ${cleanPhone}`
-          : `Verification OTP generated for +91 ${cleanPhone}`,
-        ...(smsGatewayConfigured ? {} : { sandboxOtp: otpCode }),
+        message:
+          channel === "EMAIL"
+            ? sendResult.delivered
+              ? `6-digit verification OTP sent to ${cleanEmail}`
+              : `Email OTP generated for ${cleanEmail} (configure SMTP_USER & SMTP_PASS in .env for live inbox delivery)`
+            : sendResult.delivered
+            ? `4-digit OTP sent via SMS to +91 ${cleanPhone}`
+            : `SMS OTP generated for +91 ${cleanPhone}`,
+        ...(sendResult.sandboxOtp ? { sandboxOtp: sendResult.sandboxOtp } : {}),
       });
     }
 
     if (action === "verify") {
-      if (!code || String(code).trim().length !== 4) {
-        return NextResponse.json(
-          { error: "Please enter the 4-digit verification OTP" },
-          { status: 400 }
-        );
+      const check = await verifyStoredCustomerOtp({
+        channel,
+        email: cleanEmail,
+        phone: cleanPhone,
+        code,
+      });
+
+      if (!check.ok) {
+        return NextResponse.json({ error: check.error }, { status: check.status });
       }
 
-      const otpRecord = await prisma.customerOtp.findFirst({
-        where: {
-          phone: cleanPhone,
-          code: String(code).trim(),
-          verified: false,
-          expiresAt: { gt: new Date() },
-        },
-        orderBy: { createdAt: "desc" },
-      });
+      // Handle Password Reset via verified OTP
+      if (purpose === "RESET_PASSWORD" || check.otpRecord.purpose === "RESET_PASSWORD") {
+        if (!newPassword || String(newPassword).length < 4) {
+          return NextResponse.json(
+            { error: "New password must be at least 4 characters." },
+            { status: 400 }
+          );
+        }
 
-      if (!otpRecord) {
-        return NextResponse.json(
-          { error: "Invalid or expired OTP. Please request a fresh OTP." },
-          { status: 401 }
-        );
+        const existingUser =
+          channel === "EMAIL"
+            ? await prisma.customerUser.findUnique({ where: { email: cleanEmail } })
+            : await prisma.customerUser.findUnique({ where: { phone: cleanPhone } });
+
+        if (!existingUser) {
+          return NextResponse.json({ error: "Account not found." }, { status: 404 });
+        }
+
+        const passwordHash = await bcrypt.hash(String(newPassword), 10);
+        const updatedUser = await prisma.customerUser.update({
+          where: { id: existingUser.id },
+          data: {
+            passwordHash,
+            ...(channel === "EMAIL" ? { emailVerified: true } : {}),
+          },
+          include: { addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] } },
+        });
+
+        const token = signCustomerToken(updatedUser);
+        const response = NextResponse.json({
+          success: true,
+          message: "Password reset successful! You are now signed in.",
+          customer: sanitizeCustomerForClient(updatedUser),
+        });
+        setCustomerAuthCookie(response, token);
+        return response;
       }
 
-      await prisma.customerOtp.update({
-        where: { id: otpRecord.id },
-        data: { verified: true },
-      });
+      let customer =
+        channel === "EMAIL"
+          ? await prisma.customerUser.findUnique({
+              where: { email: cleanEmail },
+              include: { addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] } },
+            })
+          : await prisma.customerUser.findUnique({
+              where: { phone: cleanPhone },
+              include: { addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] } },
+            });
 
-      let customer = await prisma.customerUser.findUnique({
-        where: { phone: cleanPhone },
-        include: { addresses: { orderBy: { isDefault: "desc" } } },
-      });
-
-      if (!customer) {
+      if (customer) {
+        if (channel === "EMAIL" && !customer.emailVerified) {
+          customer = await prisma.customerUser.update({
+            where: { id: customer.id },
+            data: { emailVerified: true },
+            include: { addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] } },
+          });
+        }
+      } else {
         if (!name || !String(name).trim()) {
           return NextResponse.json(
             {
-              error: "Full name is required to complete new account signup.",
+              error: "Full name is required to complete new account registration.",
               requiresName: true,
             },
             { status: 400 }
           );
         }
 
-        const randomPasswordHash = await bcrypt.hash(crypto.randomUUID(), 10);
+        if (cleanPhone && cleanPhone.length < 10) {
+          return NextResponse.json(
+            { error: "Optional mobile number must be at least 10 digits." },
+            { status: 400 }
+          );
+        }
+
+        if (cleanPhone) {
+          const phoneConflict = await prisma.customerUser.findUnique({
+            where: { phone: cleanPhone },
+          });
+          if (phoneConflict) {
+            return NextResponse.json(
+              { error: "An account with this mobile number already exists. Sign in with Mobile instead." },
+              { status: 400 }
+            );
+          }
+        }
+
+        const passwordHash =
+          password && String(password).length >= 4
+            ? await bcrypt.hash(String(password), 10)
+            : null;
+
         customer = await prisma.customerUser.create({
           data: {
             name: String(name).trim(),
-            phone: cleanPhone,
-            passwordHash: randomPasswordHash,
+            email: channel === "EMAIL" ? cleanEmail : cleanEmail || null,
+            emailVerified: channel === "EMAIL",
+            phone: cleanPhone || null,
+            passwordHash,
+            authProvider: "LOCAL",
             address: address ? String(address).trim() : null,
             landmark: landmark ? String(landmark).trim() : null,
             locality: locality || "ANITS Campus & Hostels",
-            ...(address && {
+            ...(address && String(address).trim() && {
               addresses: {
                 create: {
                   label: "Primary",
@@ -126,47 +228,27 @@ export async function POST(req: NextRequest) {
               },
             }),
           },
-          include: { addresses: { orderBy: { isDefault: "desc" } } },
+          include: { addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] } },
         });
       }
 
-      const token = jwt.sign(
-        { id: customer.id, name: customer.name, phone: customer.phone },
-        JWT_SECRET,
-        { expiresIn: "30d" }
-      );
-
+      const token = signCustomerToken(customer);
       const response = NextResponse.json({
         success: true,
-        message: "Mobile OTP verified! Signed in successfully.",
-        customer: {
-          id: customer.id,
-          name: customer.name,
-          phone: customer.phone,
-          address: customer.address,
-          landmark: customer.landmark,
-          locality: customer.locality,
-          addresses: customer.addresses,
-        },
-        token,
+        message:
+          channel === "EMAIL"
+            ? "Email OTP verified! Signed in successfully."
+            : "Mobile OTP verified! Signed in successfully.",
+        customer: sanitizeCustomerForClient(customer),
       });
-
-      response.cookies.set("upahar_customer_token", token, {
-        httpOnly: false,
-        path: "/",
-        maxAge: 30 * 24 * 60 * 60,
-      });
-
+      setCustomerAuthCookie(response, token);
       return response;
     }
 
-    return NextResponse.json({ error: "Invalid OTP action" }, { status: 400 });
-  } catch (error: any) {
+    return NextResponse.json({ error: "Invalid OTP action." }, { status: 400 });
+  } catch (error: unknown) {
     console.error("Customer OTP error:", error);
-    return NextResponse.json(
-      { error: "OTP verification failed: " + (error?.message || "Unknown error") },
-      { status: 500 }
-    );
+    const msg = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: "OTP verification failed: " + msg }, { status: 500 });
   }
 }
-

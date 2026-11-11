@@ -497,7 +497,9 @@ export default function Navbar() {
                     <span className="text-xs font-black text-[#141210] block truncate">
                       {customer.name}
                     </span>
-                    <span className="text-[10px] text-stone-500 block">{customer.phone}</span>
+                    <span className="text-[10px] text-stone-500 block truncate">
+                      {customer.phone || customer.email}
+                    </span>
                   </div>
                 </div>
               ) : (

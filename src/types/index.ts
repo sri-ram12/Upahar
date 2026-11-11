@@ -138,8 +138,11 @@ export interface Coupon {
 export interface CustomerUser {
   id: string;
   name: string;
-  phone: string;
+  phone?: string | null;
   email?: string | null;
+  emailVerified?: boolean;
+  avatarUrl?: string | null;
+  authProvider?: string;
   address?: string | null;
   landmark?: string | null;
   locality?: string | null;
