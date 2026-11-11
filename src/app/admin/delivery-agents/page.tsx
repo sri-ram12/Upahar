@@ -198,7 +198,7 @@ export default function AdminDeliveryAgentsPage() {
             Coverage Area
           </span>
           <div className="text-2xl font-black text-[#2B070E] font-display">
-            5.0 KM Radius
+            7.0 KM Radius
           </div>
           <span className="text-[11px] text-stone-500 font-medium block">
             Sangivalasa, ANITS & Tagarapuvalasa

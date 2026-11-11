@@ -342,7 +342,7 @@ export default function KitchenDisplayPage() {
                           : "bg-emerald-900/80 text-emerald-300"
                       }`}
                     >
-                      {order.orderType === "DELIVERY" ? "Delivery 5km" : "Takeaway"}
+                      {order.orderType === "DELIVERY" ? "Delivery 7km" : "Takeaway"}
                     </span>
                     <span className="text-[11px] text-stone-400 block font-mono mt-0.5">
                       {elapsedMins}m ago

@@ -357,7 +357,7 @@ export default function AdminSettingsPage() {
         <div className="bg-white p-6 rounded-3xl border border-[#EADBCE] shadow-sm space-y-4">
           <h2 className="text-base font-bold text-[#2B070E] border-b border-[#F4EFE6] pb-2 flex items-center space-x-2">
             <Bike className="w-4 h-4 text-[#580D1A]" />
-            <span>Online Orders & Tagarapuvalasa 5km Delivery Configuration</span>
+            <span>Online Orders & Tagarapuvalasa 7km Delivery Configuration</span>
           </h2>
 
           <div className="space-y-3">
@@ -405,7 +405,7 @@ export default function AdminSettingsPage() {
                 <input
                   type="number"
                   step="0.5"
-                  value={settings.deliveryRadiusKm ?? 5.0}
+                  value={settings.deliveryRadiusKm ?? 7.0}
                   onChange={(e) =>
                     setSettings({ ...settings, deliveryRadiusKm: parseFloat(e.target.value) })
                   }

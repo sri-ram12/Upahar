@@ -247,7 +247,7 @@ export default function AdminOrdersPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#2B070E] font-display">
-            Live Orders (Tagarapuvalasa 5km)
+            Live Orders (Tagarapuvalasa 7km)
           </h1>
         </div>
 
@@ -460,7 +460,7 @@ export default function AdminOrdersPage() {
                             : "bg-emerald-50 text-emerald-800"
                         }`}
                       >
-                        {order.orderType === "DELIVERY" ? "Delivery 5km" : "Takeaway"}
+                        {order.orderType === "DELIVERY" ? "Delivery 7km" : "Takeaway"}
                       </span>
                       <button
                         onClick={() => handlePrintKOT(order)}
@@ -776,8 +776,8 @@ export default function AdminOrdersPage() {
               <option value="Some ordered items are currently sold out">
                 Some ordered items are currently sold out
               </option>
-              <option value="Delivery address is outside our 5km service boundary">
-                Outside 5km Tagarapuvalasa boundary
+              <option value="Delivery address is outside our 7km service boundary">
+                Outside 7km Tagarapuvalasa boundary
               </option>
               <option value="Store closing / tiffin hours ended">
                 Store closing / session ended

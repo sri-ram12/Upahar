@@ -158,7 +158,7 @@ export default function Footer() {
               </div>
               <div className="pt-1">
                 <span className={`text-[11px] font-semibold block ${headingAccent}`}>
-                  5km Delivery Available (Min ₹60 • Free ₹199+)
+                  7km Delivery Available (Min ₹60 • Free ₹199+)
                 </span>
               </div>
             </div>

@@ -109,7 +109,7 @@ model RestaurantSetting {
   emergencyStopMessage    String   @default("Upahar online ordering is temporarily paused by administration. We will be back shortly!")
   isOnlineOrderingEnabled Boolean  @default(true)
   enforceStoreHours       Boolean  @default(true)
-  deliveryRadiusKm        Float    @default(5.0)
+  deliveryRadiusKm        Float    @default(7.0)
   deliveryBaseFee         Float    @default(25.0)
   minOrderFreeDelivery    Float    @default(199.0)
   minDeliveryOrderAmount  Float    @default(60.0)

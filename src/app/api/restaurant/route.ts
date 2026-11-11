@@ -7,17 +7,15 @@ import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 export async function GET() {
   try {
-    let settings = await prisma.restaurantSetting.findUnique({
-      where: { id: "default" },
-    });
+    const { settings: syncedSettings, storeStatus, subsites } = await getSubsitesAndSettings();
+    let settings = syncedSettings;
 
     if (!settings) {
       settings = await prisma.restaurantSetting.create({
-        data: { id: "default" },
+        data: { id: "default", deliveryRadiusKm: 7.0 },
       });
     }
 
-    const { storeStatus, subsites } = await getSubsitesAndSettings();
     const diningSessions = getDiningSessions();
 
     return NextResponse.json({

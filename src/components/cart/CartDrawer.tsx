@@ -105,14 +105,14 @@ export default function CartDrawer() {
           </div>
         </div>
 
-        {/* Free Delivery Bar (Tagarapuvalasa 5km radius) */}
+        {/* Free Delivery Bar (Tagarapuvalasa 7km radius) */}
         <div className="bg-brand-700 text-[#DFC17B] px-4 py-2.5 text-xs flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
             <span className="flex items-center space-x-1.5 font-bold">
               <Bike className="w-3.5 h-3.5" />
               <span>
                 {amountToFree === 0
-                  ? "🎉 You unlocked FREE Delivery within 5km!"
+                  ? "🎉 You unlocked FREE Delivery within 7km!"
                   : `Add ₹${amountToFree} more for FREE delivery`}
               </span>
             </span>
@@ -244,7 +244,7 @@ export default function CartDrawer() {
               <div className="flex justify-between">
                 <span className="flex items-center space-x-1">
                   <span>Est. Delivery</span>
-                  <span className="text-[10px] text-stone-400">(within 5km)</span>
+                  <span className="text-[10px] text-stone-400">(within 7km)</span>
                 </span>
                 <span className="font-bold text-brand-950">
                   {amountToFree === 0 ? (

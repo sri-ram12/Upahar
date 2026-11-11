@@ -6,7 +6,7 @@ export const UPAHAR_COORDINATES = {
   address: "1-1, Sangivalasa, ANITS College Road, beside SBI, Tagarapuvalasa",
 };
 
-export const MAX_DELIVERY_RADIUS_KM = 5.0;
+export const MAX_DELIVERY_RADIUS_KM = 7.0;
 
 export interface PopularLocality {
   id: string;
@@ -92,7 +92,7 @@ export const TAGARAPUVALASA_LOCALITIES: PopularLocality[] = [
   },
   {
     id: "custom-location",
-    name: "Other Location (GPS or Custom Address within 5km)",
+    name: "Other Location (GPS or Custom Address within 7km)",
     area: "Tagarapuvalasa Area",
     distanceKm: 2.5,
     deliveryFee: 25,

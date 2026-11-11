@@ -271,7 +271,7 @@ export default function PortalHubPage() {
       id: "customer",
       role: "Panel 1: Customer Platform",
       title: "Public Website & Online Orders",
-      desc: "Menu browsing, dish steppers, customer login/signup, cart drawer, Tagarapuvalasa 5km geofencing, COD/UPI checkout, and live order tracking with secret Delivery OTP.",
+      desc: "Menu browsing, dish steppers, customer login/signup, cart drawer, Tagarapuvalasa 7km geofencing, COD/UPI checkout, and live order tracking with secret Delivery OTP.",
       icon: UtensilsCrossed,
       color: "from-amber-600 to-amber-700",
       badge: "Public Access",
@@ -301,7 +301,7 @@ export default function PortalHubPage() {
         { label: "Menu & Photos", href: "/admin/menu" },
         { label: "Live Order Desk", href: "/admin/orders" },
         { label: "Register Riders", href: "/admin/delivery-agents" },
-        { label: "5km Store Settings", href: "/admin/settings" },
+        { label: "7km Store Settings", href: "/admin/settings" },
       ],
     },
     {
@@ -361,7 +361,7 @@ export default function PortalHubPage() {
           </h1>
 
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-            All 5 dedicated platforms powering online food delivery within the 5km Tagarapuvalasa / Sangivalasa radius.
+            All 5 dedicated platforms powering online food delivery within the 7km Tagarapuvalasa / Sangivalasa radius.
           </p>
         </div>
 

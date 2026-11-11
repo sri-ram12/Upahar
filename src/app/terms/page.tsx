@@ -39,14 +39,14 @@ export default function TermsPage() {
             2. Pricing & Payments
           </h3>
           <p>
-            All prices are in Indian Rupees (₹). A small parcel packaging charge and distance-based delivery fee (free above qualifying subtotals within 5km of Sangivalasa / Tagarapuvalasa) apply cleanly before confirmation. Payment can be made via Cash on Delivery or scanning our official Paytm / UPI Business QR.
+            All prices are in Indian Rupees (₹). A small parcel packaging charge and distance-based delivery fee (free above qualifying subtotals within 7km of Sangivalasa / Tagarapuvalasa) apply cleanly before confirmation. Payment can be made via Cash on Delivery or scanning our official Paytm / UPI Business QR.
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">
             3. Delivery & Pickup Policy
           </h3>
           <p>
-            Doorstep delivery operates within a 5.0 km radius around Sangivalasa &amp; Tagarapuvalasa (minimum delivery subtotal ₹60). Customers receive a 4-digit secret Delivery OTP on their live order screen to confirm handover upon delivery.
+            Doorstep delivery operates within a 7.0 km radius around Sangivalasa &amp; Tagarapuvalasa (minimum delivery subtotal ₹60). Customers receive a 4-digit secret Delivery OTP on their live order screen to confirm handover upon delivery.
           </p>
 
           <h3 className="font-bold text-stone-900 text-base pt-2">

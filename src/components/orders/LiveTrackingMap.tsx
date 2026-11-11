@@ -114,7 +114,7 @@ export default function LiveTrackingMap({
           <span className="font-black text-brand-950">
             {hasLiveGpsRider
               ? `Live GPS Tracking • ${riderName || "Rider"} on the move`
-              : `Tagarapuvalasa 5km Route (~${effectiveDist} km)`}
+              : `Tagarapuvalasa 7km Route (~${effectiveDist} km)`}
           </span>
         </div>
 

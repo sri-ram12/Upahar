@@ -285,7 +285,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Distance & Delivery Fee Verification honoring live RestaurantSetting
-    const maxRadiusKm = settings?.deliveryRadiusKm ?? 5.0;
+    const maxRadiusKm = settings?.deliveryRadiusKm ?? 7.0;
     let calculatedDistance = reportedDistance ? Number(reportedDistance) : 0;
     let deliveryFee = 0;
 

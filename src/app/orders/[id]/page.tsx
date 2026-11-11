@@ -718,7 +718,7 @@ export default function OrderTrackingPage({ params }: PageProps) {
               </span>
             </div>
             <span className="text-xs font-bold text-brand-700 bg-brand-700/10 px-3 py-1 rounded-full">
-              {order.orderType === "DELIVERY" ? "Doorstep Delivery (5km)" : "Self-Pickup"}
+              {order.orderType === "DELIVERY" ? "Doorstep Delivery (7km)" : "Self-Pickup"}
             </span>
           </div>
 

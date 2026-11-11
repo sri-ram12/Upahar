@@ -171,6 +171,24 @@ export async function ensureSubsitesInitialized(): Promise<void> {
           });
         }
       }
+
+      // 4. Ensure default RestaurantSetting uses updated 7.0km delivery boundary
+      const defaultSetting = await prisma.restaurantSetting.findUnique({
+        where: { id: "default" },
+      });
+      if (!defaultSetting) {
+        await prisma.restaurantSetting.create({
+          data: {
+            id: "default",
+            deliveryRadiusKm: 7.0,
+          },
+        });
+      } else if (defaultSetting.deliveryRadiusKm === 5.0) {
+        await prisma.restaurantSetting.update({
+          where: { id: "default" },
+          data: { deliveryRadiusKm: 7.0 },
+        });
+      }
     } catch (err) {
       console.error("ensureSubsitesInitialized warning:", err);
       initPromise = null;

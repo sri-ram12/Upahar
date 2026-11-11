@@ -397,7 +397,7 @@ export default function DeliveryPartnerPage() {
               Upahar Rider Portal
             </h1>
             <p className="text-xs text-[#DFC17B] font-semibold">
-              Authorized Delivery Boys • Tagarapuvalasa 5km
+              Authorized Delivery Boys • Tagarapuvalasa 7km
             </p>
           </div>
 
@@ -621,7 +621,7 @@ export default function DeliveryPartnerPage() {
               </span>
             </div>
             <p className="text-xs text-stone-300 mt-0.5">
-              Tagarapuvalasa 5km Express • {rider?.status === "OFFLINE" ? "OFF DUTY" : "ON DUTY"}
+              Tagarapuvalasa 7km Express • {rider?.status === "OFFLINE" ? "OFF DUTY" : "ON DUTY"}
             </p>
           </div>
         </div>

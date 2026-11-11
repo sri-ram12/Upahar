@@ -328,7 +328,7 @@ export default function AdminDashboardPage() {
                 Kitchen Live Order Desk
               </h2>
               <span className="bg-red-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
-                5km Tagarapuvalasa
+                7km Tagarapuvalasa
               </span>
             </div>
             <p className="text-xs text-stone-300 mt-0.5">
