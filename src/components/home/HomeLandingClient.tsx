@@ -57,7 +57,7 @@ const CARD_ACCENTS: Record<
   tiffins: {
     border: "border-[#2D5A27]/55 hover:border-[#4ADE80] hover:shadow-[0_18px_38px_-10px_rgba(21,59,16,0.5)]",
     topStrip: "bg-gradient-to-r from-[#22C55E] via-[#15803D] to-[#D4AF37]",
-    scrim: "bg-gradient-to-t from-[#051404] via-[#0B2608]/80 to-black/20",
+    scrim: "bg-gradient-to-r from-[#051404]/95 via-[#0B2608]/75 to-black/25 sm:bg-gradient-to-t sm:from-[#051404] sm:via-[#0B2608]/80 sm:to-black/20",
     eyebrow: "text-[#BBF7D0]",
     badge: "bg-emerald-500/90 text-white border-emerald-300/60",
     closedBadge: "bg-black/60 text-stone-200 border-white/25",
@@ -66,7 +66,7 @@ const CARD_ACCENTS: Record<
   biryanis: {
     border: "border-[#8B1E26]/65 hover:border-[#DFC17B] hover:shadow-[0_18px_38px_-10px_rgba(88,13,26,0.55)]",
     topStrip: "bg-gradient-to-r from-[#DFC17B] via-[#8B1E26] to-[#DFC17B]",
-    scrim: "bg-gradient-to-t from-[#1A0307] via-[#4A0E17]/80 to-black/20",
+    scrim: "bg-gradient-to-r from-[#1A0307]/95 via-[#4A0E17]/75 to-black/25 sm:bg-gradient-to-t sm:from-[#1A0307] sm:via-[#4A0E17]/80 sm:to-black/20",
     eyebrow: "text-[#F3DEAB]",
     badge: "bg-[#8B1E26]/95 text-[#F3DEAB] border-[#DFC17B]/60",
     closedBadge: "bg-black/60 text-stone-200 border-white/25",
@@ -75,7 +75,7 @@ const CARD_ACCENTS: Record<
   "fast-food": {
     border: "border-[#EAB308]/75 hover:border-[#FDE047] hover:shadow-[0_18px_38px_-10px_rgba(234,179,8,0.5)]",
     topStrip: "bg-gradient-to-r from-[#FDE047] via-[#F59E0B] to-[#EAB308]",
-    scrim: "bg-gradient-to-t from-[#261200] via-[#5C2D00]/75 to-black/20",
+    scrim: "bg-gradient-to-r from-[#261200]/95 via-[#5C2D00]/75 to-black/25 sm:bg-gradient-to-t sm:from-[#261200] sm:via-[#5C2D00]/75 sm:to-black/20",
     eyebrow: "text-[#FEF08A]",
     badge: "bg-[#FACC15] text-[#2B1400] border-[#FEF08A]",
     closedBadge: "bg-black/60 text-stone-200 border-white/25",
@@ -84,7 +84,7 @@ const CARD_ACCENTS: Record<
   pickles: {
     border: "border-[#EF4444]/65 hover:border-[#FF5555] hover:shadow-[0_18px_38px_-10px_rgba(220,38,38,0.55)]",
     topStrip: "bg-gradient-to-r from-[#FF4444] via-[#DC2626] to-[#FCA5A5]",
-    scrim: "bg-gradient-to-t from-[#380000] via-[#7F0000]/78 to-black/20",
+    scrim: "bg-gradient-to-r from-[#380000]/95 via-[#7F0000]/75 to-black/25 sm:bg-gradient-to-t sm:from-[#380000] sm:via-[#7F0000]/78 sm:to-black/20",
     eyebrow: "text-[#FECACA]",
     badge: "bg-[#EF4444] text-white border-[#FCA5A5]/70",
     closedBadge: "bg-black/60 text-stone-200 border-white/25",
@@ -120,28 +120,28 @@ export default function HomeLandingClient({
   });
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-6 sm:pb-14">
+    <main className="min-h-[calc(100dvh-3.5rem)] overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-3 sm:pb-14">
       {/* ================================================================= */}
       {/* 1. LIGHT MAIN HUB HERO WITH BIG OFFICIAL UPAHAR LOGO              */}
       {/* ================================================================= */}
-      <section className="pt-3 pb-2.5 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
+      <section className="pt-2 pb-2 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
           {/* Big Prominent Official Centered UPAHAR Logo */}
-          <div className="relative w-24 h-24 min-[375px]:w-28 min-[375px]:h-28 sm:w-28 sm:h-28 rounded-full overflow-hidden border-[3px] sm:border-4 border-[#D4AF37] shadow-xl bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/15">
+          <div className="relative w-20 h-20 min-[375px]:w-[88px] min-[375px]:h-[88px] sm:w-28 sm:h-28 rounded-full overflow-hidden border-[3px] sm:border-4 border-[#D4AF37] shadow-xl bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/15">
             <Image
               src="/images/upahar_logo.jpg"
               alt="UPAHAR Official Logo"
               fill
               priority
-              sizes="(max-width: 640px) 112px, 128px"
+              sizes="(max-width: 640px) 96px, 128px"
               className="object-cover"
             />
           </div>
 
-          <h1 className="text-xl sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1.5 sm:mt-2.5 leading-tight">
+          <h1 className="text-lg min-[375px]:text-xl sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-2.5 leading-tight">
             UPAHAR
           </h1>
-          <p className="text-xs sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
+          <p className="text-[11px] min-[375px]:text-xs sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
             Good Food • Good Mood
           </p>
 
@@ -154,10 +154,10 @@ export default function HomeLandingClient({
       </section>
 
       {/* ================================================================= */}
-      {/* 2. 4 ATTRACTIVE FULL-BLEED PHOTO CARDS (ALL 4 FIT IN ONE SCREEN)  */}
+      {/* 2. 4 RECTANGLE BANNERS ON MOBILE / 2×2 & 4×1 CARDS ON DESKTOP     */}
       {/* ================================================================= */}
-      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2.5 sm:pt-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 min-[390px]:gap-2.5 sm:gap-4 lg:gap-5">
           {subsites.map((site) => {
             const accent = CARD_ACCENTS[site.key];
             const isOpen = site.status.isOpen && !emergencyStopped;
@@ -173,14 +173,14 @@ export default function HomeLandingClient({
               <Link
                 key={site.key}
                 href={site.route}
-                className={`group relative rounded-2xl border-2 ${accent.border} shadow-md transition-all duration-300 sm:hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between h-[146px] min-[375px]:h-[164px] sm:h-[250px] lg:h-[340px] bg-stone-900`}
+                className={`group relative rounded-2xl border-2 ${accent.border} shadow-md transition-all duration-300 sm:hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between h-[88px] min-[375px]:h-[96px] min-[400px]:h-[106px] sm:h-[250px] lg:h-[340px] bg-stone-900`}
               >
                 {/* Full-Bleed Food Photography Background */}
                 <Image
                   src={site.heroImage}
                   alt={site.title}
                   fill
-                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
 
@@ -190,14 +190,62 @@ export default function HomeLandingClient({
                 {/* Top Theme Accent Line */}
                 <div className={`relative z-10 h-1 w-full flex-shrink-0 ${accent.topStrip}`} />
 
-                {/* Top Status Strip (Number + Live Status Pill) */}
-                <div className="relative z-10 p-2 sm:p-3.5 flex items-center justify-between gap-1">
-                  <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-md text-[9px] sm:text-[10px] font-black text-white/90 font-mono border border-white/15">
+                {/* Mobile Horizontal Wide-Rectangle Content (< 640px) */}
+                <div className="relative z-10 flex-1 px-3.5 py-2 flex items-center justify-between gap-2.5 sm:hidden min-w-0">
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-black/45 text-[9px] font-black text-white/90 font-mono border border-white/15 flex-shrink-0">
+                        {site.number}
+                      </span>
+                      <span className={`text-[9px] font-sans font-extrabold uppercase tracking-[0.18em] truncate ${accent.eyebrow}`}>
+                        UPAHAR
+                      </span>
+                    </div>
+
+                    <h3 className="font-display font-black text-[18px] min-[390px]:text-[20px] tracking-tight leading-tight text-white drop-shadow-sm truncate">
+                      {site.shortTitle}
+                    </h3>
+
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-white/90 min-w-0">
+                      <span className="inline-flex items-center gap-1 truncate">
+                        <Clock className="w-2.5 h-2.5 flex-shrink-0 opacity-90" />
+                        <span className="truncate">{site.timingText}</span>
+                      </span>
+                      <span className="text-white/60 flex-shrink-0">• {site.itemCount} items</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end justify-between self-stretch py-0.5 flex-shrink-0">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black border backdrop-blur-md shadow-sm ${
+                        isOpen ? accent.badge : accent.closedBadge
+                      }`}
+                    >
+                      {isOpen ? (
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse flex-shrink-0" />
+                      ) : (
+                        <Lock className="w-2.5 h-2.5 flex-shrink-0" />
+                      )}
+                      <span>{mobileStatusText}</span>
+                    </span>
+
+                    <span
+                      className={`px-3 py-1.5 rounded-lg text-[11px] font-black inline-flex items-center gap-1 shadow-md transition ${accent.button}`}
+                    >
+                      <span>Enter</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Desktop & Tablet Vertical Card Top Status Strip (>= 640px) */}
+                <div className="relative z-10 p-3.5 hidden sm:flex items-center justify-between gap-1">
+                  <span className="px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-md text-[10px] font-black text-white/90 font-mono border border-white/15">
                     {site.number}
                   </span>
 
                   <span
-                    className={`inline-flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black border backdrop-blur-md shadow-sm ${
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border backdrop-blur-md shadow-sm ${
                       isOpen ? accent.badge : accent.closedBadge
                     }`}
                   >
@@ -206,42 +254,37 @@ export default function HomeLandingClient({
                     ) : (
                       <Lock className="w-2.5 h-2.5 flex-shrink-0" />
                     )}
-                    <span className="sm:hidden">{mobileStatusText}</span>
-                    <span className="hidden sm:inline">
-                      {emergencyStopped ? "PAUSED" : site.status.statusLabel}
-                    </span>
+                    <span>{emergencyStopped ? "PAUSED" : site.status.statusLabel}</span>
                   </span>
                 </div>
 
-                {/* Bottom Glass-Tinted Kitchen Title, Timing & Enter CTA */}
-                <div className="relative z-10 p-2.5 sm:p-4 mt-auto flex flex-col gap-1 sm:gap-2">
+                {/* Desktop & Tablet Vertical Card Bottom Content (>= 640px) */}
+                <div className="relative z-10 p-4 mt-auto hidden sm:flex flex-col gap-2">
                   <div>
                     <h3 className="font-display font-black tracking-tight leading-none text-white drop-shadow-sm">
-                      <span className={`block text-[8px] min-[375px]:text-[9px] sm:text-[10px] font-sans font-extrabold uppercase tracking-[0.2em] mb-0.5 ${accent.eyebrow}`}>
+                      <span className={`block text-[10px] font-sans font-extrabold uppercase tracking-[0.2em] mb-0.5 ${accent.eyebrow}`}>
                         UPAHAR{" "}
                       </span>
-                      <span className="block text-[15px] min-[375px]:text-[17px] sm:text-xl lg:text-2xl truncate">
+                      <span className="block text-xl lg:text-2xl truncate">
                         {site.shortTitle}
                       </span>
                     </h3>
-                    <span className="hidden sm:block text-[11px] font-semibold text-white/80 mt-1 truncate">
+                    <span className="block text-[11px] font-semibold text-white/80 mt-1 truncate">
                       {site.tagline}
                     </span>
                   </div>
 
-                  {/* Concise Schedule Line */}
-                  <div className="flex items-center gap-1 text-[9.5px] min-[375px]:text-[10px] sm:text-[11px] font-bold text-white/90 min-w-0">
-                    <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0 opacity-90" />
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-white/90 min-w-0">
+                    <Clock className="w-3 h-3 flex-shrink-0 opacity-90" />
                     <span className="truncate">{site.timingText}</span>
                   </div>
 
-                  {/* Bottom Action Row */}
-                  <div className="pt-1 sm:pt-1.5 flex items-center justify-between gap-1.5 border-t border-white/15">
-                    <span className="text-[9.5px] sm:text-[11px] font-bold text-white/80 truncate">
+                  <div className="pt-1.5 flex items-center justify-between gap-1.5 border-t border-white/15">
+                    <span className="text-[11px] font-bold text-white/80 truncate">
                       {site.itemCount} items
                     </span>
                     <span
-                      className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-black inline-flex items-center gap-1 shadow-md transition ${accent.button}`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-black inline-flex items-center gap-1 shadow-md transition ${accent.button}`}
                     >
                       <span>Enter</span>
                       <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
