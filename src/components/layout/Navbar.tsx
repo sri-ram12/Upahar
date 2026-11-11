@@ -30,7 +30,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const { totalCount, toggleCart } = useCart();
   const { customer, setIsAuthModalOpen, logout } = useCustomerAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openForPath, setOpenForPath] = useState<string | null>(null);
+  const mobileMenuOpen = openForPath === pathname;
+  const setMobileMenuOpen = (open: boolean) => setOpenForPath(open ? pathname : null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [themeOverride, setThemeOverride] = useState<string | null>(null);
@@ -89,10 +91,6 @@ export default function Navbar() {
     syncFromUrlAndApi();
     window.addEventListener("upahar-theme-change", handleThemeEvent);
     return () => window.removeEventListener("upahar-theme-change", handleThemeEvent);
-  }, [pathname]);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
   }, [pathname]);
 
   const isStaffPanel =
@@ -243,84 +241,56 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Heritage & Live Session Info Strip */}
-      <div className={`${topStripBg} text-[11px] sm:text-xs py-1.5 px-4 border-b hidden md:block transition-colors duration-300`}>
-        <div className="max-w-7xl mx-auto flex justify-between items-center font-medium">
-          <div className="flex items-center space-x-5">
-            <span className="flex items-center space-x-2">
-              <Clock className={`w-3.5 h-3.5 flex-shrink-0 ${isLightHub ? "text-[#9A6E24]" : "text-[#DFC17B]"}`} />
-              <span>
-                {isSubWebsite && activeSubsiteStatus ? (
-                  <>
-                    <strong className={activeSubsiteStatus.isOpen ? "font-extrabold" : "text-amber-300 font-extrabold"}>
-                      {subtitleLabel.toUpperCase()} • {activeSubsiteStatus.statusLabel}
-                    </strong>{" "}
-                    <span className="opacity-85">• Hours: {activeSubsiteStatus.timingText}</span>
-                  </>
-                ) : storeStatus ? (
-                  <>
-                    <strong className={isLightHub ? "text-[#580D1A] font-extrabold" : storeStatus.isOpen ? "text-[#DFC17B] font-bold" : "text-amber-200"}>
-                      {storeStatus.statusText}
-                    </strong>{" "}
-                    <span className="opacity-85">• {storeStatus.subText}</span>
-                  </>
-                ) : (
-                  "Tiffins 6–10:30 AM & 5–10:30 PM • Biryanis 12–10:30 PM • Fast Foods 5–10:30 PM • Pickles 24×7"
-                )}
+      {/* Top Session Info Strip (Shown only inside sub-websites, keeping the main website top clean) */}
+      {isSubWebsite && activeSubsiteStatus && (
+        <div className={`${topStripBg} text-[11px] sm:text-xs py-1.5 px-4 border-b hidden md:block transition-colors duration-300`}>
+          <div className="max-w-7xl mx-auto flex justify-between items-center font-medium">
+            <div className="flex items-center space-x-5">
+              <span className="flex items-center space-x-2">
+                <Clock className="w-3.5 h-3.5 flex-shrink-0 text-[#DFC17B]" />
+                <span>
+                  <strong className={activeSubsiteStatus.isOpen ? "font-extrabold" : "text-amber-300 font-extrabold"}>
+                    {subtitleLabel.toUpperCase()} • {activeSubsiteStatus.statusLabel}
+                  </strong>{" "}
+                  <span className="opacity-85">• Hours: {activeSubsiteStatus.timingText}</span>
+                </span>
               </span>
-            </span>
-            <a
-              href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`hidden xl:flex items-center space-x-1.5 transition ${
-                isLightHub ? "text-[#57534E] hover:text-[#580D1A]" : "text-white/80 hover:text-[#DFC17B]"
-              }`}
-            >
-              <MapPin className={`w-3.5 h-3.5 ${isLightHub ? "text-[#9A6E24]" : "text-[#DFC17B]"}`} />
-              <span>1-1, Sangivalasa, ANITS Road, Beside SBI</span>
-            </a>
-          </div>
+            </div>
 
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setQrModalOpen(true)}
-              className={`flex items-center space-x-1.5 transition font-semibold cursor-pointer ${
-                isLightHub ? "text-[#580D1A] hover:text-black" : "text-[#DFC17B] hover:text-white"
-              }`}
-              title="Scan QR Code to open website on mobile"
-            >
-              <QrCode className="w-3.5 h-3.5" />
-              <span>Scan QR</span>
-            </button>
-            <span className="opacity-30">|</span>
-            <a
-              href="https://wa.me/919885455342?text=Namaste!%20I%20am%20visiting%20your%20website%20and%20would%20like%20further%20details%20about%20Upahar."
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center space-x-1.5 transition font-semibold ${
-                isLightHub ? "text-emerald-700 hover:text-emerald-900" : "text-emerald-300 hover:text-white"
-              }`}
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
-            </a>
-            <span className="opacity-30">|</span>
-            <a
-              href="tel:+919885455342"
-              className={`flex items-center space-x-1.5 transition font-semibold ${
-                isLightHub ? "text-[#1C1917] hover:text-[#580D1A]" : "text-[#FAF7F2] hover:text-[#DFC17B]"
-              }`}
-            >
-              <Phone className={`w-3.5 h-3.5 ${isLightHub ? "text-[#9A6E24]" : "text-[#DFC17B]"}`} />
-              <span>+91 9885455342</span>
-            </a>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setQrModalOpen(true)}
+                className="flex items-center space-x-1.5 transition font-semibold cursor-pointer text-[#DFC17B] hover:text-white"
+                title="Scan QR Code to open website on mobile"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+                <span>Scan QR</span>
+              </button>
+              <span className="opacity-30">|</span>
+              <a
+                href="https://wa.me/919885455342?text=Namaste!%20I%20am%20visiting%20your%20website%20and%20would%20like%20further%20details%20about%20Upahar."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1.5 transition font-semibold text-emerald-300 hover:text-white"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
+              <span className="opacity-30">|</span>
+              <a
+                href="tel:+919885455342"
+                className="flex items-center space-x-1.5 transition font-semibold text-[#FAF7F2] hover:text-[#DFC17B]"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#DFC17B]" />
+                <span>+91 9885455342</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Sticky Header */}
-      <header className={`sticky top-0 z-40 w-full h-16 sm:h-[72px] transition-colors duration-300 ${headerBg}`}>
+      <header className={`sticky top-0 z-40 w-full h-14 sm:h-[68px] transition-colors duration-300 ${headerBg}`}>
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
           {/* Official Upahar Emblem Logo + Sub-Website Title */}
           <Link href="/" className="flex items-center space-x-2.5 sm:space-x-3 group min-w-0 flex-shrink-0">

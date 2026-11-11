@@ -5,12 +5,11 @@ import HomeLandingClient from "@/components/home/HomeLandingClient";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const { settings, storeStatus, subsites } = await getSubsitesAndSettings();
+  const { settings, subsites } = await getSubsitesAndSettings();
 
   return (
     <HomeLandingClient
       subsites={subsites}
-      storeStatus={storeStatus}
       isEmergencyWebsiteStopped={Boolean(settings?.isEmergencyWebsiteStopped)}
       emergencyStopMessage={settings?.emergencyStopMessage || null}
     />

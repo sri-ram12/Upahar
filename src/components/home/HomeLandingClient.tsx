@@ -6,8 +6,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   Clock,
-  MapPin,
-  Sparkles,
   User,
   UserPlus,
   CheckCircle2,
@@ -40,11 +38,6 @@ export interface HubSubsiteCard {
 
 interface HomeLandingClientProps {
   subsites: HubSubsiteCard[];
-  storeStatus: {
-    isOpen: boolean;
-    statusText: string;
-    subText: string;
-  };
   isEmergencyWebsiteStopped?: boolean;
   emergencyStopMessage?: string | null;
 }
@@ -96,18 +89,15 @@ const CARD_ACCENTS: Record<
 
 export default function HomeLandingClient({
   subsites: initialSubsites,
-  storeStatus: initialStoreStatus,
   isEmergencyWebsiteStopped: initialEmergencyStop = false,
   emergencyStopMessage: initialEmergencyMsg = null,
 }: HomeLandingClientProps) {
   const { customer, setIsAuthModalOpen } = useCustomerAuth();
   const [liveSubsites, setLiveSubsites] = useState<HubSubsiteCard[] | null>(null);
-  const [liveStoreStatus, setLiveStoreStatus] = useState<HomeLandingClientProps["storeStatus"] | null>(null);
   const [emergencyStopped, setEmergencyStopped] = useState(initialEmergencyStop);
   const [emergencyMsg, setEmergencyMsg] = useState(initialEmergencyMsg);
 
   const subsites = liveSubsites ?? initialSubsites;
-  const storeStatus = liveStoreStatus ?? initialStoreStatus;
 
   useRealtimeEvents({
     onSubsiteUpdated: () => {
@@ -115,7 +105,6 @@ export default function HomeLandingClient({
         .then((r) => r.json())
         .then((d) => {
           if (Array.isArray(d?.subsites)) setLiveSubsites(d.subsites);
-          if (d?.storeStatus) setLiveStoreStatus(d.storeStatus);
         })
         .catch(() => {});
     },
@@ -126,65 +115,37 @@ export default function HomeLandingClient({
   });
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-16">
+    <main className="min-h-screen bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-14">
       {/* ================================================================= */}
-      {/* 1. LIGHT MAIN HUB HERO WITH OFFICIAL UPAHAR LOGO                  */}
+      {/* 1. COMPACT LIGHT MAIN HUB HERO WITH OFFICIAL UPAHAR LOGO          */}
       {/* ================================================================= */}
-      <section className="pt-8 sm:pt-12 pb-8 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
+      <section className="pt-2 pb-2 sm:pt-7 sm:pb-6 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
-          {/* Status & Location Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-5">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-[#FAF8F4] border border-[#E7E0D3] text-[#1C1917] shadow-2xs">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  storeStatus.isOpen ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
-                }`}
-              />
-              <span>{storeStatus.statusText}</span>
-            </span>
-
-            <a
-              href="https://maps.app.goo.gl/6611R6FD1JZagSJt9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-[#FAF8F4] hover:bg-[#F2EDE2] border border-[#E7E0D3] text-[#57534E] transition"
-            >
-              <MapPin className="w-3.5 h-3.5 text-[#9A6E24]" />
-              <span>1-1, Sangivalasa, ANITS Road, Beside SBI</span>
-            </a>
+          {/* Clean Official Centered UPAHAR Logo (No unnecessary top status/location pills) */}
+          <div className="relative w-12 h-12 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 sm:border-4 border-[#D4AF37] shadow-lg bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/12">
+            <Image
+              src="/images/upahar_logo.jpg"
+              alt="UPAHAR Official Logo"
+              fill
+              priority
+              sizes="(max-width: 640px) 56px, 120px"
+              className="object-cover"
+            />
           </div>
 
-          {/* Official Centered UPAHAR Logo */}
-          <div className="relative mb-5">
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-xl bg-[#580D1A] ring-8 ring-[#D4AF37]/12">
-              <Image
-                src="/images/upahar_logo.jpg"
-                alt="UPAHAR Official Logo"
-                fill
-                priority
-                sizes="(max-width: 640px) 140px, 170px"
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-[#580D1A] text-[#DFC17B] border border-[#D4AF37]/70 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md flex items-center space-x-1 whitespace-nowrap">
-              <Sparkles className="w-2.5 h-2.5 text-[#DFC17B]" />
-              <span>Sunrise To Sunset</span>
-            </div>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-[#1C1917]">
+          <h1 className="text-lg sm:text-4xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-3 leading-tight">
             UPAHAR
           </h1>
-          <p className="text-base sm:text-xl font-script font-bold text-[#9A6E24] mt-0.5">
+          <p className="text-[11px] sm:text-lg font-script font-bold text-[#9A6E24] leading-tight">
             Good Food • Good Mood • Four Dedicated Kitchens
           </p>
-          <p className="mt-2.5 text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
+          <p className="hidden sm:block mt-2 text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
             Choose any Upahar kitchen below to enter its dedicated menu &amp; ordering website based on live timings.
             No login required inside sub-websites — order anytime!
           </p>
 
           {emergencyStopped && (
-            <div className="mt-5 w-full max-w-2xl p-4 rounded-2xl bg-red-50 border border-red-300 text-red-800 text-xs font-bold">
+            <div className="mt-2 sm:mt-4 w-full max-w-2xl p-2.5 sm:p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-[11px] sm:text-xs font-bold">
               🚨 {emergencyMsg || "Online ordering is temporarily paused by restaurant administration."}
             </div>
           )}
@@ -192,24 +153,24 @@ export default function HomeLandingClient({
       </section>
 
       {/* ================================================================= */}
-      {/* 2. 4 CLICKABLE SUB-WEBSITE OPTIONS (TIFFINS, BIRYANIS, FAST FOODS, PICKLES) */}
+      {/* 2. 4 RECTANGULAR SUB-WEBSITE OPTIONS (ALL 4 FIT IN ONE PHONE VIEW) */}
       {/* ================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-7">
+        <div className="flex items-end justify-between gap-2 mb-1.5 sm:mb-4">
           <div>
-            <span className="text-[11px] uppercase font-extrabold tracking-[0.2em] text-[#9A6E24] block">
+            <span className="text-[9px] sm:text-[11px] uppercase font-extrabold tracking-[0.18em] text-[#9A6E24] block leading-none">
               Select A Kitchen Website
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black font-display text-[#1C1917]">
-              Enter One of Our 4 Upahar Websites
+            <h2 className="text-sm sm:text-2xl font-black font-display text-[#1C1917] leading-tight mt-0.5">
+              Choose Any Of Our 4 Upahar Websites
             </h2>
           </div>
-          <span className="text-xs font-semibold text-[#57534E]">
-            Live IST Timings Active • Direct Guest Ordering
+          <span className="text-[10px] sm:text-xs font-semibold text-[#57534E] whitespace-nowrap">
+            4 Kitchens • Live Timings
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-5">
           {subsites.map((site) => {
             const accent = CARD_ACCENTS[site.key];
             const isOpen = site.status.isOpen && !emergencyStopped;
@@ -218,19 +179,28 @@ export default function HomeLandingClient({
               <Link
                 key={site.key}
                 href={site.route}
-                className={`group bg-white rounded-3xl border-2 ${accent.border} shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between`}
+                className={`group bg-white rounded-xl border-2 ${accent.border} shadow-xs hover:shadow-xl transition-all duration-300 sm:hover:-translate-y-1 overflow-hidden flex flex-row sm:flex-col items-stretch h-[70px] sm:h-auto`}
               >
-                {/* Theme Top Accent Strip */}
-                <div className={`h-2 w-full ${accent.topStrip}`} />
+                {/* Theme Accent Strip (Left bar on mobile rectangle, Top bar on desktop rectangle) */}
+                <div className={`w-1.5 sm:hidden flex-shrink-0 ${accent.topStrip}`} />
+                <div className={`hidden sm:block h-1.5 w-full flex-shrink-0 ${accent.topStrip}`} />
 
-                <div className="p-5 sm:p-6 flex-1 flex flex-col items-center text-center">
-                  {/* Top Row: Number + Status Badge */}
-                  <div className="w-full flex items-center justify-between gap-2 mb-4">
-                    <span className="text-xs font-black text-stone-400 font-mono">
+                {/* Rectangular Photo Thumbnail */}
+                <div className="relative w-20 sm:w-full h-full sm:h-36 flex-shrink-0 bg-stone-100 overflow-hidden">
+                  <Image
+                    src={site.heroImage}
+                    alt={site.title}
+                    fill
+                    sizes="(max-width: 640px) 84px, 320px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  {/* Desktop Overlays on Photo */}
+                  <div className="hidden sm:flex absolute top-2.5 left-2.5 right-2.5 items-center justify-between gap-2">
+                    <span className="px-2 py-0.5 rounded-md bg-black/65 backdrop-blur-xs text-[10px] font-black text-white font-mono">
                       {site.number}
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border ${
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black border shadow-xs ${
                         isOpen
                           ? accent.badge
                           : "bg-stone-100 text-stone-700 border-stone-200"
@@ -244,48 +214,67 @@ export default function HomeLandingClient({
                       <span>{emergencyStopped ? "PAUSED" : site.status.statusLabel}</span>
                     </span>
                   </div>
-
-                  {/* Circular Food Photography Emblem (Easy Recognition) */}
-                  <div
-                    className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 ${accent.ring} shadow-lg mb-4 group-hover:scale-105 transition-transform duration-300 bg-stone-100`}
-                  >
-                    <Image
-                      src={site.heroImage}
-                      alt={site.title}
-                      fill
-                      sizes="140px"
-                      className="object-cover"
-                    />
-                  </div>
-
-                  {/* Website Title & Theme Pill */}
-                  <h3 className="text-lg sm:text-xl font-black font-display text-[#1C1917] tracking-tight">
-                    {site.title}
-                  </h3>
-                  <span className="text-[11px] font-bold text-[#9A6E24] mt-0.5">
-                    {site.tagline}
-                  </span>
-
-                  {/* Timing Pill */}
-                  <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF8F4] border border-[#E7E0D3] text-[11px] font-bold text-[#44403C]">
-                    <Clock className="w-3 h-3 text-[#9A6E24] flex-shrink-0" />
-                    <span>{site.timingText}</span>
-                  </div>
-
-                  <p className="mt-3 text-xs text-[#57534E] leading-relaxed line-clamp-3">
-                    {site.description}
-                  </p>
                 </div>
 
-                {/* Enter CTA */}
-                <div className="px-5 pb-5">
-                  <div
-                    className={`w-full py-3 px-4 rounded-2xl text-xs font-black flex items-center justify-between shadow-sm transition ${accent.button}`}
-                  >
-                    <span>
-                      Enter {site.shortTitle} ({site.itemCount} items)
+                {/* Card Details & Rectangular Enter CTA */}
+                <div className="flex-1 min-w-0 px-2.5 py-1.5 sm:p-4 flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-2">
+                  <div className="min-w-0 flex-1 text-left">
+                    <div className="flex items-center gap-1.5">
+                      <span className="sm:hidden text-[10px] font-black text-stone-400 font-mono flex-shrink-0">
+                        {site.number}
+                      </span>
+                      <h3 className="text-[13px] sm:text-base font-black font-display text-[#1C1917] tracking-tight truncate">
+                        {site.title}
+                      </h3>
+                    </div>
+
+                    {/* Desktop Tagline */}
+                    <span className="hidden sm:block text-[11px] font-bold text-[#9A6E24] mt-0.5 truncate">
+                      {site.tagline}
                     </span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+
+                    {/* Timing Row */}
+                    <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[#44403C] mt-0.5 sm:mt-2 sm:px-2.5 sm:py-1 sm:rounded-lg sm:bg-[#FAF8F4] sm:border sm:border-[#E7E0D3] min-w-0">
+                      <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9A6E24] flex-shrink-0" />
+                      <span className="truncate">{site.timingText}</span>
+                    </div>
+
+                    {/* Mobile Compact Live Status + Items Count */}
+                    <div className="sm:hidden flex items-center gap-1.5 mt-1">
+                      <span
+                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black border leading-none ${
+                          isOpen
+                            ? accent.badge
+                            : "bg-stone-100 text-stone-700 border-stone-200"
+                        }`}
+                      >
+                        {isOpen ? (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        ) : (
+                          <Lock className="w-2 h-2 text-stone-500" />
+                        )}
+                        <span>{emergencyStopped ? "PAUSED" : site.status.statusLabel}</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-stone-500 truncate">
+                        {site.itemCount} items
+                      </span>
+                    </div>
+
+                    {/* Desktop Short Description */}
+                    <p className="hidden sm:line-clamp-2 mt-2 text-xs text-[#57534E] leading-relaxed">
+                      {site.description}
+                    </p>
+                  </div>
+
+                  {/* Rectangular Enter CTA Button */}
+                  <div
+                    className={`flex-shrink-0 sm:w-full px-2.5 py-2 sm:py-2.5 sm:px-3.5 sm:mt-3 rounded-lg text-[11px] sm:text-xs font-black flex items-center justify-center sm:justify-between gap-1 shadow-xs transition ${accent.button}`}
+                  >
+                    <span className="sm:hidden">Enter</span>
+                    <span className="hidden sm:inline truncate">
+                      Enter {site.shortTitle} ({site.itemCount})
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
                   </div>
                 </div>
               </Link>
