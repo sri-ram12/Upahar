@@ -11,6 +11,7 @@ import {
   isValidDivisionKey,
 } from "@/lib/store-hours";
 import { ensureSubsitesInitialized, getSubsitesAndSettings } from "@/lib/subsite-data";
+import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 function filterFallbackItems(searchParams: URLSearchParams) {
   const category = searchParams.get("category");
@@ -262,6 +263,14 @@ export async function POST(req: NextRequest) {
         ingredients: ingredients || null,
         displayOrder: parseInt(displayOrder, 10) || 0,
       },
+    });
+
+    broadcastRealtimeEvent("MENU_ITEM_UPDATED", {
+      action: "CREATED",
+      itemId: item.id,
+      name: item.name,
+      isAvailable: item.isAvailable,
+      price: item.price,
     });
 
     return NextResponse.json({ item }, { status: 201 });

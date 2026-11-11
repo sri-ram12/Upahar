@@ -278,11 +278,25 @@ export default function DivisionSubsiteClient({
   // Real-time admin updates for prices, item availability, photos, and subsite open/close
   useRealtimeEvents({
     onMenuItemUpdated: (payload) => {
+      if (payload.action === "CREATED") {
+        fetch(`/api/menu?division=${encodeURIComponent(division.key)}&respectSession=true&includeLocked=true`)
+          .then((r) => r.json())
+          .then((d) => {
+            if (Array.isArray(d?.items)) setLiveItems(d.items);
+          })
+          .catch(() => {});
+        return;
+      }
+      if (payload.action === "DELETED") {
+        setLiveItems((prev) => (prev ?? initialItems).filter((it) => it.id !== payload.itemId));
+        return;
+      }
       setLiveItems((prev) =>
         (prev ?? initialItems).map((it) =>
           it.id === payload.itemId
             ? {
                 ...it,
+                ...(payload.name ? { name: payload.name } : {}),
                 isAvailable: payload.isAvailable ?? it.isAvailable,
                 price: payload.price ?? it.price,
               }

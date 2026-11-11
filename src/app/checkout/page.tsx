@@ -41,7 +41,7 @@ const RECENT_ORDERS_KEY = "upahar_recent_orders_v1";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, specialNotes, clearCart } = useCart();
+  const { items, subtotal, specialNotes, clearCart, hasUnavailableItems, removeUnavailableItems, syncCartWithMenu } = useCart();
   const { customer, setIsAuthModalOpen, saveAddress, deleteAddress } = useCustomerAuth();
 
   // Restaurant Live Settings & Subsite Statuses
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
     );
   }, [items, storeSettings, subsitesData]);
 
-  // Instant real-time listener: if admin hits Emergency Website Stop, lock checkout immediately!
+  // Instant real-time listeners: Emergency Stop, Subsite Schedule/Hours, and Live Menu Stock
   useRealtimeEvents({
     onEmergencyStopChanged: (payload) => {
       if (payload.isEmergencyWebsiteStopped) {
@@ -167,6 +167,18 @@ export default function CheckoutPage() {
       } else {
         setEmergencyStopNotice(null);
       }
+    },
+    onSubsiteUpdated: () => {
+      fetch("/api/restaurant")
+        .then((r) => r.json())
+        .then((restData) => {
+          if (restData?.settings) setStoreSettings(restData.settings);
+          if (Array.isArray(restData?.subsites)) setSubsitesData(restData.subsites);
+        })
+        .catch(() => {});
+    },
+    onMenuItemUpdated: () => {
+      syncCartWithMenu();
     },
   });
 
@@ -511,33 +523,52 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            {hasUnavailableItems && (
+              <div className="p-4 rounded-2xl bg-red-50 border border-red-300 text-red-900 text-xs font-semibold flex items-center justify-between gap-3">
+                <span>
+                  One or more items in your bag just marked <strong>Sold Out</strong> in the kitchen. Please remove them to place your order.
+                </span>
+                <button
+                  type="button"
+                  onClick={removeUnavailableItems}
+                  className="px-3 py-1.5 rounded-xl bg-red-600 text-white font-black text-[11px] flex-shrink-0 hover:bg-red-700 cursor-pointer"
+                >
+                  Remove Sold Out
+                </button>
+              </div>
+            )}
+
             {!customer ? (
               <div className="p-4 rounded-2xl bg-brand-700/5 border border-[#D4AF37]/50 flex items-center justify-between text-xs gap-3">
                 <div>
                   <span className="font-bold text-brand-950 block">
-                    Sign In with Mobile OTP or Account
+                    Sign In with Google or Email OTP
                   </span>
                   <span className="text-[11px] text-stone-500">
-                    Auto-fill saved hostel/home addresses and track orders anytime.
+                    Auto-fill saved hostel/home addresses, receive Email receipts &amp; track orders anytime.
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-brand-700 text-[#DFC17B] text-xs font-bold hover:scale-105 transition flex-shrink-0"
+                  className="px-3.5 py-2 rounded-xl bg-brand-700 text-[#DFC17B] text-xs font-bold hover:scale-105 transition flex-shrink-0 cursor-pointer"
                 >
                   Sign In
                 </button>
               </div>
             ) : (
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between">
-                <span className="font-semibold">
-                  Signed in as <strong>{customer.name}</strong> ({customer.phone})
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="w-full p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between hover:bg-emerald-100/60 transition cursor-pointer text-left"
+              >
+                <span className="font-semibold truncate pr-2">
+                  Signed in as <strong>{customer.name}</strong> ({customer.email || customer.phone})
                 </span>
-                <span className="text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-300">
-                  Verified
+                <span className="text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-300 flex-shrink-0">
+                  Manage Account
                 </span>
-              </div>
+              </button>
             )}
 
             {errorMessage && (
@@ -934,6 +965,7 @@ export default function CheckoutPage() {
               type="submit"
               disabled={
                 isSubmitting ||
+                hasUnavailableItems ||
                 Boolean(emergencyStopNotice) ||
                 Boolean(closedHoursNotice) ||
                 belowMinDelivery ||
@@ -942,7 +974,9 @@ export default function CheckoutPage() {
               className="btn-maroon-gold w-full py-4 rounded-2xl text-sm font-black flex items-center justify-center space-x-2 shadow-xl shadow-brand-700/20 transition disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
             >
               <span>
-                {emergencyStopNotice
+                {hasUnavailableItems
+                  ? "Remove Sold-Out Dishes to Continue"
+                  : emergencyStopNotice
                   ? "Ordering Temporarily Paused"
                   : closedHoursNotice
                   ? "Store Closed • Opens 6:00 AM / 12:00 PM"

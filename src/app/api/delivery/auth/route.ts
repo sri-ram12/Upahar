@@ -4,6 +4,75 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "upahar-delivery-secret-key-2026";
+const DELIVERY_COOKIE_NAME = "upahar_delivery_token";
+
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get(DELIVERY_COOKIE_NAME)?.value;
+    if (!token) {
+      return NextResponse.json({ authenticated: false, agent: null });
+    }
+
+    const payload = jwt.verify(token, JWT_SECRET) as { id?: string };
+    if (!payload?.id) {
+      return NextResponse.json({ authenticated: false, agent: null });
+    }
+
+    const agent = await prisma.deliveryAgent.findUnique({
+      where: { id: payload.id },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        vehicleNumber: true,
+        status: true,
+        approvalStatus: true,
+        isActive: true,
+        totalDeliveries: true,
+        cashInHand: true,
+        totalEarnings: true,
+      },
+    });
+
+    if (!agent || !agent.isActive || agent.approvalStatus !== "APPROVED") {
+      const res = NextResponse.json(
+        {
+          authenticated: false,
+          agent: null,
+          error: !agent
+            ? "Rider profile not found."
+            : agent.approvalStatus !== "APPROVED"
+            ? "Your rider account is not currently approved."
+            : "Your rider account is currently paused by Admin.",
+        },
+        { status: 403 }
+      );
+      res.cookies.set(DELIVERY_COOKIE_NAME, "", {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 0,
+      });
+      return res;
+    }
+
+    return NextResponse.json({ authenticated: true, agent });
+  } catch {
+    return NextResponse.json({ authenticated: false, agent: null });
+  }
+}
+
+export async function DELETE() {
+  const response = NextResponse.json({ success: true });
+  response.cookies.set(DELIVERY_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+  return response;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -103,8 +172,10 @@ export async function POST(req: NextRequest) {
       token,
     });
 
-    response.cookies.set("upahar_delivery_token", token, {
-      httpOnly: false,
+    response.cookies.set(DELIVERY_COOKIE_NAME, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       maxAge: 7 * 24 * 60 * 60,
     });

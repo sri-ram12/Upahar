@@ -85,6 +85,7 @@ export default function CustomerOrdersPage() {
   }, [customer?.id, customer?.phone]);
 
   useRealtimeEvents({
+    onOrderCreated: () => fetchOrders(),
     onOrderUpdated: () => fetchOrders(),
     onOrderDelivered: () => fetchOrders(),
   });
@@ -171,10 +172,10 @@ export default function CustomerOrdersPage() {
           {!customer && (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="btn-gold px-4 py-2.5 rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md flex-shrink-0"
+              className="btn-gold px-4 py-2.5 rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md flex-shrink-0 cursor-pointer"
             >
               <User className="w-4 h-4" />
-              <span>Sign In with Mobile OTP</span>
+              <span>Sign In / Register</span>
             </button>
           )}
         </div>
@@ -230,7 +231,7 @@ export default function CustomerOrdersPage() {
               No Orders Found Yet
             </h2>
             <p className="text-xs text-stone-500 max-w-md mx-auto">
-              Sign in with your mobile number or enter your phone / Order ID above to retrieve past orders, or place your first piping-hot order from Sangivalasa!
+              Sign in with Google or your Email, or enter your phone / Order ID above to retrieve past orders!
             </p>
             <div className="pt-2">
               <Link href="/menu" className="btn-maroon-gold px-6 py-3 rounded-2xl text-xs font-black inline-flex items-center space-x-2">

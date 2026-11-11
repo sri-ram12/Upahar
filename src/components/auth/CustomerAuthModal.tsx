@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   X,
   User,
@@ -13,6 +14,11 @@ import {
   CheckCircle2,
   Sparkles,
   RefreshCw,
+  MapPin,
+  Trash2,
+  Plus,
+  LogOut,
+  ShoppingBag,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
@@ -55,11 +61,27 @@ export default function CustomerAuthModal() {
     signup,
     sendOtp,
     verifyOtp,
+    updateProfile,
+    saveAddress,
+    deleteAddress,
+    logout,
     customer,
   } = useCustomerAuth();
 
   const [mode, setMode] = useState<AuthMode>("OTP");
   const [otpChannel, setOtpChannel] = useState<"EMAIL" | "SMS">("EMAIL");
+
+  // Profile & Address Management State (when customer is signed in)
+  const [profileNameDraft, setProfileNameDraft] = useState<string | null>(null);
+  const [profilePhoneDraft, setProfilePhoneDraft] = useState<string | null>(null);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<string | null>(null);
+  const [showAddAddress, setShowAddAddress] = useState(false);
+  const [newAddrLabel, setNewAddrLabel] = useState("Hostel");
+  const [newAddrLine, setNewAddrLine] = useState("");
+  const [newAddrLandmark, setNewAddrLandmark] = useState("");
+  const [newAddrLocality, setNewAddrLocality] = useState(TAGARAPUVALASA_LOCALITIES[0].name);
+  const [savingAddr, setSavingAddr] = useState(false);
 
   // Form Fields
   const [name, setName] = useState("");
@@ -90,7 +112,271 @@ export default function CustomerAuthModal() {
     return () => clearTimeout(t);
   }, [cooldownSec]);
 
-  if (!isAuthModalOpen || customer) return null;
+  if (!isAuthModalOpen) return null;
+
+  if (customer) {
+    const profileName = profileNameDraft ?? customer.name ?? "";
+    const profilePhone = profilePhoneDraft ?? customer.phone ?? "";
+
+    const handleSaveProfile = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setProfileSaving(true);
+      setProfileMsg(null);
+      setErrorMsg(null);
+      const res = await updateProfile({ name: profileName, phone: profilePhone });
+      setProfileSaving(false);
+      if (res.success) {
+        setProfileNameDraft(null);
+        setProfilePhoneDraft(null);
+        setProfileMsg("Account details saved.");
+      } else {
+        setErrorMsg(res.error || "Could not update profile.");
+      }
+    };
+
+    const handleAddSavedAddress = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!newAddrLine.trim()) return;
+      setSavingAddr(true);
+      setErrorMsg(null);
+      const loc = TAGARAPUVALASA_LOCALITIES.find((l) => l.name === newAddrLocality);
+      const res = await saveAddress({
+        label: newAddrLabel || "Home",
+        address: newAddrLine.trim(),
+        landmark: newAddrLandmark.trim() || undefined,
+        locality: newAddrLocality,
+        lat: loc?.lat ?? null,
+        lng: loc?.lng ?? null,
+        distanceKm: loc?.distanceKm ?? null,
+        isDefault: (customer.addresses?.length || 0) === 0,
+      });
+      setSavingAddr(false);
+      if (res.success) {
+        setNewAddrLine("");
+        setNewAddrLandmark("");
+        setShowAddAddress(false);
+      } else {
+        setErrorMsg(res.error || "Failed to save address.");
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
+        <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-brand-border overflow-hidden animate-in zoom-in-95 duration-200 my-4 max-h-[92vh] overflow-y-auto">
+          <div className="bg-brand-700 p-5 text-white flex justify-between items-center sticky top-0 z-10">
+            <div className="min-w-0">
+              <span className="text-[10px] uppercase font-black tracking-widest text-[#DFC17B] block">
+                {customer.authProvider === "GOOGLE" || customer.authProvider === "HYBRID"
+                  ? "Google Verified Account"
+                  : customer.emailVerified
+                  ? "Verified Customer Account"
+                  : "Upahar Customer Account"}
+              </span>
+              <h3 className="text-lg font-black font-display truncate">{customer.name}</h3>
+            </div>
+            <button
+              onClick={() => setIsAuthModalOpen(false)}
+              className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="p-5 space-y-5">
+            {errorMsg && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-start space-x-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+            {profileMsg && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                <span>{profileMsg}</span>
+              </div>
+            )}
+
+            {/* Account Summary & Quick Edit */}
+            <form onSubmit={handleSaveProfile} className="space-y-3 bg-[#FAF8F4] p-4 rounded-2xl border border-brand-border">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-black text-brand-950 uppercase tracking-wider text-[10px]">
+                  Profile &amp; Contact
+                </span>
+                {customer.email && (
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center gap-1">
+                    <Mail className="w-3 h-3" />
+                    <span className="truncate max-w-[170px]">{customer.email}</span>
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[10px] font-bold text-stone-500 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={profileName}
+                    onChange={(e) => setProfileNameDraft(e.target.value)}
+                    className="w-full text-xs px-3 py-2 rounded-xl border border-brand-border bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-stone-500 mb-1">
+                    Mobile Number (for Delivery)
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="10-digit mobile"
+                    value={profilePhone}
+                    onChange={(e) => setProfilePhoneDraft(e.target.value)}
+                    className="w-full text-xs px-3 py-2 rounded-xl border border-brand-border bg-white"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={profileSaving}
+                className="px-4 py-2 rounded-xl bg-brand-700 text-[#DFC17B] text-xs font-black hover:opacity-95 transition cursor-pointer disabled:opacity-50"
+              >
+                {profileSaving ? "Saving..." : "Save Profile"}
+              </button>
+            </form>
+
+            {/* Saved Delivery Addresses */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-brand-700" />
+                  <span>Saved Delivery Addresses ({customer.addresses?.length || 0})</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowAddAddress(!showAddAddress)}
+                  className="text-[11px] font-black text-brand-700 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{showAddAddress ? "Cancel" : "Add Address"}</span>
+                </button>
+              </div>
+
+              {showAddAddress && (
+                <form
+                  onSubmit={handleAddSavedAddress}
+                  className="p-3.5 rounded-2xl bg-[#FAF8F4] border border-brand-border space-y-2.5"
+                >
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Label (Hostel / Home)"
+                      value={newAddrLabel}
+                      onChange={(e) => setNewAddrLabel(e.target.value)}
+                      className="text-xs px-2.5 py-2 rounded-xl border border-brand-border bg-white"
+                    />
+                    <select
+                      value={newAddrLocality}
+                      onChange={(e) => setNewAddrLocality(e.target.value)}
+                      className="text-xs px-2.5 py-2 rounded-xl border border-brand-border bg-white font-semibold"
+                    >
+                      {TAGARAPUVALASA_LOCALITIES.map((loc) => (
+                        <option key={loc.id} value={loc.name}>
+                          {loc.name} (~{loc.distanceKm}km)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Room No. / Flat / Street Address *"
+                    value={newAddrLine}
+                    onChange={(e) => setNewAddrLine(e.target.value)}
+                    className="w-full text-xs px-3 py-2 rounded-xl border border-brand-border bg-white"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nearby Landmark (optional)"
+                    value={newAddrLandmark}
+                    onChange={(e) => setNewAddrLandmark(e.target.value)}
+                    className="w-full text-xs px-3 py-2 rounded-xl border border-brand-border bg-white"
+                  />
+                  <button
+                    type="submit"
+                    disabled={savingAddr}
+                    className="btn-maroon-gold w-full py-2.5 rounded-xl text-xs font-black cursor-pointer"
+                  >
+                    {savingAddr ? "Saving..." : "Save Delivery Address"}
+                  </button>
+                </form>
+              )}
+
+              {customer.addresses && customer.addresses.length > 0 ? (
+                <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
+                  {customer.addresses.map((addr) => (
+                    <div
+                      key={addr.id}
+                      className="p-3 rounded-xl border border-brand-border bg-white flex items-start justify-between gap-2 text-xs"
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded bg-brand-700/10 text-brand-700 font-black text-[10px]">
+                            {addr.label}
+                          </span>
+                          <span className="text-[10px] text-stone-400 font-bold truncate">
+                            {addr.locality}
+                          </span>
+                        </div>
+                        <p className="text-stone-700 font-semibold mt-1 line-clamp-2">{addr.address}</p>
+                        {addr.landmark && (
+                          <p className="text-[10px] text-stone-400">Landmark: {addr.landmark}</p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => deleteAddress(addr.id)}
+                        className="p-1.5 text-stone-400 hover:text-red-600 transition flex-shrink-0 cursor-pointer"
+                        title="Remove address"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[11px] text-stone-500 bg-stone-50 border border-stone-200 rounded-xl p-3">
+                  No saved addresses yet. Add your Hostel or Home address for 1-tap checkout within 7km!
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-brand-border">
+              <Link
+                href="/orders"
+                onClick={() => setIsAuthModalOpen(false)}
+                className="btn-maroon-gold py-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5"
+              >
+                <ShoppingBag className="w-3.5 h-3.5 text-[#DFC17B]" />
+                <span>My Orders</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  setIsAuthModalOpen(false);
+                }}
+                className="py-2.5 rounded-xl text-xs font-bold bg-stone-100 hover:bg-red-50 text-stone-700 hover:text-red-700 border border-stone-200 flex items-center justify-center gap-1.5 transition cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const activeError = errorMsg || authBannerError;
 

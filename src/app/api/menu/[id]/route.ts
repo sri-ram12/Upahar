@@ -80,6 +80,7 @@ export async function PUT(
     });
 
     broadcastRealtimeEvent("MENU_ITEM_UPDATED", {
+      action: "UPDATED",
       itemId: item.id,
       name: item.name,
       isAvailable: item.isAvailable,
@@ -109,6 +110,11 @@ export async function DELETE(
     const { id } = await params;
     await prisma.foodItem.delete({
       where: { id },
+    });
+
+    broadcastRealtimeEvent("MENU_ITEM_UPDATED", {
+      action: "DELETED",
+      itemId: id,
     });
 
     return NextResponse.json({ success: true });

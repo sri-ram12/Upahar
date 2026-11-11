@@ -32,6 +32,7 @@ export default function AdminDeliveryAgentsPage() {
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [realtimeToast, setRealtimeToast] = useState<string | null>(null);
 
   const fetchAgents = async () => {
     try {
@@ -49,10 +50,17 @@ export default function AdminDeliveryAgentsPage() {
     fetchAgents();
   }, []);
 
-  // Instant real-time update when rider delivers order or collects cash
-  useRealtimeEvents({
-    onRiderStatusChanged: () => fetchAgents(),
+  // Instant real-time update when rider applies, toggles duty, delivers order, or settles cash
+  const { isConnected: isRealtimeConnected } = useRealtimeEvents({
+    onRiderStatusChanged: (payload) => {
+      fetchAgents();
+      if (payload?.isNewSignup && payload?.agent?.name) {
+        setRealtimeToast(`🆕 New Rider Application: ${payload.agent.name} (${payload.agent.vehicleNumber})`);
+        setTimeout(() => setRealtimeToast(null), 7000);
+      }
+    },
     onOrderDelivered: () => fetchAgents(),
+    onOrderUpdated: () => fetchAgents(),
   });
 
   const handleCreateAgent = async (e: React.FormEvent) => {
@@ -149,6 +157,20 @@ export default function AdminDeliveryAgentsPage() {
         </div>
 
         <div className="flex items-center space-x-2">
+          <div
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center space-x-1.5 ${
+              isRealtimeConnected
+                ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                : "bg-amber-50 border-amber-300 text-amber-800"
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isRealtimeConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+              }`}
+            />
+            <span>{isRealtimeConnected ? "SSE Live" : "Connecting..."}</span>
+          </div>
           <Link
             href="/delivery"
             target="_blank"
@@ -166,6 +188,19 @@ export default function AdminDeliveryAgentsPage() {
           </button>
         </div>
       </div>
+
+      {realtimeToast && (
+        <div className="p-3.5 rounded-2xl bg-emerald-600 text-white text-xs font-black flex items-center justify-between shadow-lg">
+          <span>{realtimeToast}</span>
+          <button
+            type="button"
+            onClick={() => setRealtimeToast(null)}
+            className="underline text-[11px] cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

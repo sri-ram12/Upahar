@@ -54,7 +54,12 @@ export default function DeliveryPartnerPage() {
 
   // Live GPS Sharing
   const [gpsTrackingActive, setGpsTrackingActive] = useState(false);
+  const [lastGpsPing, setLastGpsPing] = useState<{ lat: number; lng: number; time: string } | null>(null);
+  const [gpsError, setGpsError] = useState<string | null>(null);
+  const [dispatchNotice, setDispatchNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const gpsWatchRef = useRef<number | null>(null);
+  const lastGpsSentAtRef = useRef<number>(0);
 
   // OTP Verification & QR Payment Modal State
   const [otpModalOrder, setOtpModalOrder] = useState<Order | null>(null);
@@ -81,18 +86,38 @@ export default function DeliveryPartnerPage() {
     } catch {}
   };
 
-  // Load rider session from localStorage
+  // Load rider session from localStorage & reconcile with live DB cookie session
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(RIDER_STORAGE_KEY);
-      if (saved) {
-        setRider(JSON.parse(saved));
+    let active = true;
+    Promise.resolve().then(async () => {
+      try {
+        const saved = localStorage.getItem(RIDER_STORAGE_KEY);
+        if (saved && active) {
+          setRider(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setAuthLoading(false);
-    }
+
+      try {
+        const res = await fetch("/api/delivery/auth", { credentials: "include" });
+        const data = await res.json();
+        if (!active) return;
+        if (res.ok && data?.authenticated && data?.agent) {
+          setRider(data.agent);
+          localStorage.setItem(RIDER_STORAGE_KEY, JSON.stringify(data.agent));
+        } else if (res.status === 403) {
+          setRider(null);
+          localStorage.removeItem(RIDER_STORAGE_KEY);
+          setLoginError(data?.error || "Rider access paused by Admin.");
+        }
+      } catch {}
+      if (active) setAuthLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleRiderLogin = async (e: React.FormEvent) => {
@@ -155,15 +180,16 @@ export default function DeliveryPartnerPage() {
     }
   };
 
-  const handleRiderLogout = () => {
+  const handleRiderLogout = async () => {
     if (gpsWatchRef.current !== null && navigator.geolocation) {
       navigator.geolocation.clearWatch(gpsWatchRef.current);
       gpsWatchRef.current = null;
     }
+    setGpsTrackingActive(false);
     setRider(null);
     try {
       localStorage.removeItem(RIDER_STORAGE_KEY);
-      document.cookie = "upahar_delivery_token=; path=/; max-age=0";
+      await fetch("/api/delivery/auth", { method: "DELETE", credentials: "include" });
     } catch {}
   };
 
@@ -218,15 +244,30 @@ export default function DeliveryPartnerPage() {
     onOrderUpdated: (payload) => {
       if (payload?.status === "FOOD_READY") {
         playRiderChime();
+        setDispatchNotice(`Food Ready at Kitchen: Order #${payload.orderNumber || "NEW"}`);
+        setTimeout(() => setDispatchNotice(null), 6000);
+      } else if (rider && payload?.deliveryAgentId === rider.id && payload?.status) {
+        playRiderChime();
+        setDispatchNotice(
+          `Assigned to You: #${payload.orderNumber || ""} (${String(payload.status).replace(/_/g, " ")})`
+        );
+        setTimeout(() => setDispatchNotice(null), 6000);
       }
       fetchDeliveryOrders();
     },
     onRiderStatusChanged: (payload) => {
       if (rider && payload.deliveryAgentId === rider.id) {
+        if (payload.agent && (payload.agent.isActive === false || payload.agent.approvalStatus === "REJECTED")) {
+          handleRiderLogout();
+          setLoginError("Your rider access was paused or deactivated by Admin.");
+          return;
+        }
         setRider((prev) => {
           if (!prev) return prev;
           const updated = {
             ...prev,
+            status: payload.agent?.status || prev.status,
+            vehicleNumber: payload.agent?.vehicleNumber || prev.vehicleNumber,
             cashInHand: payload.cashInHand !== undefined ? payload.cashInHand : prev.cashInHand,
             totalDeliveries:
               payload.totalDeliveries !== undefined
@@ -249,7 +290,18 @@ export default function DeliveryPartnerPage() {
     return () => clearInterval(interval);
   }, [rider?.id]);
 
-  // Live GPS Broadcasting to Customer Map when active transit runs exist
+  // Active transit order IDs key ensures GPS watcher starts cleanly as soon as any run becomes OUT_FOR_DELIVERY
+  const activeTransitRunIdsKey = orders
+    .filter(
+      (o) =>
+        Boolean(rider) &&
+        o.deliveryAgentId === rider?.id &&
+        (o.status === "OUT_FOR_DELIVERY" || o.status === "ARRIVED")
+    )
+    .map((o) => o.id)
+    .join(",");
+
+  // Live GPS Broadcasting to Customer Map when active transit runs exist (throttled every ~3.5s)
   useEffect(() => {
     if (!rider || !gpsTrackingActive || typeof navigator === "undefined" || !navigator.geolocation) {
       if (gpsWatchRef.current !== null && typeof navigator !== "undefined" && navigator.geolocation) {
@@ -259,19 +311,29 @@ export default function DeliveryPartnerPage() {
       return;
     }
 
-    const activeTransitRuns = orders.filter(
-      (o) =>
-        o.deliveryAgentId === rider.id &&
-        (o.status === "OUT_FOR_DELIVERY" || o.status === "ARRIVED")
-    );
-
-    if (activeTransitRuns.length === 0) return;
+    const activeIds = activeTransitRunIdsKey ? activeTransitRunIdsKey.split(",").filter(Boolean) : [];
+    if (activeIds.length === 0) return;
 
     gpsWatchRef.current = navigator.geolocation.watchPosition(
       (pos) => {
+        setGpsError(null);
+        const now = Date.now();
+        if (now - lastGpsSentAtRef.current < 3500) return;
+        lastGpsSentAtRef.current = now;
+
         const { latitude, longitude } = pos.coords;
-        activeTransitRuns.forEach((run) => {
-          fetch(`/api/orders/${run.id}`, {
+        setLastGpsPing({
+          lat: Number(latitude.toFixed(5)),
+          lng: Number(longitude.toFixed(5)),
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+        });
+
+        activeIds.forEach((runId) => {
+          fetch(`/api/orders/${runId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -282,7 +344,10 @@ export default function DeliveryPartnerPage() {
           }).catch(() => {});
         });
       },
-      (err) => console.warn("Rider GPS error:", err),
+      (err) => {
+        setGpsError("Enable browser GPS permission to broadcast live rider route to customer.");
+        console.warn("Rider GPS error:", err);
+      },
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
     );
 
@@ -292,13 +357,14 @@ export default function DeliveryPartnerPage() {
         gpsWatchRef.current = null;
       }
     };
-  }, [gpsTrackingActive, rider?.id, orders.length]);
+  }, [gpsTrackingActive, rider?.id, activeTransitRunIdsKey]);
 
   const handleTakeupDelivery = async (orderId: string) => {
     if (!rider) return;
+    setActionError(null);
     setIsUpdating(orderId);
     try {
-      await fetch(`/api/orders/${orderId}`, {
+      const res = await fetch(`/api/orders/${orderId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -306,6 +372,12 @@ export default function DeliveryPartnerPage() {
           deliveryAgentId: rider.id,
         }),
       });
+      const data = await res.json();
+      if (!res.ok) {
+        setActionError(data?.error || "Could not claim this delivery run.");
+      } else {
+        setGpsTrackingActive(true);
+      }
       await fetchDeliveryOrders();
     } catch (e) {
       console.error(e);
@@ -639,7 +711,10 @@ export default function DeliveryPartnerPage() {
           </button>
 
           <button
-            onClick={() => setGpsTrackingActive(!gpsTrackingActive)}
+            onClick={() => {
+              setGpsError(null);
+              setGpsTrackingActive(!gpsTrackingActive);
+            }}
             className={`px-3 py-1.5 rounded-xl text-[11px] font-bold border flex items-center space-x-1 transition ${
               gpsTrackingActive
                 ? "bg-sky-600 border-sky-400 text-white"
@@ -684,6 +759,53 @@ export default function DeliveryPartnerPage() {
           </button>
         </div>
       </div>
+
+      {/* Live GPS Telemetry & Realtime Alerts */}
+      {dispatchNotice && (
+        <div className="p-3.5 rounded-2xl bg-emerald-600 text-white text-xs font-black flex items-center justify-between gap-2 shadow-lg animate-in fade-in">
+          <span>🔔 {dispatchNotice}</span>
+          <button
+            type="button"
+            onClick={() => setDispatchNotice(null)}
+            className="underline text-[11px] opacity-90 cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center justify-between gap-2">
+          <span>{actionError}</span>
+          <button
+            type="button"
+            onClick={() => setActionError(null)}
+            className="underline text-[11px] cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      )}
+
+      {(gpsTrackingActive || gpsError) && (
+        <div
+          className={`px-4 py-2.5 rounded-2xl border text-[11px] font-bold flex flex-wrap items-center justify-between gap-2 ${
+            gpsError
+              ? "bg-amber-50 border-amber-300 text-amber-900"
+              : "bg-sky-50 border-sky-200 text-sky-900"
+          }`}
+        >
+          <span>
+            {gpsError
+              ? `⚠️ ${gpsError}`
+              : lastGpsPing
+              ? `📡 Live GPS Broadcasting (${lastGpsPing.lat}, ${lastGpsPing.lng}) • Pinged at ${lastGpsPing.time}`
+              : activeTransitRunIdsKey
+              ? "📡 Live GPS armed — waiting for satellite fix on your active delivery run..."
+              : "📡 Live GPS armed — starts broadcasting automatically as soon as you pick up a run."}
+          </span>
+        </div>
+      )}
 
       {/* Stats Banner: COD Cash, Deliveries & Rider Earnings */}
       <div className="grid grid-cols-3 gap-2.5 sm:gap-3">

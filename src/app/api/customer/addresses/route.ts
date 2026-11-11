@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import { getAuthenticatedCustomer } from "@/lib/customer-auth";
 
-const JWT_SECRET = process.env.JWT_SECRET || "upahar-customer-secret-key-2026";
-
-async function resolveCustomerId(req: NextRequest, fallbackId?: string | null) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("upahar_customer_token")?.value;
-  if (token) {
-    try {
-      const payload = jwt.verify(token, JWT_SECRET) as { id: string };
-      if (payload?.id) return payload.id;
-    } catch {}
+async function resolveCustomerId(fallbackId?: string | null) {
+  const authenticated = await getAuthenticatedCustomer();
+  if (authenticated?.id) {
+    return authenticated.id;
   }
   return fallbackId || null;
 }
@@ -20,7 +13,7 @@ async function resolveCustomerId(req: NextRequest, fallbackId?: string | null) {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const customerId = await resolveCustomerId(req, searchParams.get("customerId"));
+    const customerId = await resolveCustomerId(searchParams.get("customerId"));
 
     if (!customerId) {
       return NextResponse.json({ addresses: [] });
@@ -41,7 +34,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const customerId = await resolveCustomerId(req, body.customerId);
+    const authenticated = await getAuthenticatedCustomer();
+    const customerId = authenticated?.id || null;
 
     if (!customerId) {
       return NextResponse.json({ error: "Please sign in to save addresses" }, { status: 401 });
@@ -105,7 +99,8 @@ export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const customerId = await resolveCustomerId(req, searchParams.get("customerId"));
+    const authenticated = await getAuthenticatedCustomer();
+    const customerId = authenticated?.id || null;
 
     if (!id || !customerId) {
       return NextResponse.json({ error: "Address ID and sign-in required" }, { status: 400 });

@@ -20,6 +20,7 @@ import {
 import QRModal from "@/components/qr/QRModal";
 import { useCart } from "@/context/CartContext";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import {
   getWebsiteTheme,
   type DivisionKey,
@@ -36,6 +37,7 @@ export default function Navbar() {
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [themeOverride, setThemeOverride] = useState<string | null>(null);
+  const [activeOrdersCount, setActiveOrdersCount] = useState(0);
   const [subsiteStatuses, setSubsiteStatuses] = useState<
     Record<string, { statusLabel: string; timingText: string; isOpen: boolean }>
   >({});
@@ -56,29 +58,68 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const refreshRestaurantStatus = React.useCallback(() => {
+    fetch("/api/restaurant")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.storeStatus) {
+          setStoreStatus(data.storeStatus);
+        }
+        if (Array.isArray(data.subsites)) {
+          const map: Record<string, { statusLabel: string; timingText: string; isOpen: boolean }> = {};
+          for (const s of data.subsites) {
+            if (s?.id && s?.status) {
+              map[s.id] = s.status;
+            }
+          }
+          setSubsiteStatuses(map);
+        }
+      })
+      .catch((err) => console.error("Error fetching restaurant status:", err));
+  }, []);
+
+  const customerId = customer?.id;
+  const customerPhone = customer?.phone;
+
+  const refreshActiveOrdersCount = React.useCallback(async () => {
+    try {
+      const params = new URLSearchParams({ limit: "15" });
+      if (customerId) params.set("customerId", customerId);
+      if (customerPhone) params.set("phone", customerPhone);
+      try {
+        const savedRaw = localStorage.getItem("upahar_recent_orders_v1");
+        if (savedRaw) {
+          const nums = JSON.parse(savedRaw);
+          if (Array.isArray(nums) && nums.length > 0) {
+            params.set("orderNumbers", nums.slice(0, 10).join(","));
+          }
+        }
+      } catch {}
+
+      if (!params.get("customerId") && !params.get("phone") && !params.get("orderNumbers")) {
+        setActiveOrdersCount(0);
+        return;
+      }
+
+      const res = await fetch(`/api/orders?${params.toString()}`);
+      const data = await res.json();
+      if (Array.isArray(data?.orders)) {
+        const count = data.orders.filter(
+          (o: { status: string }) => o.status !== "DELIVERED" && o.status !== "CANCELLED"
+        ).length;
+        setActiveOrdersCount(count);
+      }
+    } catch {}
+  }, [customerId, customerPhone]);
+
   useEffect(() => {
     const syncFromUrlAndApi = () => {
       if (typeof window !== "undefined") {
         const params = new URLSearchParams(window.location.search);
         setThemeOverride(params.get("theme"));
       }
-      fetch("/api/restaurant")
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.storeStatus) {
-            setStoreStatus(data.storeStatus);
-          }
-          if (Array.isArray(data.subsites)) {
-            const map: Record<string, { statusLabel: string; timingText: string; isOpen: boolean }> = {};
-            for (const s of data.subsites) {
-              if (s?.id && s?.status) {
-                map[s.id] = s.status;
-              }
-            }
-            setSubsiteStatuses(map);
-          }
-        })
-        .catch((err) => console.error("Error fetching restaurant status:", err));
+      refreshRestaurantStatus();
+      refreshActiveOrdersCount();
     };
 
     const handleThemeEvent = (e: Event) => {
@@ -91,7 +132,15 @@ export default function Navbar() {
     syncFromUrlAndApi();
     window.addEventListener("upahar-theme-change", handleThemeEvent);
     return () => window.removeEventListener("upahar-theme-change", handleThemeEvent);
-  }, [pathname]);
+  }, [pathname, refreshRestaurantStatus, refreshActiveOrdersCount]);
+
+  useRealtimeEvents({
+    onEmergencyStopChanged: () => refreshRestaurantStatus(),
+    onSubsiteUpdated: () => refreshRestaurantStatus(),
+    onOrderCreated: () => refreshActiveOrdersCount(),
+    onOrderUpdated: () => refreshActiveOrdersCount(),
+    onOrderDelivered: () => refreshActiveOrdersCount(),
+  });
 
   const isStaffPanel =
     pathname?.startsWith("/admin") ||
@@ -339,11 +388,18 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-1.5 flex-shrink-0">
             {/* Customer Account on Main Website (or quick Hub return on sub-websites) */}
             {customer ? (
-              <div className={`flex items-center gap-1.5 border rounded-full px-2.5 py-1.5 text-xs ${pillActionClass}`}>
-                <User className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="font-bold truncate max-w-[70px]">
-                  {customer.name.split(" ")[0]}
-                </span>
+              <div className={`flex items-center gap-1.5 border rounded-full px-2.5 py-1 text-xs ${pillActionClass}`}>
+                <button
+                  type="button"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="flex items-center gap-1 font-bold hover:opacity-85 transition cursor-pointer"
+                  title="Manage Account & Saved Addresses"
+                >
+                  <User className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span className="truncate max-w-[78px]">
+                    {customer.name.split(" ")[0]}
+                  </span>
+                </button>
                 <button
                   onClick={logout}
                   className="opacity-70 hover:opacity-100 transition pl-0.5 cursor-pointer"
@@ -374,12 +430,17 @@ export default function Navbar() {
 
             <Link
               href="/orders"
-              className={`px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap ${pillActionClass}`}
+              className={`relative px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap ${pillActionClass}`}
               title="Track Active & Past Orders"
             >
               <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="hidden xl:inline">My </span>
               <span>Orders</span>
+              {activeOrdersCount > 0 && (
+                <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-emerald-500 text-white text-[9px] font-black leading-tight animate-pulse">
+                  {activeOrdersCount}
+                </span>
+              )}
             </Link>
 
             <button
@@ -410,9 +471,9 @@ export default function Navbar() {
           {/* Mobile & Tablet Top Actions (All options: Account, Orders, Bag, QR & Sidebar visible together without scrolling) */}
           <div className="flex items-center gap-1 sm:gap-1.5 lg:hidden flex-shrink-0">
             <button
-              onClick={() => (customer ? setMobileMenuOpen(true) : setIsAuthModalOpen(true))}
+              onClick={() => setIsAuthModalOpen(true)}
               className={`h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition cursor-pointer ${pillActionClass}`}
-              aria-label={customer ? "Customer Account" : "Sign In"}
+              aria-label={customer ? "Customer Account & Addresses" : "Sign In"}
               title={customer ? customer.name : "Account / Sign In"}
             >
               <User className="w-3.5 h-3.5 flex-shrink-0" />
@@ -423,12 +484,17 @@ export default function Navbar() {
 
             <Link
               href="/orders"
-              className={`h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition ${pillActionClass}`}
+              className={`relative h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition ${pillActionClass}`}
               aria-label="My Orders"
               title="My Orders"
             >
               <Clock className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="hidden min-[440px]:inline text-[11px] font-bold">Orders</span>
+              {activeOrdersCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                  {activeOrdersCount}
+                </span>
+              )}
             </Link>
 
             <button
@@ -491,17 +557,24 @@ export default function Navbar() {
             {/* Mobile Customer Account & My Orders Quick Bar */}
             <div className="flex items-center justify-between gap-2 p-3 rounded-2xl bg-[#FAF8F4] border border-[#E7E0D3]">
               {customer ? (
-                <div className="flex items-center space-x-2 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsAuthModalOpen(true);
+                  }}
+                  className="flex items-center space-x-2 min-w-0 text-left cursor-pointer"
+                >
                   <User className={`w-4 h-4 ${drawerIconColor} flex-shrink-0`} />
                   <div className="min-w-0">
                     <span className="text-xs font-black text-[#141210] block truncate">
                       {customer.name}
                     </span>
                     <span className="text-[10px] text-stone-500 block truncate">
-                      {customer.phone || customer.email}
+                      {customer.email || customer.phone} • Edit Profile &amp; Addresses
                     </span>
                   </div>
-                </div>
+                </button>
               ) : (
                 <button
                   onClick={() => {

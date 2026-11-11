@@ -93,6 +93,33 @@ export default function KitchenDisplayPage() {
     onOrderUpdated: () => {
       fetchKitchenOrders();
     },
+    onMenuItemUpdated: (payload) => {
+      if (payload.action === "CREATED") {
+        fetch("/api/menu?includeInactive=true")
+          .then((r) => r.json())
+          .then((d) => {
+            if (Array.isArray(d?.items)) setMenuItems(d.items);
+          })
+          .catch(() => {});
+        return;
+      }
+      if (payload.action === "DELETED") {
+        setMenuItems((prev) => prev.filter((m) => m.id !== payload.itemId));
+        return;
+      }
+      setMenuItems((prev) =>
+        prev.map((m) =>
+          m.id === payload.itemId
+            ? {
+                ...m,
+                ...(payload.name ? { name: payload.name } : {}),
+                isAvailable: payload.isAvailable ?? m.isAvailable,
+                price: payload.price ?? m.price,
+              }
+            : m
+        )
+      );
+    },
   });
 
   useEffect(() => {

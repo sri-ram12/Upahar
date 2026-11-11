@@ -88,13 +88,43 @@ function MenuContent() {
 
   useRealtimeEvents({
     onMenuItemUpdated: (payload) => {
+      if (payload.action === "CREATED") {
+        fetch(`/api/menu?respectSession=true&includeLocked=true`)
+          .then((r) => r.json())
+          .then((d) => {
+            if (Array.isArray(d?.items)) setItems(d.items);
+          })
+          .catch(() => {});
+        return;
+      }
+      if (payload.action === "DELETED") {
+        setItems((prev) => prev.filter((it) => it.id !== payload.itemId));
+        return;
+      }
       setItems((prev) =>
         prev.map((it) =>
           it.id === payload.itemId
-            ? { ...it, isAvailable: payload.isAvailable, price: payload.price ?? it.price }
+            ? {
+                ...it,
+                ...(payload.name ? { name: payload.name } : {}),
+                isAvailable: payload.isAvailable ?? it.isAvailable,
+                price: payload.price ?? it.price,
+              }
             : it
         )
       );
+    },
+    onSubsiteUpdated: () => {
+      fetch("/api/restaurant")
+        .then((r) => r.json())
+        .then((d) => {
+          if (Array.isArray(d?.subsites)) {
+            const map: Record<string, any> = {};
+            for (const s of d.subsites) map[s.id] = s;
+            setSubsiteStatuses(map);
+          }
+        })
+        .catch(() => {});
     },
     onEmergencyStopChanged: (payload) => {
       if (payload.isEmergencyWebsiteStopped) {

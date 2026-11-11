@@ -181,7 +181,21 @@ export async function PUT(
       return NextResponse.json({ success: true });
     }
 
-    // 5. Standard Pipeline Updates + Delivery OTP validation
+    // 5. Prevent two riders from simultaneously claiming the same delivery run
+    if (
+      status === "OUT_FOR_DELIVERY" &&
+      deliveryAgentId &&
+      !adminOverride &&
+      existing.deliveryAgentId &&
+      existing.deliveryAgentId !== deliveryAgentId
+    ) {
+      return NextResponse.json(
+        { error: "This delivery run was already claimed by another rider." },
+        { status: 409 }
+      );
+    }
+
+    // 6. Standard Pipeline Updates + Delivery OTP validation
     if (status === "DELIVERED" && existing.orderType === "DELIVERY" && !adminOverride) {
       if (!enteredOtp) {
         return NextResponse.json(
@@ -242,6 +256,22 @@ export async function PUT(
       paymentStatus: updated.paymentStatus,
       totalAmount: updated.totalAmount,
     });
+
+    if (status === "OUT_FOR_DELIVERY" && updated.deliveryAgentId) {
+      const activeAgent = await prisma.deliveryAgent.update({
+        where: { id: updated.deliveryAgentId },
+        data: { status: "ON_DELIVERY" },
+      }).catch(() => null);
+      if (activeAgent) {
+        broadcastRealtimeEvent("RIDER_STATUS_CHANGED", {
+          agent: activeAgent,
+          deliveryAgentId: activeAgent.id,
+          cashInHand: activeAgent.cashInHand,
+          totalDeliveries: activeAgent.totalDeliveries,
+          totalEarnings: activeAgent.totalEarnings,
+        });
+      }
+    }
 
     if (status === "DELIVERED") {
       broadcastRealtimeEvent("ORDER_DELIVERED", {

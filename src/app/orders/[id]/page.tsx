@@ -43,6 +43,7 @@ export default function OrderTrackingPage({ params }: PageProps) {
   const [showQrPayBox, setShowQrPayBox] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
+  const [liveUpdateBanner, setLiveUpdateBanner] = useState<string | null>(null);
 
   // Rating State
   const [foodRating, setFoodRating] = useState(5);
@@ -81,6 +82,10 @@ export default function OrderTrackingPage({ params }: PageProps) {
         payload.orderNumber === orderId ||
         (order && payload.orderId === order.id)
       ) {
+        if (payload.status) {
+          setLiveUpdateBanner(`Live Update: Order is now ${String(payload.status).replace(/_/g, " ")}`);
+          setTimeout(() => setLiveUpdateBanner(null), 5000);
+        }
         fetchOrder();
       }
     },
@@ -90,6 +95,8 @@ export default function OrderTrackingPage({ params }: PageProps) {
         payload.orderNumber === orderId ||
         (order && payload.orderId === order.id)
       ) {
+        setLiveUpdateBanner("Order Delivered! Enjoy your fresh Upahar meal.");
+        setTimeout(() => setLiveUpdateBanner(null), 6000);
         fetchOrder();
       }
     },
@@ -100,7 +107,14 @@ export default function OrderTrackingPage({ params }: PageProps) {
         (order && payload.orderId === order.id)
       ) {
         setOrder((prev) =>
-          prev ? { ...prev, riderLat: payload.riderLat, riderLng: payload.riderLng } : prev
+          prev
+            ? {
+                ...prev,
+                riderLat: payload.riderLat,
+                riderLng: payload.riderLng,
+                riderLocationUpdatedAt: new Date().toISOString(),
+              }
+            : prev
         );
       }
     },
@@ -175,31 +189,49 @@ export default function OrderTrackingPage({ params }: PageProps) {
     }
   };
 
-  const handleReorder = () => {
+  const handleReorder = async () => {
     if (!order) return;
-    clearCart();
-    for (const it of order.items) {
-      const dishObj: FoodItem = {
-        id: it.foodItemId || `reorder-${it.id}`,
-        name: it.name,
-        slug: it.name.toLowerCase().replace(/\s+/g, "-"),
-        description: it.portionSize || "Freshly prepared Upahar specialty",
-        price: it.price,
-        image: "/ghee-karam-dosa.jpg",
-        categoryId: "reorder",
-        isVeg: true,
-        isSpicy: false,
-        isBestseller: false,
-        isSignature: false,
-        isAvailable: true,
-        prepTime: "10-15 mins",
-        portionSize: it.portionSize || null,
-        displayOrder: 0,
-      };
-      addToCart(dishObj, it.quantity);
+    try {
+      const menuRes = await fetch("/api/menu");
+      const menuData = await menuRes.json();
+      const menuMap = new Map<string, FoodItem>();
+      if (Array.isArray(menuData?.items)) {
+        for (const item of menuData.items as FoodItem[]) {
+          menuMap.set(item.id, item);
+          menuMap.set(item.name.toLowerCase(), item);
+        }
+      }
+
+      clearCart();
+      for (const it of order.items) {
+        const matched =
+          (it.foodItemId && menuMap.get(it.foodItemId)) ||
+          menuMap.get(it.name.toLowerCase());
+
+        const dishObj: FoodItem = matched || {
+          id: it.foodItemId || `reorder-${it.id}`,
+          name: it.name,
+          slug: it.name.toLowerCase().replace(/\s+/g, "-"),
+          description: it.portionSize || "Freshly prepared Upahar specialty",
+          price: it.price,
+          image: "/ghee-karam-dosa.jpg",
+          categoryId: "reorder",
+          isVeg: true,
+          isSpicy: false,
+          isBestseller: false,
+          isSignature: false,
+          isAvailable: true,
+          prepTime: "10-15 mins",
+          portionSize: it.portionSize || null,
+          displayOrder: 0,
+        };
+        addToCart(dishObj, it.quantity);
+      }
+      setIsCartOpen(true);
+      router.push("/checkout");
+    } catch {
+      router.push("/menu");
     }
-    setIsCartOpen(true);
-    router.push("/checkout");
   };
 
   if (loading) {
@@ -382,10 +414,18 @@ export default function OrderTrackingPage({ params }: PageProps) {
                   customerLng={order.lng}
                   riderLat={order.riderLat}
                   riderLng={order.riderLng}
+                  riderLocationUpdatedAt={order.riderLocationUpdatedAt}
                   distanceKm={order.distanceKm}
                   riderName={order.deliveryAgent?.name}
                 />
               </div>
+
+              {liveUpdateBanner && (
+                <div className="p-3 rounded-2xl bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-md animate-in fade-in">
+                  <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                  <span>{liveUpdateBanner}</span>
+                </div>
+              )}
 
               {/* 6-Step Visual Stepper */}
               <div className="grid grid-cols-6 gap-1 sm:gap-2 relative pt-2">

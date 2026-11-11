@@ -13,6 +13,7 @@ interface LiveTrackingMapProps {
   customerLng?: number | null;
   riderLat?: number | null;
   riderLng?: number | null;
+  riderLocationUpdatedAt?: string | Date | null;
   distanceKm?: number | null;
   riderName?: string | null;
 }
@@ -26,6 +27,7 @@ export default function LiveTrackingMap({
   customerLng,
   riderLat,
   riderLng,
+  riderLocationUpdatedAt,
   distanceKm,
   riderName,
 }: LiveTrackingMapProps) {
@@ -73,8 +75,12 @@ export default function LiveTrackingMap({
         y: kitchenPos.y + (customerPos.y - kitchenPos.y) * progress,
       };
 
-  const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${minLng}%2C${minLat}%2C${maxLng}%2C${maxLat}&layer=mapnik&marker=${destLat}%2C${destLng}`;
-  const gmapsRouteUrl = `https://www.google.com/maps/dir/?api=1&origin=${UPAHAR_COORDINATES.lat},${UPAHAR_COORDINATES.lng}&destination=${destLat},${destLng}`;
+  const markerLat = hasLiveGpsRider ? riderLat! : destLat;
+  const markerLng = hasLiveGpsRider ? riderLng! : destLng;
+  const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${minLng}%2C${minLat}%2C${maxLng}%2C${maxLat}&layer=mapnik&marker=${markerLat}%2C${markerLng}`;
+  const originLat = hasLiveGpsRider ? riderLat! : UPAHAR_COORDINATES.lat;
+  const originLng = hasLiveGpsRider ? riderLng! : UPAHAR_COORDINATES.lng;
+  const gmapsRouteUrl = `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}`;
 
   if (orderType !== "DELIVERY") {
     return (
@@ -113,9 +119,18 @@ export default function LiveTrackingMap({
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
           <span className="font-black text-brand-950">
             {hasLiveGpsRider
-              ? `Live GPS Tracking • ${riderName || "Rider"} on the move`
+              ? `Live GPS • ${riderName || "Rider"} on the move`
               : `Tagarapuvalasa 7km Route (~${effectiveDist} km)`}
           </span>
+          {hasLiveGpsRider && riderLocationUpdatedAt && (
+            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 hidden sm:inline">
+              {new Date(riderLocationUpdatedAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center space-x-1.5">

@@ -112,7 +112,7 @@ export default function AdminOrdersPage() {
       });
       setTimeout(() => setRealtimeToast(null), 7000);
     },
-    onOrderUpdated: (payload) => {
+    onOrderUpdated: () => {
       fetchOrders();
     },
     onOrderDelivered: (payload) => {
@@ -122,6 +122,31 @@ export default function AdminOrdersPage() {
         subtitle: `Delivered to ${payload.customerName}. Payment of ₹${payload.totalAmount} collected!`,
       });
       setTimeout(() => setRealtimeToast(null), 5000);
+    },
+    onRiderStatusChanged: () => {
+      fetch("/api/delivery/agents")
+        .then((r) => r.json())
+        .then((agentsData) => {
+          if (Array.isArray(agentsData?.agents)) {
+            setAgents(agentsData.agents.filter((a: DeliveryAgent) => a.isActive));
+          }
+        })
+        .catch(() => {});
+    },
+    onRiderLocationUpdated: (payload) => {
+      if (!payload?.orderId) return;
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === payload.orderId
+            ? {
+                ...o,
+                riderLat: payload.riderLat,
+                riderLng: payload.riderLng,
+                riderLocationUpdatedAt: new Date().toISOString(),
+              }
+            : o
+        )
+      );
     },
   });
 

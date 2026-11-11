@@ -268,9 +268,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Calculate subtotal & enforce Minimum Delivery Order
-    const subtotal = items.reduce(
-      (sum: number, it: any) => sum + Number(it.price) * Number(it.quantity),
+    // 2. Normalize authoritative menu prices from DB (prevents stale cart price drift) & enforce Minimum Delivery Order
+    const normalizedItems = items.map((it: any) => {
+      const dbMatch = dbItemMap.get(it.foodItemId || it.id);
+      const quantity = Math.max(1, Math.floor(Number(it.quantity) || 1));
+      const unitPrice = dbMatch ? Number(dbMatch.price) : Number(it.price);
+      return {
+        foodItemId: dbMatch?.id || it.foodItemId || it.id || null,
+        name: dbMatch ? dbMatch.name : String(it.name || "Upahar Dish"),
+        price: unitPrice,
+        quantity,
+        portionSize: dbMatch?.portionSize ?? it.portionSize ?? null,
+      };
+    });
+
+    const subtotal = normalizedItems.reduce(
+      (sum: number, it) => sum + it.price * it.quantity,
       0
     );
 
@@ -394,12 +407,12 @@ export async function POST(req: NextRequest) {
         deliveryOtp,
         estimatedTime: orderType === "DELIVERY" ? "25-35 mins" : "15-20 mins",
         items: {
-          create: items.map((it: any) => ({
-            foodItemId: it.foodItemId || it.id || null,
+          create: normalizedItems.map((it) => ({
+            foodItemId: it.foodItemId,
             name: it.name,
-            price: Number(it.price),
-            quantity: Number(it.quantity),
-            portionSize: it.portionSize || null,
+            price: it.price,
+            quantity: it.quantity,
+            portionSize: it.portionSize,
           })),
         },
       },

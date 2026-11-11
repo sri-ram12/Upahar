@@ -23,6 +23,9 @@ export default function CartDrawer() {
     setIsCartOpen,
     updateQuantity,
     removeFromCart,
+    removeUnavailableItems,
+    syncCartWithMenu,
+    hasUnavailableItems,
     clearCart,
     totalCount,
     subtotal,
@@ -36,6 +39,7 @@ export default function CartDrawer() {
 
   useEffect(() => {
     if (!isCartOpen) return;
+    syncCartWithMenu();
     fetch("/api/restaurant")
       .then((r) => r.json())
       .then((d) => {
@@ -50,7 +54,7 @@ export default function CartDrawer() {
         }
       })
       .catch(() => {});
-  }, [isCartOpen]);
+  }, [isCartOpen, syncCartWithMenu]);
 
   if (!isCartOpen) return null;
 
@@ -152,10 +156,16 @@ export default function CartDrawer() {
             </div>
           ) : (
             <>
-              {items.map(({ foodItem, quantity }) => (
+              {items.map(({ foodItem, quantity }) => {
+                const isSoldOut = foodItem.isAvailable === false;
+                return (
                 <div
                   key={foodItem.id}
-                  className="p-3 bg-white rounded-2xl border border-brand-border shadow-xs flex items-center justify-between gap-3"
+                  className={`p-3 rounded-2xl border shadow-xs flex items-center justify-between gap-3 ${
+                    isSoldOut
+                      ? "bg-red-50/70 border-red-200 opacity-90"
+                      : "bg-white border-brand-border"
+                  }`}
                 >
                   <div className="flex items-center space-x-3 flex-1 min-w-0">
                     <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0">
@@ -167,9 +177,16 @@ export default function CartDrawer() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-brand-950 truncate">
-                        {foodItem.name}
-                      </h4>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-sm font-bold text-brand-950 truncate">
+                          {foodItem.name}
+                        </h4>
+                        {isSoldOut && (
+                          <span className="px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px] font-black uppercase flex-shrink-0">
+                            Sold Out
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center space-x-2 mt-0.5">
                         <span className="text-xs font-black text-brand-700">
                           ₹{foodItem.price}
@@ -187,7 +204,7 @@ export default function CartDrawer() {
                   <div className="flex items-center space-x-1.5 bg-brand-cream border border-brand-border rounded-xl px-2 py-1">
                     <button
                       onClick={() => updateQuantity(foodItem.id, -1)}
-                      className="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-brand-700 transition"
+                      className="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-brand-700 transition cursor-pointer"
                       aria-label="Decrease quantity"
                     >
                       {quantity === 1 ? (
@@ -201,14 +218,16 @@ export default function CartDrawer() {
                     </span>
                     <button
                       onClick={() => updateQuantity(foodItem.id, 1)}
-                      className="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-brand-700 transition"
+                      disabled={isSoldOut}
+                      className="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-brand-700 transition disabled:opacity-35 cursor-pointer"
                       aria-label="Increase quantity"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-              ))}
+                );
+              })}
 
               {/* Special Instructions Note */}
               <div className="pt-2">
@@ -259,6 +278,18 @@ export default function CartDrawer() {
                   Add ₹{Math.ceil(amountToMinOrder)} more for Doorstep Delivery (Min ₹{minDeliveryOrder}) • Self-Pickup has no minimum!
                 </div>
               )}
+              {hasUnavailableItems && (
+                <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-[11px] font-bold text-red-800 flex items-center justify-between gap-2">
+                  <span>Some items in your bag just sold out in the kitchen.</span>
+                  <button
+                    type="button"
+                    onClick={removeUnavailableItems}
+                    className="px-2.5 py-1 rounded-lg bg-red-600 text-white text-[10px] font-black flex-shrink-0 cursor-pointer hover:bg-red-700"
+                  >
+                    Remove Sold Out
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="pt-2 border-t border-brand-surface flex items-center justify-between">
@@ -271,14 +302,24 @@ export default function CartDrawer() {
                 </span>
               </div>
 
-              <Link
-                href="/checkout"
-                onClick={() => setIsCartOpen(false)}
-                className="btn-maroon-gold px-6 py-3 rounded-2xl text-xs font-black flex items-center space-x-2 shadow-lg shadow-brand-700/20"
-              >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
-              </Link>
+              {hasUnavailableItems ? (
+                <button
+                  type="button"
+                  onClick={removeUnavailableItems}
+                  className="px-5 py-3 rounded-2xl text-xs font-black bg-red-600 text-white hover:bg-red-700 transition shadow-md cursor-pointer"
+                >
+                  Clear Sold-Out First
+                </button>
+              ) : (
+                <Link
+                  href="/checkout"
+                  onClick={() => setIsCartOpen(false)}
+                  className="btn-maroon-gold px-6 py-3 rounded-2xl text-xs font-black flex items-center space-x-2 shadow-lg shadow-brand-700/20"
+                >
+                  <span>Proceed to Checkout</span>
+                  <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
+                </Link>
+              )}
             </div>
           </div>
         )}

@@ -70,6 +70,13 @@ interface CustomerAuthContextType {
     isDefault?: boolean;
   }) => Promise<{ success: boolean; addresses?: CustomerAddress[]; error?: string }>;
   deleteAddress: (id: string) => Promise<void>;
+  updateProfile: (data: {
+    name?: string;
+    phone?: string;
+    address?: string;
+    landmark?: string;
+    locality?: string;
+  }) => Promise<AuthActionResult>;
   logout: () => Promise<void>;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
@@ -350,6 +357,33 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
     } catch {}
   };
 
+  const updateProfile = async (profileData: {
+    name?: string;
+    phone?: string;
+    address?: string;
+    landmark?: string;
+    locality?: string;
+  }): Promise<AuthActionResult> => {
+    if (!customer) return { success: false, error: "Please sign in first." };
+    try {
+      const res = await fetch("/api/customer/session", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileData),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, error: data.error || "Failed to update profile." };
+      }
+      persistCustomer(data.customer);
+      return { success: true, message: "Profile saved." };
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Failed to update profile";
+      return { success: false, error: msg };
+    }
+  };
+
   const logout = async () => {
     persistCustomer(null);
     try {
@@ -372,6 +406,7 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
         verifyOtp,
         saveAddress,
         deleteAddress,
+        updateProfile,
         logout,
         isAuthModalOpen,
         setIsAuthModalOpen,
