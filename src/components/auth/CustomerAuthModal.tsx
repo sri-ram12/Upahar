@@ -369,39 +369,46 @@ export default function CustomerAuthModal() {
               </div>
             )}
 
-            {/* Channel Switcher inside OTP Login */}
+            {/* Channel Selector inside OTP Login (Customer's Own Email primary; Mobile OTP for existing accounts) */}
             {mode === "OTP" && !otpSent && (
-              <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#FAF8F4] border border-brand-border">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOtpChannel("EMAIL");
-                    resetOtpFlow();
-                  }}
-                  className={`py-2 px-3 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                    otpChannel === "EMAIL"
-                      ? "bg-brand-700 text-white shadow-xs"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  <span>Email OTP</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOtpChannel("SMS");
-                    resetOtpFlow();
-                  }}
-                  className={`py-2 px-3 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                    otpChannel === "SMS"
-                      ? "bg-brand-700 text-white shadow-xs"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>Mobile OTP</span>
-                </button>
+              <div className="space-y-1.5">
+                <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#FAF8F4] border border-brand-border">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpChannel("EMAIL");
+                      resetOtpFlow();
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      otpChannel === "EMAIL"
+                        ? "bg-brand-700 text-white shadow-xs"
+                        : "text-stone-600 hover:text-stone-900"
+                    }`}
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Your Email OTP</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpChannel("SMS");
+                      resetOtpFlow();
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      otpChannel === "SMS"
+                        ? "bg-brand-700 text-white shadow-xs"
+                        : "text-stone-600 hover:text-stone-900"
+                    }`}
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Existing Mobile</span>
+                  </button>
+                </div>
+                <p className="text-[10px] text-stone-500 text-center">
+                  {otpChannel === "EMAIL"
+                    ? "Sign in or register using your own email address (6-digit OTP sent to you)"
+                    : "Existing mobile customers only — new users please register with Google or Email."}
+                </p>
               </div>
             )}
 

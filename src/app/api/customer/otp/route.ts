@@ -64,6 +64,17 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // New customer registration must use their own Google account or Email + Email OTP
+      if (channel === "SMS" && !existingCustomer) {
+        return NextResponse.json(
+          {
+            error:
+              "New customers must register using their own Email address (for Email OTP) or Continue with Google.",
+          },
+          { status: 400 }
+        );
+      }
+
       const sendResult = await generateAndSendCustomerOtp({
         channel,
         email: cleanEmail,
@@ -171,6 +182,16 @@ export async function POST(req: NextRequest) {
           });
         }
       } else {
+        if (channel !== "EMAIL") {
+          return NextResponse.json(
+            {
+              error:
+                "New customer registration requires your own Email address (Email OTP) or Google Sign-In.",
+            },
+            { status: 400 }
+          );
+        }
+
         if (!name || !String(name).trim()) {
           return NextResponse.json(
             {

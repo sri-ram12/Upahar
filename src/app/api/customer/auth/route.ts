@@ -42,16 +42,9 @@ export async function POST(req: NextRequest) {
       const cleanEmail = normalizeEmail(email);
       const cleanPhone = normalizePhone(phone);
 
-      if (!cleanEmail && cleanPhone.length < 10) {
+      if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
         return NextResponse.json(
-          { error: "Please provide a valid email address or 10-digit mobile number" },
-          { status: 400 }
-        );
-      }
-
-      if (cleanEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-        return NextResponse.json(
-          { error: "Please enter a valid email address" },
+          { error: "A valid email address is required at registration to send your verification OTP." },
           { status: 400 }
         );
       }
