@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 
+const SMTP_TIMEOUT_MS = 6500;
+
 function getSmtpConfig() {
   const user = (process.env.SMTP_USER || process.env.GMAIL_USER || "").trim();
   const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || "").trim();
@@ -10,8 +12,20 @@ function getSmtpConfig() {
   return { host, port, user, pass, from, configured: Boolean(user && pass) };
 }
 
+function getHttpsMailerConfig() {
+  const resendKey = (process.env.RESEND_API_KEY || "").trim();
+  const brevoKey = (process.env.BREVO_API_KEY || "").trim();
+  const gasWebhook = (process.env.GAS_MAILER_WEBHOOK_URL || "").trim();
+  return {
+    resendKey,
+    brevoKey,
+    gasWebhook,
+    configured: Boolean(resendKey || brevoKey || gasWebhook),
+  };
+}
+
 export function isSmtpConfigured(): boolean {
-  return getSmtpConfig().configured;
+  return getSmtpConfig().configured || getHttpsMailerConfig().configured;
 }
 
 function createTransporter() {
@@ -22,6 +36,9 @@ function createTransporter() {
     host: cfg.host,
     port: cfg.port,
     secure: cfg.port === 465,
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 6500,
     auth: {
       user: cfg.user,
       pass: cfg.pass,
@@ -29,19 +46,124 @@ function createTransporter() {
   });
 }
 
+async function deliverEmail(params: {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}): Promise<{ delivered: boolean; provider: "GMAIL_SMTP" | "HTTPS_MAILER" | "DEV_PREVIEW"; error?: string }> {
+  const cfg = getSmtpConfig();
+  const httpsCfg = getHttpsMailerConfig();
+
+  // 1. Prefer HTTPS Email APIs if configured (never blocked by Render Free Tier outbound SMTP firewall)
+  if (httpsCfg.resendKey) {
+    try {
+      const fromHeader = (process.env.RESEND_FROM || "UPAHAR <onboarding@resend.dev>").trim();
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${httpsCfg.resendKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromHeader,
+          to: [params.to],
+          subject: params.subject,
+          text: params.text,
+          html: params.html,
+        }),
+        signal: AbortSignal.timeout(6500),
+      });
+      if (res.ok) return { delivered: true, provider: "HTTPS_MAILER" };
+      const errBody = await res.text();
+      console.error("Resend error:", errBody);
+    } catch (err) {
+      console.error("Resend fetch error:", err);
+    }
+  }
+
+  if (httpsCfg.brevoKey) {
+    try {
+      const senderEmail = cfg.user || "upahar7771@gmail.com";
+      const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "api-key": httpsCfg.brevoKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sender: { name: "UPAHAR Tiffins & Fast Food", email: senderEmail },
+          to: [{ email: params.to }],
+          subject: params.subject,
+          textContent: params.text,
+          htmlContent: params.html,
+        }),
+        signal: AbortSignal.timeout(6500),
+      });
+      if (res.ok) return { delivered: true, provider: "HTTPS_MAILER" };
+      const errBody = await res.text();
+      console.error("Brevo error:", errBody);
+    } catch (err) {
+      console.error("Brevo fetch error:", err);
+    }
+  }
+
+  if (httpsCfg.gasWebhook) {
+    try {
+      const res = await fetch(httpsCfg.gasWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.ok) return { delivered: true, provider: "HTTPS_MAILER" };
+    } catch (err) {
+      console.error("GAS webhook error:", err);
+    }
+  }
+
+  // 2. Standard Gmail SMTP with strict fast timeout guard so blocked ports fail cleanly instead of 502 hanging
+  const transporter = createTransporter();
+  if (!transporter) {
+    return { delivered: false, provider: "DEV_PREVIEW" };
+  }
+
+  let timeoutHandle: NodeJS.Timeout | undefined;
+  try {
+    await Promise.race([
+      transporter.sendMail({
+        from: cfg.from,
+        to: params.to,
+        subject: params.subject,
+        text: params.text,
+        html: params.html,
+      }),
+      new Promise<never>((_, reject) => {
+        timeoutHandle = setTimeout(
+          () => reject(new Error("SMTP connection timed out (outbound port 465/587 blocked or unreachable)")),
+          SMTP_TIMEOUT_MS
+        );
+      }),
+    ]);
+    return { delivered: true, provider: "GMAIL_SMTP" };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Failed sending SMTP email";
+    console.error("SMTP sendEmail error:", msg);
+    return { delivered: false, provider: "DEV_PREVIEW", error: msg };
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+    try {
+      transporter.close();
+    } catch {}
+  }
+}
+
 export async function sendEmailOtp(params: {
   to: string;
   code: string;
   purpose: string;
   customerName?: string | null;
-}): Promise<{ delivered: boolean; provider: "GMAIL_SMTP" | "DEV_PREVIEW"; error?: string }> {
-  const cfg = getSmtpConfig();
-  const transporter = createTransporter();
-
-  if (!transporter) {
-    return { delivered: false, provider: "DEV_PREVIEW" };
-  }
-
+}): Promise<{ delivered: boolean; provider: "GMAIL_SMTP" | "HTTPS_MAILER" | "DEV_PREVIEW"; error?: string }> {
   const purposeTitle =
     params.purpose === "VERIFY_EMAIL" || params.purpose === "SIGNUP"
       ? "Complete Your Registration"
@@ -72,20 +194,12 @@ export async function sendEmailOtp(params: {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: cfg.from,
-      to: params.to,
-      subject: `${params.code} is your UPAHAR verification OTP`,
-      text: `${greetingName}\n\nYour UPAHAR verification OTP is ${params.code}. It expires in 5 minutes.\n\nIf you did not request this, please ignore this email.`,
-      html,
-    });
-    return { delivered: true, provider: "GMAIL_SMTP" };
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Failed sending SMTP email";
-    console.error("SMTP sendEmailOtp error:", msg);
-    return { delivered: false, provider: "DEV_PREVIEW", error: msg };
-  }
+  return deliverEmail({
+    to: params.to,
+    subject: `${params.code} is your UPAHAR verification OTP`,
+    text: `${greetingName}\n\nYour UPAHAR verification OTP is ${params.code}. It expires in 5 minutes.\n\nIf you did not request this, please ignore this email.`,
+    html,
+  });
 }
 
 export async function sendOrderConfirmationEmail(params: {
@@ -101,10 +215,6 @@ export async function sendOrderConfirmationEmail(params: {
     items: { name: string; quantity: number; price: number }[];
   };
 }): Promise<{ delivered: boolean }> {
-  const cfg = getSmtpConfig();
-  const transporter = createTransporter();
-  if (!transporter) return { delivered: false };
-
   const itemsRows = params.order.items
     .map(
       (it) =>
@@ -144,17 +254,13 @@ export async function sendOrderConfirmationEmail(params: {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: cfg.from,
-      to: params.to,
-      subject: `UPAHAR Order ${params.order.orderNumber} Confirmed (₹${params.order.totalAmount})`,
-      html,
-    });
-    return { delivered: true };
-  } catch (err) {
-    console.error("SMTP order confirmation error:", err);
-    return { delivered: false };
-  }
+  const result = await deliverEmail({
+    to: params.to,
+    subject: `UPAHAR Order ${params.order.orderNumber} Confirmed (₹${params.order.totalAmount})`,
+    text: `Thank you ${params.order.customerName}! Order ${params.order.orderNumber} confirmed (Total: ₹${params.order.totalAmount}).`,
+    html,
+  });
+
+  return { delivered: result.delivered };
 }
 

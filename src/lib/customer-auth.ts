@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import type { NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { CustomerUser } from "@/types";
 
@@ -99,5 +99,62 @@ export function isGoogleOAuthConfigured(): boolean {
   const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "").trim();
   const clientSecret = (process.env.GOOGLE_CLIENT_SECRET || "").trim();
   return Boolean(clientId && clientSecret);
+}
+
+function isLoopbackHost(hostOrUrl: string): boolean {
+  const normalized = hostOrUrl.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0];
+  return (
+    normalized.startsWith("localhost") ||
+    normalized.startsWith("127.0.0.1") ||
+    normalized.startsWith("0.0.0.0") ||
+    normalized.startsWith("[::1]")
+  );
+}
+
+/**
+ * Resolves the browser-facing origin behind reverse proxies like Render/Vercel,
+ * where req.nextUrl.origin can internally resolve to https://localhost:10000.
+ */
+export function getPublicOrigin(req: NextRequest): string {
+  const forwardedHost = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const forwardedProto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  if (forwardedHost && !isLoopbackHost(forwardedHost)) {
+    return `${forwardedProto || "https"}://${forwardedHost}`;
+  }
+
+  const host = req.headers.get("host")?.trim();
+  if (host && !isLoopbackHost(host)) {
+    return `${forwardedProto || "https"}://${host}`;
+  }
+
+  const envSite = (process.env.NEXT_PUBLIC_SITE_URL || "").trim().replace(/\/+$/, "");
+  if (process.env.NODE_ENV === "production") {
+    if (envSite && !isLoopbackHost(envSite)) {
+      return envSite;
+    }
+    const envRedirect = (process.env.GOOGLE_REDIRECT_URI || "").trim();
+    if (envRedirect) {
+      try {
+        const parsed = new URL(envRedirect);
+        if (!isLoopbackHost(parsed.host)) {
+          return parsed.origin;
+        }
+      } catch {}
+    }
+  }
+
+  if (host && isLoopbackHost(host)) {
+    return `${forwardedProto || "http"}://${host}`;
+  }
+
+  return req.nextUrl.origin;
+}
+
+export function resolveGoogleRedirectUri(req: NextRequest, origin: string): string {
+  const envRedirect = (process.env.GOOGLE_REDIRECT_URI || "").trim();
+  if (envRedirect && !isLoopbackHost(origin)) {
+    return envRedirect;
+  }
+  return `${origin}/api/auth/google/callback`;
 }
 

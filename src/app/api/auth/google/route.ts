@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { getPublicOrigin, resolveGoogleRedirectUri } from "@/lib/customer-auth";
 
 export async function GET(req: NextRequest) {
-  const origin = req.nextUrl.origin;
+  const origin = getPublicOrigin(req);
   const redirectParam = req.nextUrl.searchParams.get("redirect") || "/";
   const safeRedirect = redirectParam.startsWith("/") ? redirectParam : "/";
 
   const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "").trim();
   const clientSecret = (process.env.GOOGLE_CLIENT_SECRET || "").trim();
-  const redirectUri = (process.env.GOOGLE_REDIRECT_URI || `${origin}/api/auth/google/callback`).trim();
+  const redirectUri = resolveGoogleRedirectUri(req, origin);
 
   if (!clientId || !clientSecret) {
     return NextResponse.redirect(`${origin}${safeRedirect}${safeRedirect.includes("?") ? "&" : "?"}authError=google_not_configured`);

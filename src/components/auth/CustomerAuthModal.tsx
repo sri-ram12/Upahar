@@ -1001,13 +1001,12 @@ export default function CustomerAuthModal() {
 
                 <div>
                   <label className="block text-[11px] font-bold text-stone-600 mb-1">
-                    Mobile Number (10 digits) *
+                    Mobile Number (Optional, 10 digits)
                   </label>
                   <div className="relative">
                     <Phone className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="tel"
-                      required
                       maxLength={10}
                       placeholder="e.g. 9885455342"
                       value={phone}

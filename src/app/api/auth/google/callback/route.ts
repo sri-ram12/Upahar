@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { setCustomerAuthCookie, signCustomerToken } from "@/lib/customer-auth";
+import {
+  getPublicOrigin,
+  resolveGoogleRedirectUri,
+  setCustomerAuthCookie,
+  signCustomerToken,
+} from "@/lib/customer-auth";
 
 export async function GET(req: NextRequest) {
-  const origin = req.nextUrl.origin;
+  const origin = getPublicOrigin(req);
   const code = req.nextUrl.searchParams.get("code");
   const returnedState = req.nextUrl.searchParams.get("state");
   const oauthError = req.nextUrl.searchParams.get("error");
@@ -26,6 +31,8 @@ export async function GET(req: NextRequest) {
     const res = NextResponse.redirect(targetUrl);
     res.cookies.set("upahar_google_oauth_state", "", {
       httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       maxAge: 0,
     });
@@ -44,7 +51,7 @@ export async function GET(req: NextRequest) {
 
   const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "").trim();
   const clientSecret = (process.env.GOOGLE_CLIENT_SECRET || "").trim();
-  const redirectUri = (process.env.GOOGLE_REDIRECT_URI || `${origin}/api/auth/google/callback`).trim();
+  const redirectUri = resolveGoogleRedirectUri(req, origin);
 
   if (!clientId || !clientSecret) {
     return clearStateAndRedirect(`${origin}${redirectTo}${sep}authError=google_not_configured`);
