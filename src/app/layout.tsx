@@ -160,7 +160,7 @@ export default function RootLayout({
   `;
 
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth overflow-x-clip max-w-full" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <script
@@ -168,14 +168,14 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-brand-cream text-[#141210] flex flex-col min-h-screen selection:bg-brand-800 selection:text-[#DFC17B]">
+      <body className="antialiased bg-brand-cream text-[#141210] flex flex-col min-h-screen w-full max-w-full overflow-x-clip selection:bg-brand-800 selection:text-[#DFC17B]">
         <Suspense fallback={null}>
           <ThemeSync />
         </Suspense>
         <CustomerAuthProvider>
           <CartProvider>
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <div className="flex-1 w-full min-w-0 overflow-x-clip">{children}</div>
             <Footer />
             <CustomCursor />
             <FloatingCartBar />

@@ -290,31 +290,31 @@ export default function Navbar() {
       )}
 
       {/* Main Sticky Header */}
-      <header className={`sticky top-0 z-40 w-full h-14 sm:h-[68px] transition-colors duration-300 ${headerBg}`}>
-        <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
-          {/* Official Upahar Emblem Logo + Sub-Website Title */}
-          <Link href="/" className="flex items-center space-x-2.5 sm:space-x-3 group min-w-0 flex-shrink-0">
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md group-hover:scale-105 transition duration-300 flex-shrink-0 bg-[#580D1A]">
+      <header className={`sticky top-0 z-40 w-full max-w-full overflow-x-clip h-14 sm:h-[64px] transition-colors duration-300 ${headerBg}`}>
+        <div className="max-w-7xl mx-auto h-full px-2 sm:px-4 lg:px-6 flex items-center justify-between gap-1.5 sm:gap-2.5 min-w-0">
+          {/* Official Upahar Emblem Logo */}
+          <Link href="/" className="flex items-center gap-1.5 sm:gap-2.5 group min-w-0 flex-1 lg:flex-initial">
+            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md group-hover:scale-105 transition duration-300 flex-shrink-0 bg-[#580D1A]">
               <img
                 src="/images/upahar_logo.jpg"
                 alt="UPAHAR Official Logo"
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className={`hidden sm:block h-7 w-px flex-shrink-0 ${darkHeaderText ? "bg-black/15" : "bg-white/20"}`} />
+            <div className={`hidden xl:block h-6 w-px flex-shrink-0 ${darkHeaderText ? "bg-black/15" : "bg-white/20"}`} />
             <div className="flex flex-col min-w-0">
-              <span className={`text-lg sm:text-xl font-black tracking-tight font-display flex items-center gap-1.5 truncate leading-none ${brandTitleClass}`}>
-                UPAHAR
+              <span className={`text-sm sm:text-lg xl:text-xl font-black tracking-tight font-display flex items-center gap-1 truncate leading-none ${brandTitleClass}`}>
+                <span className="truncate">UPAHAR</span>
                 <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isPicklesRed ? "bg-[#FEF08A]" : "bg-[#D4AF37]"}`} />
               </span>
-              <span className={`text-[8px] sm:text-[9px] tracking-[0.18em] uppercase font-bold mt-1 truncate leading-none ${brandSubClass}`}>
+              <span className={`hidden xl:block text-[9px] tracking-[0.16em] uppercase font-bold mt-1 truncate leading-none ${brandSubClass}`}>
                 {subtitleLabel}
               </span>
             </div>
           </Link>
 
           {/* Single-Row Desktop Navigation across Main Hub + 4 Sub-Websites */}
-          <nav className="hidden lg:flex items-center space-x-0.5 xl:space-x-1.5 font-medium text-sm">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 font-medium text-sm min-w-0">
             {navLinks.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
@@ -322,13 +322,13 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`relative px-2 xl:px-3 py-2 text-xs xl:text-sm whitespace-nowrap transition-colors duration-200 ${
+                  className={`relative px-1.5 xl:px-2.5 py-2 text-xs xl:text-sm whitespace-nowrap transition-colors duration-200 ${
                     isActive ? navActiveClass : navInactiveClass
                   }`}
                 >
                   <span>{link.name}</span>
                   {isActive && (
-                    <span className={`absolute left-2 right-2 bottom-0.5 h-[2px] rounded-full ${activeBarClass}`} />
+                    <span className={`absolute left-1.5 right-1.5 bottom-0.5 h-[2px] rounded-full ${activeBarClass}`} />
                   )}
                 </Link>
               );
@@ -336,17 +336,17 @@ export default function Navbar() {
           </nav>
 
           {/* Compact Desktop Right Action Group */}
-          <div className="hidden lg:flex items-center space-x-1.5 xl:space-x-2 flex-shrink-0">
-            {/* Customer Account on Main Website (or quick switch when signed in; never required on sub-websites) */}
+          <div className="hidden lg:flex items-center gap-1.5 flex-shrink-0">
+            {/* Customer Account on Main Website (or quick Hub return on sub-websites) */}
             {customer ? (
-              <div className={`flex items-center space-x-1.5 border rounded-full px-2.5 xl:px-3 py-1.5 text-xs ${pillActionClass}`}>
+              <div className={`flex items-center gap-1.5 border rounded-full px-2.5 py-1.5 text-xs ${pillActionClass}`}>
                 <User className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="font-bold truncate max-w-[75px]">
+                <span className="font-bold truncate max-w-[70px]">
                   {customer.name.split(" ")[0]}
                 </span>
                 <button
                   onClick={logout}
-                  className="opacity-70 hover:opacity-100 transition pl-1 cursor-pointer"
+                  className="opacity-70 hover:opacity-100 transition pl-0.5 cursor-pointer"
                   title="Sign Out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -355,7 +355,7 @@ export default function Navbar() {
             ) : !isSubWebsite ? (
               <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className={`px-2.5 xl:px-3.5 py-2 rounded-full text-xs font-bold border flex items-center space-x-1.5 transition whitespace-nowrap cursor-pointer ${pillActionClass}`}
+                className={`px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap cursor-pointer ${pillActionClass}`}
               >
                 <User className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span className="hidden xl:inline">Account / </span>
@@ -364,17 +364,17 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/"
-                className={`px-2.5 xl:px-3 py-2 rounded-full text-xs font-bold border flex items-center space-x-1.5 transition whitespace-nowrap ${pillActionClass}`}
-                title="Return to Main Upahar Hub"
+                className={`px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap ${pillActionClass}`}
+                title="Back to Homepage"
               >
                 <Home className="w-3.5 h-3.5" />
-                <span>Hub</span>
+                <span>Home</span>
               </Link>
             )}
 
             <Link
               href="/orders"
-              className={`px-2.5 xl:px-3 py-2 rounded-full text-xs font-bold border flex items-center space-x-1.5 transition whitespace-nowrap ${pillActionClass}`}
+              className={`px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap ${pillActionClass}`}
               title="Track Active & Past Orders"
             >
               <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -384,7 +384,7 @@ export default function Navbar() {
 
             <button
               onClick={() => toggleCart()}
-              className={`relative px-3.5 py-2 rounded-full text-xs font-bold border flex items-center space-x-1.5 shadow-sm transition hover:scale-[1.03] whitespace-nowrap cursor-pointer ${bagBtnClass}`}
+              className={`relative px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 shadow-sm transition hover:scale-[1.03] whitespace-nowrap cursor-pointer ${bagBtnClass}`}
               title="View Cart"
             >
               <ShoppingBag className={`w-3.5 h-3.5 ${isLightHub || isFastFoodGold ? "text-[#DFC17B]" : drawerIconColor}`} />
@@ -398,32 +398,47 @@ export default function Navbar() {
 
             <button
               onClick={() => setQrModalOpen(true)}
-              className={`p-2 rounded-full border transition cursor-pointer ${pillActionClass}`}
+              className={`px-2 py-1.5 rounded-full border transition cursor-pointer flex items-center gap-1 ${pillActionClass}`}
               title="Scan QR Code to open on Mobile"
               aria-label="Scan QR Code"
             >
               <QrCode className="w-4 h-4" />
+              <span className="hidden xl:inline text-xs font-bold">QR</span>
             </button>
           </div>
 
-          {/* Mobile Header Actions */}
-          <div className="flex items-center space-x-1.5 sm:space-x-2 lg:hidden flex-shrink-0">
-            {!isSubWebsite && (
-              <button
-                onClick={() => (customer ? setMobileMenuOpen(true) : setIsAuthModalOpen(true))}
-                className={`p-2 rounded-full border ${pillActionClass}`}
-                aria-label={customer ? "Customer Profile" : "Sign In"}
-              >
-                <User className="w-4 h-4" />
-              </button>
-            )}
+          {/* Mobile & Tablet Top Actions (All options: Account, Orders, Bag, QR & Sidebar visible together without scrolling) */}
+          <div className="flex items-center gap-1 sm:gap-1.5 lg:hidden flex-shrink-0">
+            <button
+              onClick={() => (customer ? setMobileMenuOpen(true) : setIsAuthModalOpen(true))}
+              className={`h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition cursor-pointer ${pillActionClass}`}
+              aria-label={customer ? "Customer Account" : "Sign In"}
+              title={customer ? customer.name : "Account / Sign In"}
+            >
+              <User className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden min-[440px]:inline text-[11px] font-bold truncate max-w-[64px]">
+                {customer ? customer.name.split(" ")[0] : "Account"}
+              </span>
+            </button>
+
+            <Link
+              href="/orders"
+              className={`h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition ${pillActionClass}`}
+              aria-label="My Orders"
+              title="My Orders"
+            >
+              <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden min-[440px]:inline text-[11px] font-bold">Orders</span>
+            </Link>
 
             <button
               onClick={() => toggleCart()}
-              className={`relative p-2 rounded-full border ${bagBtnClass}`}
+              className={`relative h-8 min-w-[32px] px-1.5 sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition cursor-pointer ${bagBtnClass}`}
               aria-label="View Cart"
+              title="View Bag"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden sm:inline text-[11px] font-bold">Bag</span>
               {totalCount > 0 && (
                 <span className={`absolute -top-1 -right-1 ${drawerAccentBg} text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-white`}>
                   {totalCount}
@@ -433,25 +448,29 @@ export default function Navbar() {
 
             <button
               onClick={() => setQrModalOpen(true)}
-              className={`p-2 rounded-full border ${pillActionClass}`}
+              className={`h-8 w-8 sm:w-auto sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition cursor-pointer ${pillActionClass}`}
               aria-label="Scan QR Code"
+              title="Scan QR Code"
             >
-              <QrCode className="w-4 h-4" />
+              <QrCode className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden md:inline text-[11px] font-bold">QR</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 rounded-full border ${pillActionClass}`}
-              aria-label="Toggle Navigation Menu"
+              className={`h-8 w-8 sm:w-auto sm:px-2.5 rounded-full border flex items-center justify-center gap-1 transition cursor-pointer ${pillActionClass}`}
+              aria-label="Toggle Navigation Sidebar"
+              title="Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4 h-4 flex-shrink-0" /> : <MenuIcon className="w-4 h-4 flex-shrink-0" />}
+              <span className="hidden md:inline text-[11px] font-bold">Menu</span>
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-[#E7E0D3] shadow-2xl px-5 py-6 space-y-4 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="lg:hidden bg-white border-b border-[#E7E0D3] shadow-2xl px-4 sm:px-5 py-5 space-y-4 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden">
             {/* Store hours pill on mobile */}
             <div className="p-3 rounded-xl bg-[#FAF8F4] border border-[#D4AF37]/30 flex items-center space-x-2.5 text-xs text-[#2B070E]">
               <Clock className={`w-4 h-4 ${drawerIconColor} flex-shrink-0`} />

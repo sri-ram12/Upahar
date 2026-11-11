@@ -11,9 +11,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col md:flex-row">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-stone-100 flex flex-col md:flex-row">
       <AdminSidebar />
-      <div className="flex-1 min-w-0 overflow-y-auto">{children}</div>
+      <div className="flex-1 min-w-0 overflow-x-clip overflow-y-auto">{children}</div>
     </div>
   );
 }

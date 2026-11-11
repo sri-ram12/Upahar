@@ -115,37 +115,33 @@ export default function HomeLandingClient({
   });
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-14">
+    <main className="min-h-screen overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-14">
       {/* ================================================================= */}
       {/* 1. COMPACT LIGHT MAIN HUB HERO WITH OFFICIAL UPAHAR LOGO          */}
       {/* ================================================================= */}
-      <section className="pt-2 pb-2 sm:pt-7 sm:pb-6 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
+      <section className="pt-2 pb-2 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
-          {/* Clean Official Centered UPAHAR Logo (No unnecessary top status/location pills) */}
-          <div className="relative w-12 h-12 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 sm:border-4 border-[#D4AF37] shadow-lg bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/12">
+          {/* Clean Official Centered UPAHAR Logo */}
+          <div className="relative w-12 h-12 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 sm:border-4 border-[#D4AF37] shadow-lg bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/12">
             <Image
               src="/images/upahar_logo.jpg"
               alt="UPAHAR Official Logo"
               fill
               priority
-              sizes="(max-width: 640px) 56px, 120px"
+              sizes="(max-width: 640px) 56px, 108px"
               className="object-cover"
             />
           </div>
 
-          <h1 className="text-lg sm:text-4xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-3 leading-tight">
+          <h1 className="text-lg sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-2.5 leading-tight">
             UPAHAR
           </h1>
-          <p className="text-[11px] sm:text-lg font-script font-bold text-[#9A6E24] leading-tight">
-            Good Food • Good Mood • Four Dedicated Kitchens
-          </p>
-          <p className="hidden sm:block mt-2 text-xs sm:text-sm text-[#57534E] max-w-2xl leading-relaxed">
-            Choose any Upahar kitchen below to enter its dedicated menu &amp; ordering website based on live timings.
-            No login required inside sub-websites — order anytime!
+          <p className="text-[11px] sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
+            Good Food • Good Mood
           </p>
 
           {emergencyStopped && (
-            <div className="mt-2 sm:mt-4 w-full max-w-2xl p-2.5 sm:p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-[11px] sm:text-xs font-bold">
+            <div className="mt-2 sm:mt-3 w-full max-w-2xl p-2.5 sm:p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-[11px] sm:text-xs font-bold">
               🚨 {emergencyMsg || "Online ordering is temporarily paused by restaurant administration."}
             </div>
           )}
@@ -155,20 +151,7 @@ export default function HomeLandingClient({
       {/* ================================================================= */}
       {/* 2. 4 RECTANGULAR SUB-WEBSITE OPTIONS (ALL 4 FIT IN ONE PHONE VIEW) */}
       {/* ================================================================= */}
-      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-7">
-        <div className="flex items-end justify-between gap-2 mb-1.5 sm:mb-4">
-          <div>
-            <span className="text-[9px] sm:text-[11px] uppercase font-extrabold tracking-[0.18em] text-[#9A6E24] block leading-none">
-              Select A Kitchen Website
-            </span>
-            <h2 className="text-sm sm:text-2xl font-black font-display text-[#1C1917] leading-tight mt-0.5">
-              Choose Any Of Our 4 Upahar Websites
-            </h2>
-          </div>
-          <span className="text-[10px] sm:text-xs font-semibold text-[#57534E] whitespace-nowrap">
-            4 Kitchens • Live Timings
-          </span>
-        </div>
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2.5 sm:pt-6">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-5">
           {subsites.map((site) => {
@@ -186,7 +169,7 @@ export default function HomeLandingClient({
                 <div className={`hidden sm:block h-1.5 w-full flex-shrink-0 ${accent.topStrip}`} />
 
                 {/* Rectangular Photo Thumbnail */}
-                <div className="relative w-20 sm:w-full h-full sm:h-36 flex-shrink-0 bg-stone-100 overflow-hidden">
+                <div className="relative w-20 sm:w-full h-full sm:h-28 lg:h-32 flex-shrink-0 bg-stone-100 overflow-hidden">
                   <Image
                     src={site.heroImage}
                     alt={site.title}
