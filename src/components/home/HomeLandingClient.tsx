@@ -115,28 +115,28 @@ export default function HomeLandingClient({
   });
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-14">
+    <main className="min-h-screen overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-6 sm:pb-14">
       {/* ================================================================= */}
-      {/* 1. COMPACT LIGHT MAIN HUB HERO WITH OFFICIAL UPAHAR LOGO          */}
+      {/* 1. LIGHT MAIN HUB HERO WITH BIG OFFICIAL UPAHAR LOGO              */}
       {/* ================================================================= */}
-      <section className="pt-2 pb-2 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
+      <section className="pt-3 pb-2.5 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
-          {/* Clean Official Centered UPAHAR Logo */}
-          <div className="relative w-12 h-12 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 sm:border-4 border-[#D4AF37] shadow-lg bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/12">
+          {/* Big Prominent Official Centered UPAHAR Logo */}
+          <div className="relative w-24 h-24 min-[375px]:w-28 min-[375px]:h-28 sm:w-28 sm:h-28 rounded-full overflow-hidden border-[3px] sm:border-4 border-[#D4AF37] shadow-xl bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/15">
             <Image
               src="/images/upahar_logo.jpg"
               alt="UPAHAR Official Logo"
               fill
               priority
-              sizes="(max-width: 640px) 56px, 108px"
+              sizes="(max-width: 640px) 112px, 128px"
               className="object-cover"
             />
           </div>
 
-          <h1 className="text-lg sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-2.5 leading-tight">
+          <h1 className="text-xl sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1.5 sm:mt-2.5 leading-tight">
             UPAHAR
           </h1>
-          <p className="text-[11px] sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
+          <p className="text-xs sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
             Good Food • Good Mood
           </p>
 
@@ -267,9 +267,9 @@ export default function HomeLandingClient({
       </section>
 
       {/* ================================================================= */}
-      {/* 3. CUSTOMER ACCOUNT CREATION HUB ON MAIN WEBSITE                  */}
+      {/* 3. CUSTOMER ACCOUNT CREATION HUB ON MAIN WEBSITE (Tablet/Desktop) */}
       {/* ================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+      <section className="hidden sm:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="bg-white rounded-3xl border border-[#E7E0D3] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#FAF8F4] border border-[#D4AF37]/40 flex items-center justify-center text-[#580D1A] flex-shrink-0">
