@@ -28,94 +28,11 @@ const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
   pickles: "/images/dishes/mango-avakaya.jpg",
 };
 
-const DEFAULT_PICKLES_ITEMS = [
-  {
-    name: "Andhra Mango Avakaya Pickle",
-    slug: "andhra-mango-avakaya",
-    description:
-      "Classic sun-matured raw farm mango cubes blended with Guntur red chilli powder, mustard powder, garlic & cold-pressed gingelly oil.",
-    price: 140,
-    image: "/images/dishes/mango-avakaya.jpg",
-    isVeg: true,
-    isSpicy: true,
-    isBestseller: true,
-    isSignature: true,
-    prepTime: "Ready 24×7",
-    portionSize: "250g Airtight Jar",
-    ingredients: "Raw mango pieces, Guntur chilli, Mustard powder, Gingelly oil, Garlic",
-    displayOrder: 54,
-  },
-  {
-    name: "Gongura Red Chilli Pickle",
-    slug: "gongura-red-chilli-pickle",
-    description:
-      "Tangy Andhra sorrel leaves slow-cooked with roasted red chillies, fenugreek, garlic cloves & fragrant sesame oil tempering.",
-    price: 130,
-    image: "/images/dishes/gongura-pickle.jpg",
-    isVeg: true,
-    isSpicy: true,
-    isBestseller: true,
-    isSignature: true,
-    prepTime: "Ready 24×7",
-    portionSize: "250g Sealed Jar",
-    ingredients: "Fresh gongura leaves, Guntur red chillies, Garlic, Gingelly oil",
-    displayOrder: 55,
-  },
-  {
-    name: "Andhra Cut Mango Magaya",
-    slug: "cut-mango-magaya-pickle",
-    description:
-      "Crisp hand-diced tender mango relish seasoned in bright spiced red chilli oil and toasted cumin-mustard tempering.",
-    price: 120,
-    image: "/images/dishes/tomato-pickle.jpg",
-    isVeg: true,
-    isSpicy: true,
-    isBestseller: false,
-    isSignature: false,
-    prepTime: "Ready 24×7",
-    portionSize: "250g Sealed Jar",
-    ingredients: "Diced mango, Red chilli, Mustard seeds, Cold-pressed sesame oil",
-    displayOrder: 56,
-  },
-  {
-    name: "Vellulli Garlic Karam Pickle",
-    slug: "garlic-vellulli-pickle",
-    description:
-      "Whole tender garlic cloves marinated in fiery Guntur chilli paste, tamarind essence, and rich golden sesame oil.",
-    price: 135,
-    image: "/images/dishes/garlic-pickle.jpg",
-    isVeg: true,
-    isSpicy: true,
-    isBestseller: true,
-    isSignature: false,
-    prepTime: "Ready 24×7",
-    portionSize: "250g Sealed Jar",
-    ingredients: "Peeled farm garlic, Guntur chilli, Fenugreek, Gingelly oil",
-    displayOrder: 57,
-  },
-  {
-    name: "Andhra Boneless Chicken Pickle",
-    slug: "andhra-chicken-pickle",
-    description:
-      "Crispy golden boneless chicken chunks slow-pickled in authentic coastal Andhra garam masala, ginger-garlic & spicy red chilli oil.",
-    price: 240,
-    image: "/images/dishes/chicken-pickle.jpg",
-    isVeg: false,
-    isSpicy: true,
-    isBestseller: true,
-    isSignature: true,
-    prepTime: "Ready 24×7",
-    portionSize: "250g Premium Sealed Jar",
-    ingredients: "Boneless chicken, Guntur chilli, Fresh ginger-garlic, Curry leaves, Sesame oil",
-    displayOrder: 58,
-  },
-];
-
 let initPromise: Promise<void> | null = null;
 
 /**
  * Idempotently ensures the 4 SubsiteConfig rows exist, categories have accurate division & circular images,
- * and the Pickles category + items exist in SQLite without disturbing existing admin edits.
+ * and every unseeded division (tiffins, biryanis, fast-food, pickles) is populated from fallback catalog data.
  */
 export async function ensureSubsitesInitialized(): Promise<void> {
   if (initPromise) return initPromise;
@@ -149,7 +66,7 @@ export async function ensureSubsitesInitialized(): Promise<void> {
         }
       }
 
-      // 2. Ensure existing categories have accurate division & default circular thumbnail image
+      // 2. Normalize division & circular thumbnail images on existing categories
       const dbCategories = await prisma.category.findMany();
       for (const cat of dbCategories) {
         const inferredDivision = getDivisionForCategory({ slug: cat.slug });
@@ -170,32 +87,86 @@ export async function ensureSubsitesInitialized(): Promise<void> {
         }
       }
 
-      // 3. Ensure a Pickles category & items exist if none present
-      const hasPicklesCat = dbCategories.some(
-        (c) => c.division === "pickles" || c.slug === "pickles"
-      );
-      if (!hasPicklesCat) {
-        const picklesCat = await prisma.category.create({
-          data: {
-            name: "Andhra Homemade Pickles",
-            slug: "pickles",
-            division: "pickles",
-            image: "/images/dishes/mango-avakaya.jpg",
-            description:
-              "Authentic sun-matured Andhra Avakaya, Gongura, Garlic & Chicken pickles available 24×7 anytime.",
-            icon: "Flame",
-            displayOrder: 8,
-            isActive: true,
-          },
-        });
+      // 3. Ensure every division has categories & dishes if unseeded (e.g. fresh ephemeral cloud DB)
+      const existingItems = await prisma.foodItem.findMany({
+        select: {
+          slug: true,
+          category: { select: { slug: true, division: true } },
+        },
+      });
+      const existingItemCountByDivision: Record<DivisionKey, number> = {
+        tiffins: 0,
+        biryanis: 0,
+        "fast-food": 0,
+        pickles: 0,
+      };
+      for (const row of existingItems) {
+        const dKey = getDivisionForCategory(row.category);
+        existingItemCountByDivision[dKey] += 1;
+      }
 
-        for (const item of DEFAULT_PICKLES_ITEMS) {
+      const categoryIdBySlug = new Map<string, string>(
+        dbCategories.map((c) => [c.slug, c.id])
+      );
+
+      for (const div of UPAHAR_DIVISION_LIST) {
+        if (existingItemCountByDivision[div.key] > 0) continue;
+
+        const fallbackDivCategories = FALLBACK_CATEGORIES.filter(
+          (c) => getDivisionForCategory(c) === div.key
+        );
+
+        for (const fCat of fallbackDivCategories) {
+          const upsertedCat = await prisma.category.upsert({
+            where: { slug: fCat.slug },
+            update: {
+              division: div.key,
+              ...(!categoryIdBySlug.has(fCat.slug) && fCat.image ? { image: fCat.image } : {}),
+            },
+            create: {
+              name: fCat.name,
+              slug: fCat.slug,
+              division: div.key,
+              image: fCat.image || CATEGORY_DEFAULT_IMAGES[fCat.slug] || null,
+              description: fCat.description || "",
+              icon: fCat.icon || "Utensils",
+              displayOrder: fCat.displayOrder || 0,
+              isActive: true,
+            },
+          });
+          categoryIdBySlug.set(fCat.slug, upsertedCat.id);
+        }
+
+        const fallbackDivItems = FALLBACK_MENU_ITEMS.filter(
+          (it) => getDivisionForCategory(it.category || it.categoryId) === div.key
+        );
+
+        for (const fItem of fallbackDivItems) {
+          const targetCatSlug = fItem.category?.slug || div.key;
+          const resolvedCategoryId =
+            categoryIdBySlug.get(targetCatSlug) ||
+            categoryIdBySlug.values().next().value;
+          if (!resolvedCategoryId) continue;
+
           await prisma.foodItem.upsert({
-            where: { slug: item.slug },
+            where: { slug: fItem.slug },
             update: {},
             create: {
-              ...item,
-              categoryId: picklesCat.id,
+              name: fItem.name,
+              slug: fItem.slug,
+              description: fItem.description,
+              price: fItem.price,
+              image: fItem.image,
+              categoryId: resolvedCategoryId,
+              isVeg: Boolean(fItem.isVeg),
+              isSpicy: Boolean(fItem.isSpicy),
+              isBestseller: Boolean(fItem.isBestseller),
+              isSignature: Boolean(fItem.isSignature),
+              isAvailable: fItem.isAvailable !== false,
+              prepTime: fItem.prepTime || "10-15 mins",
+              portionSize: fItem.portionSize || null,
+              ingredients: fItem.ingredients || null,
+              displayOrder: fItem.displayOrder || 0,
             },
           });
         }
@@ -259,11 +230,13 @@ export async function getSubsitesAndSettings() {
       dbConfig: dbRow,
     });
 
+    const dbDivCount = categoryCounts
+      .filter((c) => getDivisionForCategory(c) === baseDiv.key)
+      .reduce((sum, c) => sum + (c._count?.items || 0), 0);
+
     const itemCount =
-      categoryCounts.length > 0
-        ? categoryCounts
-            .filter((c) => getDivisionForCategory(c) === baseDiv.key)
-            .reduce((sum, c) => sum + (c._count?.items || 0), 0)
+      dbDivCount > 0
+        ? dbDivCount
         : FALLBACK_MENU_ITEMS.filter(
             (it) => getDivisionForCategory(it.category || it.categoryId) === baseDiv.key
           ).length;
@@ -323,7 +296,7 @@ export async function getSubsitePageData(divisionKey: DivisionKey) {
     allItems = FALLBACK_MENU_ITEMS;
   }
 
-  const divisionCategories = allCategories
+  let divisionCategories = allCategories
     .filter((cat) => getDivisionForCategory(cat) === divisionKey)
     .map((cat) => ({
       ...cat,
@@ -334,8 +307,17 @@ export async function getSubsitePageData(divisionKey: DivisionKey) {
         division.heroImage,
     }));
 
+  if (divisionCategories.length === 0) {
+    divisionCategories = FALLBACK_CATEGORIES.filter(
+      (cat) => getDivisionForCategory(cat) === divisionKey
+    ).map((cat) => ({
+      ...cat,
+      image: cat.image || CATEGORY_DEFAULT_IMAGES[cat.slug] || division.heroImage,
+    }));
+  }
+
   const divisionCategoryIds = new Set(divisionCategories.map((c) => c.id));
-  const divisionItems = allItems
+  let divisionItems = allItems
     .filter(
       (item) =>
         divisionCategoryIds.has(item.categoryId) ||
@@ -347,6 +329,17 @@ export async function getSubsitePageData(divisionKey: DivisionKey) {
       lockReason: division.status.lockBanner,
       availableAtText: division.timingText,
     }));
+
+  if (divisionItems.length === 0) {
+    divisionItems = FALLBACK_MENU_ITEMS.filter(
+      (item) => getDivisionForCategory(item.category || item.categoryId) === divisionKey
+    ).map((item) => ({
+      ...item,
+      isSessionLocked: division.status.isLocked,
+      lockReason: division.status.lockBanner,
+      availableAtText: division.timingText,
+    }));
+  }
 
   return {
     division,

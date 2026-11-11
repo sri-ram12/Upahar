@@ -383,7 +383,7 @@ export default function DivisionSubsiteClient({
               className="inline-flex items-center space-x-2 text-xs font-extrabold uppercase tracking-wider px-3.5 py-2 rounded-full bg-white/90 hover:bg-white border border-stone-300/80 text-stone-800 shadow-xs transition"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>All 4 Upahar Websites</span>
+              <span>Back to Homepage</span>
             </Link>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -920,7 +920,7 @@ export default function DivisionSubsiteClient({
             </h3>
           </div>
           <Link href="/" className="text-xs font-bold text-stone-700 hover:underline">
-            Back to Main Hub →
+            Back to Homepage →
           </Link>
         </div>
 

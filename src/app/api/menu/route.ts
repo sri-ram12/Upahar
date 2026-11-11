@@ -140,12 +140,21 @@ export async function GET(req: NextRequest) {
     });
 
     if (!items || items.length === 0) {
-      const hasAnyFilter = Boolean((category && category !== "all") || division || search || vegOnly || bestsellerOnly || signatureOnly);
-      if (hasAnyFilter) {
-        return NextResponse.json({ items: [] });
+      const hasSearchOrAttrFilter = Boolean(search || vegOnly || bestsellerOnly || signatureOnly);
+      if (!hasSearchOrAttrFilter) {
+        const dbScopeCount = await prisma.foodItem.count({
+          where:
+            category && category !== "all"
+              ? { category: { slug: category } }
+              : division && isValidDivisionKey(division)
+              ? { category: { division } }
+              : undefined,
+        });
+        if (dbScopeCount === 0) {
+          return NextResponse.json({ items: filterFallbackItems(searchParams) });
+        }
       }
-      const fallbackFiltered = filterFallbackItems(searchParams);
-      return NextResponse.json({ items: fallbackFiltered });
+      return NextResponse.json({ items: [] });
     }
 
     if (respectSession && !includeInactive) {
