@@ -16,6 +16,8 @@ import {
   User,
   LogOut,
   Home,
+  Sun,
+  Moon,
 } from "lucide-react";
 import QRModal from "@/components/qr/QRModal";
 import { useCart } from "@/context/CartContext";
@@ -23,7 +25,10 @@ import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import {
   getWebsiteTheme,
+  readStoredHubTheme,
+  setHubThemePreference,
   type DivisionKey,
+  type HubThemePreference,
   type WebsiteThemeMode,
 } from "@/lib/store-hours";
 
@@ -37,6 +42,7 @@ export default function Navbar() {
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [themeOverride, setThemeOverride] = useState<string | null>(null);
+  const [hubTheme, setHubTheme] = useState<HubThemePreference>("light");
   const [activeOrdersCount, setActiveOrdersCount] = useState(0);
   const [subsiteStatuses, setSubsiteStatuses] = useState<
     Record<string, { statusLabel: string; timingText: string; isOpen: boolean }>
@@ -117,15 +123,25 @@ export default function Navbar() {
       if (typeof window !== "undefined") {
         const params = new URLSearchParams(window.location.search);
         setThemeOverride(params.get("theme"));
+        setHubTheme(readStoredHubTheme());
       }
       refreshRestaurantStatus();
       refreshActiveOrdersCount();
     };
 
     const handleThemeEvent = (e: Event) => {
-      const detail = (e as CustomEvent<{ theme?: WebsiteThemeMode; urlTheme?: string | null }>).detail;
+      const detail = (
+        e as CustomEvent<{
+          theme?: WebsiteThemeMode;
+          urlTheme?: string | null;
+          hubTheme?: HubThemePreference;
+        }>
+      ).detail;
       if (detail && detail.urlTheme !== undefined) {
         setThemeOverride(detail.urlTheme);
+      }
+      if (detail?.hubTheme === "light" || detail?.hubTheme === "dark") {
+        setHubTheme(detail.hubTheme);
       }
     };
 
@@ -151,7 +167,7 @@ export default function Navbar() {
 
   const activeTheme: WebsiteThemeMode = isStaffPanel
     ? "original-maroon"
-    : getWebsiteTheme(storeStatus?.sessionType, themeOverride, pathname);
+    : getWebsiteTheme(storeStatus?.sessionType, themeOverride, pathname, hubTheme);
 
   const activeDivision: DivisionKey | null = pathname?.startsWith("/tiffins")
     ? "tiffins"
@@ -164,7 +180,9 @@ export default function Navbar() {
     : null;
 
   const isSubWebsite = activeDivision !== null;
+  const isHomeHub = pathname === "/";
   const isLightHub = activeTheme === "light-hub";
+  const isDarkHub = activeTheme === "dark-hub";
   const isTiffinsGreen = activeTheme === "tiffins-green" || activeTheme === "morning-green";
   const isFastFoodGold = activeTheme === "fastfood-gold";
   const isPicklesRed = activeTheme === "pickles-red";
@@ -213,6 +231,10 @@ export default function Navbar() {
     ? isScrolled
       ? "bg-white/95 backdrop-blur-md shadow-[0_8px_24px_-6px_rgba(20,18,16,0.08)] border-b border-[#E7E0D3]"
       : "bg-white border-b border-[#E7E0D3]"
+    : isDarkHub
+    ? isScrolled
+      ? "bg-[#120F0D]/95 backdrop-blur-md shadow-[0_8px_28px_-6px_rgba(0,0,0,0.65)] border-b border-[#D4AF37]/25"
+      : "bg-[#120F0D] border-b border-[#D4AF37]/20"
     : isTiffinsGreen
     ? isScrolled
       ? "bg-[#092607]/95 backdrop-blur-md shadow-[0_8px_28px_-6px_rgba(7,29,6,0.58)] border-b border-[#D4AF37]/30"
@@ -457,6 +479,28 @@ export default function Navbar() {
               )}
             </button>
 
+            {isHomeHub && (
+              <button
+                type="button"
+                onClick={() => setHubThemePreference(isDarkHub ? "light" : "dark")}
+                className={`px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1 transition whitespace-nowrap cursor-pointer ${pillActionClass}`}
+                title={isDarkHub ? "Switch Home Page to Light Theme" : "Switch Home Page to Dark Theme"}
+                aria-label={isDarkHub ? "Switch to Light Theme" : "Switch to Dark Theme"}
+              >
+                {isDarkHub ? (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-[#DFC17B]" />
+                    <span className="hidden xl:inline">Light</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-[#580D1A]" />
+                    <span className="hidden xl:inline">Dark</span>
+                  </>
+                )}
+              </button>
+            )}
+
             <button
               onClick={() => setQrModalOpen(true)}
               className={`px-2 py-1.5 rounded-full border transition cursor-pointer flex items-center gap-1 ${pillActionClass}`}
@@ -536,17 +580,29 @@ export default function Navbar() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-[#E7E0D3] shadow-2xl px-4 sm:px-5 py-5 space-y-4 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden">
+          <div
+            className={`lg:hidden border-b shadow-2xl px-4 sm:px-5 py-5 space-y-4 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden ${
+              isDarkHub
+                ? "bg-[#141210] border-[#D4AF37]/25 text-[#FAF7F2]"
+                : "bg-white border-[#E7E0D3]"
+            }`}
+          >
             {/* Store hours pill on mobile */}
-            <div className="p-3 rounded-xl bg-[#FAF8F4] border border-[#D4AF37]/30 flex items-center space-x-2.5 text-xs text-[#2B070E]">
-              <Clock className={`w-4 h-4 ${drawerIconColor} flex-shrink-0`} />
+            <div
+              className={`p-3 rounded-xl border flex items-center space-x-2.5 text-xs ${
+                isDarkHub
+                  ? "bg-[#1E1916] border-[#332A23] text-[#FAF7F2]"
+                  : "bg-[#FAF8F4] border-[#D4AF37]/30 text-[#2B070E]"
+              }`}
+            >
+              <Clock className={`w-4 h-4 flex-shrink-0 ${isDarkHub ? "text-[#DFC17B]" : drawerIconColor}`} />
               <div>
                 <span className="font-bold block">
                   {isSubWebsite && activeSubsiteStatus
                     ? `${subtitleLabel} • ${activeSubsiteStatus.statusLabel}`
                     : storeStatus?.statusText || "Upahar Multi-Kitchen Portal"}
                 </span>
-                <span className="text-[11px] text-stone-600 block">
+                <span className={`text-[11px] block ${isDarkHub ? "text-stone-300" : "text-stone-600"}`}>
                   {isSubWebsite && activeSubsiteStatus
                     ? `Hours: ${activeSubsiteStatus.timingText}`
                     : "Tiffins 6–10:30 AM & 5–10:30 PM • Biryanis 12–10:30 PM • Fast Foods 5–10:30 PM • Pickles 24×7"}
@@ -554,8 +610,57 @@ export default function Navbar() {
               </div>
             </div>
 
+            {isHomeHub && (
+              <div
+                className={`flex items-center justify-between gap-2 p-3 rounded-2xl border ${
+                  isDarkHub
+                    ? "bg-[#1E1916] border-[#332A23]"
+                    : "bg-[#FAF8F4] border-[#E7E0D3]"
+                }`}
+              >
+                <div className="flex items-center gap-2 text-xs font-bold">
+                  {isDarkHub ? (
+                    <Moon className="w-4 h-4 text-[#DFC17B]" />
+                  ) : (
+                    <Sun className="w-4 h-4 text-[#9A6E24]" />
+                  )}
+                  <span>Home Page Theme</span>
+                </div>
+                <div
+                  className={`inline-flex items-center p-0.5 rounded-full border ${
+                    isDarkHub ? "bg-[#120F0D] border-[#332A23]" : "bg-white border-[#E7E0D3]"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setHubThemePreference("light")}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                      !isDarkHub ? "bg-[#580D1A] text-white" : "text-stone-300 hover:text-white"
+                    }`}
+                  >
+                    Light
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHubThemePreference("dark")}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                      isDarkHub ? "bg-[#580D1A] text-[#F3DEAB]" : "text-stone-600 hover:text-stone-900"
+                    }`}
+                  >
+                    Dark
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Mobile Customer Account & My Orders Quick Bar */}
-            <div className="flex items-center justify-between gap-2 p-3 rounded-2xl bg-[#FAF8F4] border border-[#E7E0D3]">
+            <div
+              className={`flex items-center justify-between gap-2 p-3 rounded-2xl border ${
+                isDarkHub
+                  ? "bg-[#1E1916] border-[#332A23]"
+                  : "bg-[#FAF8F4] border-[#E7E0D3]"
+              }`}
+            >
               {customer ? (
                 <button
                   type="button"
@@ -565,12 +670,12 @@ export default function Navbar() {
                   }}
                   className="flex items-center space-x-2 min-w-0 text-left cursor-pointer"
                 >
-                  <User className={`w-4 h-4 ${drawerIconColor} flex-shrink-0`} />
+                  <User className={`w-4 h-4 flex-shrink-0 ${isDarkHub ? "text-[#DFC17B]" : drawerIconColor}`} />
                   <div className="min-w-0">
-                    <span className="text-xs font-black text-[#141210] block truncate">
+                    <span className={`text-xs font-black block truncate ${isDarkHub ? "text-[#FAF7F2]" : "text-[#141210]"}`}>
                       {customer.name}
                     </span>
-                    <span className="text-[10px] text-stone-500 block truncate">
+                    <span className={`text-[10px] block truncate ${isDarkHub ? "text-stone-300" : "text-stone-500"}`}>
                       {customer.email || customer.phone} • Edit Profile &amp; Addresses
                     </span>
                   </div>
@@ -581,7 +686,9 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     setIsAuthModalOpen(true);
                   }}
-                  className={`text-xs font-black ${drawerIconColor} flex items-center space-x-1.5`}
+                  className={`text-xs font-black flex items-center space-x-1.5 ${
+                    isDarkHub ? "text-[#DFC17B]" : drawerIconColor
+                  }`}
                 >
                   <User className="w-4 h-4" />
                   <span>Main Site Account / Sign In</span>
@@ -617,7 +724,11 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     className={`px-3.5 py-2.5 rounded-xl text-sm font-bold flex items-center justify-between ${
-                      isActive ? drawerAccentBg : "text-[#141210] hover:bg-[#FAF8F4]"
+                      isActive
+                        ? drawerAccentBg
+                        : isDarkHub
+                        ? "text-[#FAF7F2] hover:bg-[#221C18]"
+                        : "text-[#141210] hover:bg-[#FAF8F4]"
                     }`}
                   >
                     <span>{link.name}</span>
@@ -628,7 +739,7 @@ export default function Navbar() {
             </nav>
 
             {/* Mobile Action CTAs */}
-            <div className="pt-3 border-t border-[#E7E0D3] flex flex-col gap-2">
+            <div className={`pt-3 border-t flex flex-col gap-2 ${isDarkHub ? "border-[#332A23]" : "border-[#E7E0D3]"}`}>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -656,7 +767,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="btn-gold-outline w-full py-2.5 rounded-xl text-xs font-bold text-center flex items-center justify-center space-x-2"
               >
-                <MapPin className={`w-4 h-4 ${drawerIconColor}`} />
+                <MapPin className={`w-4 h-4 ${isDarkHub ? "text-[#DFC17B]" : drawerIconColor}`} />
                 <span>Directions to Sangivalasa</span>
               </a>
             </div>

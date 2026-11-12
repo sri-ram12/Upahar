@@ -57,6 +57,20 @@
     --color-cream-card: #FFFFFF;
     --color-cream-border: var(--upahar-border);
 
+    /* Main Home Hub Semantic Surface Tokens (Light default) */
+    --hub-page-from: #FFFFFF;
+    --hub-page-via: #FAF8F4;
+    --hub-page-to: #FFFFFF;
+    --hub-hero-bg: #FFFFFF;
+    --hub-hero-border: rgba(231, 224, 211, 0.7);
+    --hub-heading: #1C1917;
+    --hub-tagline: #9A6E24;
+    --hub-muted: #57534E;
+    --hub-card-bg: #FFFFFF;
+    --hub-card-border: #E7E0D3;
+    --hub-card-sub-bg: #FAF8F4;
+    --hub-card-sub-hover: #F2EDE2;
+
     /* Dark: Cast Iron & Charcoal */
     --color-charcoal-950: #0C0A09;
     --color-charcoal-900: #141210;
@@ -74,6 +88,7 @@
 
   /* Main Hub Light Theme: Clean Ivory / Crisp Light Colour */
   html[data-upahar-theme="light-hub"] {
+    color-scheme: light;
     --upahar-950: #1C1917;
     --upahar-900: #292524;
     --upahar-800: #44403C;
@@ -88,6 +103,39 @@
     --upahar-dark-mid: #EDE5D7;
     --upahar-dark-deep: #E5DCCB;
     --upahar-glow-rgb: 197, 160, 89;
+  }
+
+  /* Main Hub Dark Theme: Luxury Charcoal & Warm Gold */
+  html[data-upahar-theme="dark-hub"] {
+    color-scheme: dark;
+    --upahar-950: #FAF7F2;
+    --upahar-900: #F3DEAB;
+    --upahar-800: #DFC17B;
+    --upahar-700: #580D1A;
+    --upahar-600: #8B1E26;
+    --upahar-cream: #0C0A09;
+    --upahar-surface: #181412;
+    --upahar-border: #332A23;
+    --upahar-footer: #090807;
+    --upahar-dark-stage: #0C0A09;
+    --upahar-dark-card: #181412;
+    --upahar-dark-mid: #2B070E;
+    --upahar-dark-deep: #090807;
+    --upahar-glow-rgb: 212, 175, 55;
+    --foreground: #FAF7F2;
+
+    --hub-page-from: #0C0A09;
+    --hub-page-via: #141210;
+    --hub-page-to: #0C0A09;
+    --hub-hero-bg: #120F0D;
+    --hub-hero-border: #2E2722;
+    --hub-heading: #FAF7F2;
+    --hub-tagline: #DFC17B;
+    --hub-muted: #C7BEB5;
+    --hub-card-bg: #181412;
+    --hub-card-border: #332A23;
+    --hub-card-sub-bg: #241D18;
+    --hub-card-sub-hover: #2F2620;
   }
 
   /* Upahar Tiffins Green Theme: Authentic Banana-Leaf & Ribbon Green from Upahar Logo */
@@ -267,6 +315,11 @@
   border-color: var(--upahar-700);
   color: var(--upahar-700);
   transform: translateY(-1px);
+}
+
+html[data-upahar-theme="dark-hub"] .btn-gold-outline:hover {
+  border-color: #DFC17B;
+  color: #FAF7F2;
 }
 
 .btn-gold {
@@ -608,6 +661,60 @@
   pointer-events: none;
 }
 
+/* Seamless Delivery Rider Scooter Loop (Pinterest / Behance Match) */
+@keyframes upaharSkylinePan {
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-800px); }
+}
+
+@keyframes upaharWheelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes upaharScooterRide {
+  0% { transform: translateX(48px); opacity: 0; }
+  8% { transform: translateX(84px); opacity: 1; }
+  78% { transform: translateX(618px); opacity: 1; }
+  84%, 100% { transform: translateX(638px); opacity: 0; }
+}
+
+@keyframes upaharParcelHandoff {
+  0%, 79% { transform: translateY(0px); opacity: 0; }
+  83% { transform: translateY(-4px); opacity: 1; }
+  91% { transform: translateY(-10px); opacity: 1; }
+  98%, 100% { transform: translateY(-14px); opacity: 0; }
+}
+
+@keyframes upaharPinArrival {
+  0%, 75%, 94%, 100% { transform: scale(1); opacity: 0; }
+  83% { transform: scale(2.1); opacity: 0.35; }
+}
+
+.animate-skyline-pan {
+  animation: upaharSkylinePan 20s linear infinite;
+}
+
+.animate-wheel-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: upaharWheelSpin 0.6s linear infinite;
+}
+
+.animate-scooter-ride {
+  animation: upaharScooterRide 6.5s linear infinite;
+}
+
+.animate-parcel-handoff {
+  animation: upaharParcelHandoff 6.5s linear infinite;
+}
+
+.animate-pin-arrival {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: upaharPinArrival 6.5s ease-in-out infinite;
+}
+
 /* Accessibility: Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
@@ -621,7 +728,10 @@
   .animate-steam-1, .animate-steam-2, .animate-steam-3,
   .animate-steam-wisp-1, .animate-steam-wisp-2,
   .animate-fog-drift, .animate-fog-drift-2, .animate-fog-drift-3,
-  .animate-heat-shimmer, .animate-golden-aura {
+  .animate-heat-shimmer, .animate-golden-aura,
+  .animate-skyline-pan, .animate-wheel-spin,
+  .animate-scooter-ride, .animate-parcel-handoff,
+  .animate-pin-arrival {
     animation: none !important;
   }
 }

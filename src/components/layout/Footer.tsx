@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -14,10 +14,33 @@ import {
   QrCode,
 } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/Icons";
-import { getWebsiteTheme } from "@/lib/store-hours";
+import {
+  getWebsiteTheme,
+  readStoredHubTheme,
+  type HubThemePreference,
+  type WebsiteThemeMode,
+} from "@/lib/store-hours";
 
 export default function Footer() {
   const pathname = usePathname();
+  const [hubTheme, setHubTheme] = useState<HubThemePreference>("light");
+
+  useEffect(() => {
+    const syncTheme = (e?: Event) => {
+      const detail = (e as CustomEvent<{ hubTheme?: HubThemePreference; theme?: WebsiteThemeMode }> | undefined)
+        ?.detail;
+      if (detail?.hubTheme === "light" || detail?.hubTheme === "dark") {
+        setHubTheme(detail.hubTheme);
+        return;
+      }
+      setHubTheme(readStoredHubTheme());
+    };
+
+    syncTheme();
+    window.addEventListener("upahar-theme-change", syncTheme);
+    return () => window.removeEventListener("upahar-theme-change", syncTheme);
+  }, [pathname]);
+
   const isStaffPanel =
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/kitchen") ||
@@ -25,7 +48,7 @@ export default function Footer() {
     pathname?.startsWith("/portal") ||
     pathname?.startsWith("/dev");
 
-  const theme = isStaffPanel ? "original-maroon" : getWebsiteTheme(null, null, pathname);
+  const theme = isStaffPanel ? "original-maroon" : getWebsiteTheme(null, null, pathname, hubTheme);
   const isLightHub = theme === "light-hub";
 
   const footerSurface = isLightHub

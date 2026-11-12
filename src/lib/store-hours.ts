@@ -47,12 +47,42 @@ export const EVENING_ONLY_CATEGORY_SLUGS = [
 
 export type WebsiteThemeMode =
   | "light-hub"
+  | "dark-hub"
   | "tiffins-green"
   | "biryanis-maroon"
   | "fastfood-gold"
   | "pickles-red"
   | "original-maroon"
   | "morning-green";
+
+export type HubThemePreference = "light" | "dark";
+
+export const HUB_THEME_STORAGE_KEY = "upahar_hub_theme_v1";
+
+/** Reads persisted Light/Dark preference for the main home page. */
+export function readStoredHubTheme(): HubThemePreference {
+  if (typeof window === "undefined") return "light";
+  try {
+    return window.localStorage.getItem(HUB_THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
+
+/** Saves and broadcasts the main home page Light/Dark preference immediately. */
+export function setHubThemePreference(mode: HubThemePreference): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(HUB_THEME_STORAGE_KEY, mode);
+  } catch {}
+  const resolved: WebsiteThemeMode = mode === "dark" ? "dark-hub" : "light-hub";
+  document.documentElement.setAttribute("data-upahar-theme", resolved);
+  window.dispatchEvent(
+    new CustomEvent("upahar-theme-change", {
+      detail: { theme: resolved, hubTheme: mode, pathname: window.location.pathname },
+    })
+  );
+}
 
 export interface UpaharDivisionConfig {
   key: DivisionKey;
@@ -426,7 +456,8 @@ export function getDivisionStatus(
 
 export function getSubsiteThemeFromPath(
   pathname: string | null | undefined,
-  themeOverride?: string | null
+  themeOverride?: string | null,
+  hubPreference?: HubThemePreference | null
 ): WebsiteThemeMode {
   const path = (pathname || "/").toLowerCase();
 
@@ -451,17 +482,23 @@ export function getSubsiteThemeFromPath(
   if (override === "biryanis" || override === "maroon") return "biryanis-maroon";
   if (override === "fast-food" || override === "gold" || override === "yellow") return "fastfood-gold";
   if (override === "pickles" || override === "red") return "pickles-red";
+  if (path === "/" || path === "") {
+    if (override === "dark") return "dark-hub";
+    if (override === "light") return "light-hub";
+    if (hubPreference === "dark") return "dark-hub";
+  }
 
-  // Main Hub Website & shared pages strictly remain Light Colour Only
+  // Main Hub Website & shared pages default to Light Colour
   return "light-hub";
 }
 
 export function getWebsiteTheme(
   _sessionType?: SessionType | string | null,
   themeOverride?: string | null,
-  pathname?: string | null
+  pathname?: string | null,
+  hubPreference?: HubThemePreference | null
 ): WebsiteThemeMode {
-  return getSubsiteThemeFromPath(pathname, themeOverride);
+  return getSubsiteThemeFromPath(pathname, themeOverride, hubPreference);
 }
 
 export function getEffectiveSessionType(

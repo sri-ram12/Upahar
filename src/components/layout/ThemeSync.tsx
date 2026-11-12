@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { getWebsiteTheme, type SessionType } from "@/lib/store-hours";
+import { getWebsiteTheme, readStoredHubTheme, type SessionType } from "@/lib/store-hours";
 
 function isStaffRoute(pathname: string | null): boolean {
   if (!pathname) return false;
@@ -15,7 +15,7 @@ function isStaffRoute(pathname: string | null): boolean {
   );
 }
 
-/** Keeps <html data-upahar-theme> aligned by route/sub-website (NO automatic time theme flipping). */
+/** Keeps <html data-upahar-theme> aligned by route/sub-website and main-home light/dark choice. */
 export default function ThemeSync() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -26,19 +26,27 @@ export default function ThemeSync() {
 
     const applyTheme = (sessionType?: SessionType | null) => {
       if (!active) return;
+      const hubPreference = readStoredHubTheme();
       const resolved = isStaffRoute(pathname)
         ? "original-maroon"
-        : getWebsiteTheme(sessionType, urlTheme, pathname);
+        : getWebsiteTheme(sessionType, urlTheme, pathname, hubPreference);
 
       document.documentElement.setAttribute("data-upahar-theme", resolved);
       window.dispatchEvent(
         new CustomEvent("upahar-theme-change", {
-          detail: { theme: resolved, urlTheme, pathname },
+          detail: { theme: resolved, urlTheme, pathname, hubTheme: hubPreference },
         })
       );
     };
 
     applyTheme(null);
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "upahar_hub_theme_v1") {
+        applyTheme(null);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
 
     const syncFromApi = () => {
       fetch("/api/restaurant")
@@ -56,6 +64,7 @@ export default function ThemeSync() {
 
     return () => {
       active = false;
+      window.removeEventListener("storage", handleStorage);
       window.clearInterval(interval);
     };
   }, [pathname, urlTheme]);

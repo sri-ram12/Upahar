@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,10 +12,18 @@ import {
   ShieldCheck,
   Lock,
   ShoppingBag,
+  Sun,
+  Moon,
 } from "lucide-react";
-import type { DivisionKey } from "@/lib/store-hours";
+import {
+  readStoredHubTheme,
+  setHubThemePreference,
+  type DivisionKey,
+  type HubThemePreference,
+} from "@/lib/store-hours";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
+import DeliveryRiderBanner from "@/components/home/DeliveryRiderBanner";
 
 export interface HubSubsiteCard {
   key: DivisionKey;
@@ -101,7 +109,26 @@ export default function HomeLandingClient({
   const [liveSubsites, setLiveSubsites] = useState<HubSubsiteCard[] | null>(null);
   const [emergencyStopped, setEmergencyStopped] = useState(initialEmergencyStop);
   const [emergencyMsg, setEmergencyMsg] = useState(initialEmergencyMsg);
+  const [hubTheme, setHubTheme] = useState<HubThemePreference>("light");
 
+  useEffect(() => {
+    const syncHubTheme = () => {
+      const attr = document.documentElement.getAttribute("data-upahar-theme");
+      if (attr === "dark-hub") {
+        setHubTheme("dark");
+      } else if (attr === "light-hub") {
+        setHubTheme("light");
+      } else {
+        setHubTheme(readStoredHubTheme());
+      }
+    };
+
+    syncHubTheme();
+    window.addEventListener("upahar-theme-change", syncHubTheme);
+    return () => window.removeEventListener("upahar-theme-change", syncHubTheme);
+  }, []);
+
+  const isDarkHub = hubTheme === "dark";
   const subsites = liveSubsites ?? initialSubsites;
 
   useRealtimeEvents({
@@ -120,14 +147,87 @@ export default function HomeLandingClient({
   });
 
   return (
-    <main className="min-h-[calc(100dvh-3.5rem)] overflow-x-clip bg-gradient-to-b from-white via-[#FAF8F4] to-white text-[#1C1917] pb-3 sm:pb-14">
+    <main className="min-h-[calc(100dvh-3.5rem)] overflow-x-clip bg-gradient-to-b from-[var(--hub-page-from)] via-[var(--hub-page-via)] to-[var(--hub-page-to)] text-[var(--hub-heading)] pb-3 sm:pb-14 transition-colors duration-300">
       {/* ================================================================= */}
-      {/* 1. LIGHT MAIN HUB HERO WITH BIG OFFICIAL UPAHAR LOGO              */}
+      {/* 1. LIGHT / DARK MAIN HUB HERO WITH FOOD BANNER & OFFICIAL LOGO    */}
       {/* ================================================================= */}
-      <section className="pt-2 pb-2 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[#E7E0D3]/70 bg-white">
-        <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
+      <section className="relative overflow-hidden pt-2 pb-2 sm:pt-5 sm:pb-4 px-3 sm:px-6 lg:px-8 border-b border-[var(--hub-hero-border)] bg-[var(--hub-hero-bg)] transition-colors duration-300">
+        {/* Panoramic Culinary Banner Behind Official Logo */}
+        <Image
+          src="/images/upahar-food-banner.jpg"
+          alt="UPAHAR culinary spread featuring golden masala dosa, steamed idlis, dum biryani, wok noodles, and Andhra pickles"
+          fill
+          priority
+          sizes="100vw"
+          className={`object-cover object-center pointer-events-none select-none transition-all duration-500 ${
+            isDarkHub ? "opacity-85 scale-[1.01]" : "opacity-90 scale-[1.01]"
+          }`}
+        />
+
+        {/* Theme-Adaptive Scrim for Rich Food Sides + Crisp Center Logo Contrast */}
+        <div
+          className={`pointer-events-none absolute inset-0 transition-all duration-300 ${
+            isDarkHub
+              ? "bg-[radial-gradient(ellipse_at_center,rgba(12,10,9,0.58)_0%,rgba(12,10,9,0.34)_55%,rgba(12,10,9,0.78)_100%)]"
+              : "bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.88)_0%,rgba(250,247,242,0.58)_44%,rgba(255,255,255,0.28)_100%)]"
+          }`}
+        />
+        <div
+          className={`pointer-events-none absolute inset-x-0 bottom-0 h-6 sm:h-10 transition-colors duration-300 ${
+            isDarkHub
+              ? "bg-gradient-to-t from-[#0C0A09]/85 to-transparent"
+              : "bg-gradient-to-t from-[#FAF8F4]/85 to-transparent"
+          }`}
+        />
+        {isDarkHub && (
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.16),transparent_65%)]" />
+        )}
+
+        <div className="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center">
+          {/* Light / Dark Home Theme Toggle Pill */}
+          <div
+            role="group"
+            aria-label="Main home page theme"
+            className="absolute top-0 right-0 z-20 inline-flex items-center p-0.5 sm:p-1 rounded-full border border-[var(--hub-card-border)] bg-[var(--hub-card-sub-bg)]/90 backdrop-blur-md shadow-sm transition-colors duration-300"
+          >
+            <button
+              type="button"
+              onClick={() => setHubThemePreference("light")}
+              aria-pressed={!isDarkHub}
+              title="Light Theme"
+              className={`inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                !isDarkHub
+                  ? "bg-white text-[#580D1A] shadow-xs"
+                  : "text-[#C7BEB5] hover:text-white"
+              }`}
+            >
+              <Sun className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Light</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setHubThemePreference("dark")}
+              aria-pressed={isDarkHub}
+              title="Dark Theme"
+              className={`inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                isDarkHub
+                  ? "bg-[#580D1A] text-[#F3DEAB] shadow-xs border border-[#DFC17B]/40"
+                  : "text-[#57534E] hover:text-[#1C1917]"
+              }`}
+            >
+              <Moon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Dark</span>
+            </button>
+          </div>
+
           {/* Big Prominent Official Centered UPAHAR Logo */}
-          <div className="relative w-20 h-20 min-[375px]:w-[88px] min-[375px]:h-[88px] sm:w-28 sm:h-28 rounded-full overflow-hidden border-[3px] sm:border-4 border-[#D4AF37] shadow-xl bg-[#580D1A] ring-4 sm:ring-8 ring-[#D4AF37]/15">
+          <div
+            className={`relative w-20 h-20 min-[375px]:w-[88px] min-[375px]:h-[88px] sm:w-28 sm:h-28 rounded-full overflow-hidden border-[3px] sm:border-4 bg-[#580D1A] ring-4 sm:ring-8 transition-all duration-300 ${
+              isDarkHub
+                ? "border-[#DFC17B] ring-[#D4AF37]/25 shadow-[0_0_32px_rgba(212,175,55,0.28)]"
+                : "border-[#D4AF37] ring-[#D4AF37]/15 shadow-xl"
+            }`}
+          >
             <Image
               src="/images/upahar_logo.jpg"
               alt="UPAHAR Official Logo"
@@ -138,15 +238,33 @@ export default function HomeLandingClient({
             />
           </div>
 
-          <h1 className="text-lg min-[375px]:text-xl sm:text-3xl font-black font-display tracking-tight text-[#1C1917] mt-1 sm:mt-2.5 leading-tight">
+          <h1
+            className={`text-lg min-[375px]:text-xl sm:text-3xl font-black font-display tracking-tight mt-1 sm:mt-2.5 leading-tight transition-colors duration-300 ${
+              isDarkHub
+                ? "text-[#FAF7F2] drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]"
+                : "text-[#1C1917] drop-shadow-[0_1px_6px_rgba(255,255,255,0.9)]"
+            }`}
+          >
             UPAHAR
           </h1>
-          <p className="text-[11px] min-[375px]:text-xs sm:text-base font-script font-bold text-[#9A6E24] leading-tight">
+          <p
+            className={`text-[11px] min-[375px]:text-xs sm:text-base font-script font-bold leading-tight transition-colors duration-300 ${
+              isDarkHub
+                ? "text-[#F3DEAB] drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)]"
+                : "text-[#7A5312] drop-shadow-[0_1px_4px_rgba(255,255,255,0.95)]"
+            }`}
+          >
             Good Food • Good Mood
           </p>
 
           {emergencyStopped && (
-            <div className="mt-2 sm:mt-3 w-full max-w-2xl p-2.5 sm:p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-[11px] sm:text-xs font-bold">
+            <div
+              className={`mt-2 sm:mt-3 w-full max-w-2xl p-2.5 sm:p-4 rounded-xl border text-[11px] sm:text-xs font-bold ${
+                isDarkHub
+                  ? "bg-red-950/70 border-red-500/45 text-red-200"
+                  : "bg-red-50 border-red-300 text-red-800"
+              }`}
+            >
               🚨 {emergencyMsg || "Online ordering is temporarily paused by restaurant administration."}
             </div>
           )}
@@ -298,30 +416,50 @@ export default function HomeLandingClient({
       </section>
 
       {/* ================================================================= */}
+      {/* 2B. ONLINE DELIVERY AVAILABLE ANIMATED RIDER RECTANGLE BANNER     */}
+      {/* ================================================================= */}
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 min-[390px]:pt-2.5 sm:pt-5">
+        <DeliveryRiderBanner
+          isDarkHub={isDarkHub}
+          isEmergencyStopped={emergencyStopped}
+        />
+      </section>
+
+      {/* ================================================================= */}
       {/* 3. CUSTOMER ACCOUNT CREATION HUB ON MAIN WEBSITE (Tablet/Desktop) */}
       {/* ================================================================= */}
       <section className="hidden sm:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <div className="bg-white rounded-3xl border border-[#E7E0D3] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div className="bg-[var(--hub-card-bg)] rounded-3xl border border-[var(--hub-card-border)] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 transition-colors duration-300">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#FAF8F4] border border-[#D4AF37]/40 flex items-center justify-center text-[#580D1A] flex-shrink-0">
+            <div
+              className={`w-12 h-12 rounded-2xl bg-[var(--hub-card-sub-bg)] border border-[#D4AF37]/40 flex items-center justify-center flex-shrink-0 ${
+                isDarkHub ? "text-[#DFC17B]" : "text-[#580D1A]"
+              }`}
+            >
               {customer ? <CheckCircle2 className="w-6 h-6 text-emerald-600" /> : <UserPlus className="w-6 h-6" />}
             </div>
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] uppercase font-extrabold tracking-widest text-[#9A6E24]">
+                <span className="text-[10px] uppercase font-extrabold tracking-widest text-[var(--hub-tagline)]">
                   Main Website Customer Account
                 </span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span
+                  className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                    isDarkHub
+                      ? "text-emerald-300 bg-emerald-950/60 border-emerald-700/50"
+                      : "text-emerald-700 bg-emerald-50 border-emerald-200"
+                  }`}
+                >
                   <ShieldCheck className="w-3 h-3" />
                   Optional for Sub-Websites
                 </span>
               </div>
-              <h3 className="text-lg sm:text-xl font-black font-display text-[#1C1917]">
+              <h3 className="text-lg sm:text-xl font-black font-display text-[var(--hub-heading)]">
                 {customer
                   ? `Welcome back, ${customer.name}!`
                   : "Create or Sign In to Your Upahar Customer Account"}
               </h3>
-              <p className="text-xs sm:text-sm text-[#57534E] max-w-2xl">
+              <p className="text-xs sm:text-sm text-[var(--hub-muted)] max-w-2xl">
                 {customer
                   ? `Signed in with ${customer.phone || customer.email || "Upahar Account"}${
                       customer.addresses?.length
@@ -338,14 +476,14 @@ export default function HomeLandingClient({
               <>
                 <Link
                   href="/orders"
-                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#580D1A] hover:bg-[#380A11] text-white text-xs font-bold inline-flex items-center justify-center space-x-2 shadow-sm transition"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#580D1A] hover:bg-[#74171E] border border-[#D4AF37]/35 text-white text-xs font-bold inline-flex items-center justify-center space-x-2 shadow-sm transition"
                 >
                   <ShoppingBag className="w-4 h-4 text-[#DFC17B]" />
                   <span>My Orders &amp; Tracker</span>
                 </Link>
                 <Link
                   href="/menu"
-                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#FAF8F4] hover:bg-[#F2EDE2] border border-[#E7E0D3] text-[#1C1917] text-xs font-bold inline-flex items-center justify-center transition"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[var(--hub-card-sub-bg)] hover:bg-[var(--hub-card-sub-hover)] border border-[var(--hub-card-border)] text-[var(--hub-heading)] text-xs font-bold inline-flex items-center justify-center transition"
                 >
                   Browse All Menu
                 </Link>
@@ -355,14 +493,14 @@ export default function HomeLandingClient({
                 <button
                   type="button"
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#580D1A] hover:bg-[#380A11] text-white text-xs font-black inline-flex items-center justify-center space-x-2 shadow-md transition cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#580D1A] hover:bg-[#74171E] border border-[#D4AF37]/35 text-white text-xs font-black inline-flex items-center justify-center space-x-2 shadow-md transition cursor-pointer"
                 >
                   <User className="w-4 h-4 text-[#DFC17B]" />
                   <span>Create Account / Sign In</span>
                 </button>
                 <Link
                   href="/orders"
-                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#FAF8F4] hover:bg-[#F2EDE2] border border-[#E7E0D3] text-[#1C1917] text-xs font-bold inline-flex items-center justify-center transition"
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[var(--hub-card-sub-bg)] hover:bg-[var(--hub-card-sub-hover)] border border-[var(--hub-card-border)] text-[var(--hub-heading)] text-xs font-bold inline-flex items-center justify-center transition"
                 >
                   Track Guest Order
                 </Link>

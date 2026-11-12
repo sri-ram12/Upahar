@@ -154,6 +154,22 @@ export default function RootLayout({
           document.documentElement.setAttribute("data-upahar-theme", "pickles-red");
           return;
         }
+        if (path === "/" || path === "") {
+          if (q === "dark") {
+            document.documentElement.setAttribute("data-upahar-theme", "dark-hub");
+            return;
+          }
+          if (q === "light") {
+            document.documentElement.setAttribute("data-upahar-theme", "light-hub");
+            return;
+          }
+          var savedHub = window.localStorage.getItem("upahar_hub_theme_v1");
+          document.documentElement.setAttribute(
+            "data-upahar-theme",
+            savedHub === "dark" ? "dark-hub" : "light-hub"
+          );
+          return;
+        }
         document.documentElement.setAttribute("data-upahar-theme", "light-hub");
       } catch (e) {}
     })();
