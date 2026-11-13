@@ -359,9 +359,23 @@ export async function POST(req: NextRequest) {
     const packagingFee = orderType === "DINE_IN" ? 0 : settings?.packagingFee ?? 10;
     const totalAmount = Math.max(0, subtotal + packagingFee + deliveryFee - discountAmount);
 
-    // 5. Cryptographically random 4-digit Order suffix & Delivery Verification OTP
-    const randomSuffix = crypto.randomInt(1000, 10000);
-    const orderNumber = `UPH-${randomSuffix}`;
+    // 5. Collision-Safe Order Number & Delivery Verification OTP
+    let orderNumber = "";
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const candidate = `UPH-${crypto.randomInt(1000, 10000)}`;
+      const existing = await prisma.order.findUnique({
+        where: { orderNumber: candidate },
+        select: { id: true },
+      });
+      if (!existing) {
+        orderNumber = candidate;
+        break;
+      }
+    }
+    if (!orderNumber) {
+      // High-volume fallback with millisecond time component
+      orderNumber = `UPH-${Date.now().toString().slice(-4)}${crypto.randomInt(10, 99)}`;
+    }
     const deliveryOtp = crypto.randomInt(1000, 10000).toString();
 
     const cleanUtr = upiTransactionId ? String(upiTransactionId).trim() : null;

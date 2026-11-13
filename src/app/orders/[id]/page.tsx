@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -17,12 +17,23 @@ import {
   Star,
   XCircle,
   QrCode,
+  Volume2,
+  VolumeX,
+  Share2,
 } from "lucide-react";
 import { Order, RestaurantSetting, FoodItem } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import { useCart } from "@/context/CartContext";
 import LiveTrackingMap from "@/components/orders/LiveTrackingMap";
 import PaymentQRCard from "@/components/payment/PaymentQRCard";
+
+function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.34C9.33 7.34 9 7.42 8.72 7.74C8.44 8.05 7.64 8.81 7.64 10.36C7.64 11.91 8.77 13.4 8.93 13.61C9.09 13.81 11.16 16.99 14.32 18.35C15.07 18.68 15.66 18.88 16.11 19.02C16.87 19.26 17.55 19.23 18.1 19.15C18.71 19.06 19.98 18.38 20.24 17.64C20.5 16.9 20.5 16.26 20.42 16.13C20.34 16 20.14 15.92 19.82 15.76C19.5 15.6 17.96 14.84 17.67 14.74C17.38 14.64 17.18 14.59 16.98 14.9C16.78 15.22 16.2 15.92 16.02 16.13C15.84 16.34 15.66 16.36 15.34 16.2C15.02 16.04 13.98 15.7 12.75 14.61C11.79 13.76 11.14 12.7 10.96 12.39C10.78 12.07 10.94 11.9 11.1 11.74C11.25 11.59 11.43 11.36 11.59 11.17C11.75 10.98 11.81 10.84 11.91 10.63C12.01 10.42 11.96 10.24 11.88 10.08C11.8 9.92 11.2 8.45 10.96 7.85C10.72 7.27 10.47 7.35 10.29 7.34C10.12 7.34 9.92 7.34 9.53 7.34Z"/>
+    </svg>
+  );
+}
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -40,10 +51,48 @@ export default function OrderTrackingPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
 
   // Action states
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [showQrPayBox, setShowQrPayBox] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [liveUpdateBanner, setLiveUpdateBanner] = useState<string | null>(null);
+
+  // Play audio alert on live status changes
+  const playCustomerChime = (type: "update" | "delivered" = "update") => {
+    if (!soundEnabled || typeof window === "undefined") return;
+    try {
+      const AudioCtxClass =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtxClass) return;
+      const audioCtx = new AudioCtxClass();
+      const playTone = (freq: number, start: number, duration: number) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + start);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime + start);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + start + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + start);
+        osc.stop(audioCtx.currentTime + start + duration);
+      };
+
+      if (type === "delivered") {
+        // Celebratory 3-tone chime for delivered
+        playTone(523.25, 0, 0.25);    // C5
+        playTone(659.25, 0.18, 0.25); // E5
+        playTone(783.99, 0.36, 0.5);  // G5
+      } else {
+        // Melodic 2-tone notification chime
+        playTone(587.33, 0, 0.25);    // D5
+        playTone(880.00, 0.18, 0.4);  // A5
+      }
+    } catch {
+      // Browser autoplay policy guard
+    }
+  };
 
   // Rating State
   const [foodRating, setFoodRating] = useState(5);
@@ -51,7 +100,7 @@ export default function OrderTrackingPage({ params }: PageProps) {
   const [reviewComment, setReviewComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const [ordRes, restRes] = await Promise.all([
         fetch(`/api/orders/${orderId}`),
@@ -67,12 +116,13 @@ export default function OrderTrackingPage({ params }: PageProps) {
       if (restData?.settings) {
         setSettings(restData.settings);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to load order details");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to load order details";
+      setError(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId]);
 
   // Real-time SSE push listener for live tracking & rider GPS
   const { isConnected: isRealtimeConnected } = useRealtimeEvents({
@@ -83,6 +133,7 @@ export default function OrderTrackingPage({ params }: PageProps) {
         (order && payload.orderId === order.id)
       ) {
         if (payload.status) {
+          playCustomerChime(payload.status === "DELIVERED" ? "delivered" : "update");
           setLiveUpdateBanner(`Live Update: Order is now ${String(payload.status).replace(/_/g, " ")}`);
           setTimeout(() => setLiveUpdateBanner(null), 5000);
         }
@@ -95,6 +146,7 @@ export default function OrderTrackingPage({ params }: PageProps) {
         payload.orderNumber === orderId ||
         (order && payload.orderId === order.id)
       ) {
+        playCustomerChime("delivered");
         setLiveUpdateBanner("Order Delivered! Enjoy your fresh Upahar meal.");
         setTimeout(() => setLiveUpdateBanner(null), 6000);
         fetchOrder();
@@ -121,9 +173,39 @@ export default function OrderTrackingPage({ params }: PageProps) {
   });
 
   useEffect(() => {
-    fetchOrder();
-    const interval = setInterval(fetchOrder, 15000);
-    return () => clearInterval(interval);
+    let isDisposed = false;
+    const fetchLiveStatus = async () => {
+      try {
+        const [ordRes, restRes] = await Promise.all([
+          fetch(`/api/orders/${orderId}`),
+          fetch("/api/restaurant"),
+        ]);
+        const data = await ordRes.json();
+        const restData = await restRes.json();
+
+        if (isDisposed) return;
+        if (!ordRes.ok || !data.order) {
+          throw new Error(data.error || "Order not found");
+        }
+        setOrder(data.order);
+        if (restData?.settings) {
+          setSettings(restData.settings);
+        }
+      } catch (err: unknown) {
+        if (isDisposed) return;
+        const message = err instanceof Error ? err.message : "Failed to load order details";
+        setError(message);
+      } finally {
+        if (!isDisposed) setLoading(false);
+      }
+    };
+
+    fetchLiveStatus();
+    const interval = setInterval(fetchLiveStatus, 15000);
+    return () => {
+      isDisposed = true;
+      clearInterval(interval);
+    };
   }, [orderId]);
 
   const handleCancelOrder = async () => {
@@ -142,8 +224,9 @@ export default function OrderTrackingPage({ params }: PageProps) {
         throw new Error(data.error || "Could not cancel order");
       }
       setOrder(data.order);
-    } catch (err: any) {
-      setCancelError(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to cancel order";
+      setCancelError(message);
     } finally {
       setCancelling(false);
     }
@@ -311,6 +394,34 @@ export default function OrderTrackingPage({ params }: PageProps) {
     order.paymentStatus !== "PAID" &&
     (isUpiOrQrOrder || showQrPayBox);
 
+  const restaurantPhone = "919885455342";
+  const itemsSummary = order.items?.map((it) => `${it.quantity}x ${it.name}`).join(", ") || "";
+  const currentUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `https://upahar.onrender.com/orders/${order.orderNumber}`;
+
+  const whatsappMessage = encodeURIComponent(
+    `*UPAHAR Food Order #${order.orderNumber}*\n` +
+      `👤 Customer: ${order.customerName}\n` +
+      `🍲 Items: ${itemsSummary}\n` +
+      `💰 Total: ₹${order.totalAmount} (${order.paymentMethod})\n` +
+      (order.orderType === "DELIVERY" && order.deliveryAddress
+        ? `📍 Address: ${order.deliveryAddress} (${order.locality || ""})\n`
+        : "") +
+      (order.deliveryOtp ? `🔐 Delivery OTP: ${order.deliveryOtp}\n` : "") +
+      `🔗 Track Live: ${currentUrl}`
+  );
+
+  const whatsappShareUrl = `https://api.whatsapp.com/send?text=${whatsappMessage}`;
+  const whatsappRestaurantUrl = `https://api.whatsapp.com/send?phone=${restaurantPhone}&text=${whatsappMessage}`;
+  const riderPhoneClean = order.deliveryAgent?.phone?.replace(/\D/g, "");
+  const whatsappRiderUrl = riderPhoneClean
+    ? `https://api.whatsapp.com/send?phone=91${riderPhoneClean}&text=${encodeURIComponent(
+        `Hi ${order.deliveryAgent?.name}, I am ${order.customerName} for Upahar Order #${order.orderNumber}.`
+      )}`
+    : null;
+
   return (
     <div className="bg-brand-cream min-h-screen py-8 sm:py-12 pb-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-6">
@@ -322,7 +433,29 @@ export default function OrderTrackingPage({ params }: PageProps) {
           >
             <span>← All My Orders</span>
           </Link>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              title={soundEnabled ? "Mute real-time chime" : "Enable real-time chime"}
+              className={`p-2 rounded-xl border font-bold flex items-center transition cursor-pointer shadow-xs ${
+                soundEnabled
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                  : "bg-stone-100 border-stone-200 text-stone-400"
+              }`}
+            >
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+            </button>
+            <a
+              href={whatsappShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold flex items-center space-x-1.5 shadow-xs transition"
+              title="Share order details on WhatsApp"
+            >
+              <WhatsAppIcon className="w-3.5 h-3.5" />
+              <span>Share Order</span>
+            </a>
             <button
               type="button"
               onClick={() => window.print()}
@@ -516,15 +649,66 @@ export default function OrderTrackingPage({ params }: PageProps) {
                     </div>
                   </div>
 
-                  <a
-                    href={`tel:${order.deliveryAgent.phone}`}
-                    className="print:hidden px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1 shadow-sm hover:bg-emerald-700 transition"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>Call Rider</span>
-                  </a>
+                  <div className="flex items-center gap-2 print:hidden">
+                    {whatsappRiderUrl && (
+                      <a
+                        href={whatsappRiderUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs flex items-center space-x-1 shadow-sm transition"
+                        title="Chat with Rider on WhatsApp"
+                      >
+                        <WhatsAppIcon className="w-3.5 h-3.5" />
+                        <span>WhatsApp</span>
+                      </a>
+                    )}
+                    <a
+                      href={`tel:${order.deliveryAgent.phone}`}
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1 shadow-sm hover:bg-emerald-700 transition"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Call Rider</span>
+                    </a>
+                  </div>
                 </div>
               )}
+
+              {/* WhatsApp Live Support & Sharing Card */}
+              <div className="p-4 rounded-2xl bg-[#E8F8EE] border border-[#25D366]/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs print:hidden">
+                <div className="flex items-center space-x-3 text-center sm:text-left">
+                  <div className="w-10 h-10 rounded-xl bg-[#25D366] text-white flex items-center justify-center font-bold flex-shrink-0 shadow-xs">
+                    <WhatsAppIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="font-extrabold text-[#075E54] block">
+                      WhatsApp Instant Order Updates &amp; Support
+                    </span>
+                    <p className="text-[11px] text-stone-600 mt-0.5">
+                      Share live tracking with friends or message the Upahar team for any special requests.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+                  <a
+                    href={whatsappRestaurantUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-[#075E54] hover:bg-[#128C7E] text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-xs"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Chat with Upahar</span>
+                  </a>
+                  <a
+                    href={whatsappShareUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-xs"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>Share Live Link</span>
+                  </a>
+                </div>
+              </div>
 
               {/* Estimated Time + Pending Self-Cancel */}
               <div className="p-4 rounded-2xl bg-brand-700/5 border border-[#D4AF37]/40 flex flex-wrap items-center justify-between gap-3 text-xs">
