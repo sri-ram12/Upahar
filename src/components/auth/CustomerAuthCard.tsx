@@ -84,7 +84,8 @@ export default function CustomerAuthCard({
     setIsAuthModalOpen,
   } = useCustomerAuth();
 
-  const [mode, setMode] = useState<AuthMode>(initialMode);
+  const safeInitialMode: AuthMode = initialMode === "OTP" ? "SIGNIN" : initialMode;
+  const [mode, setMode] = useState<AuthMode>(safeInitialMode);
   const [otpChannel, setOtpChannel] = useState<"EMAIL" | "SMS">("EMAIL");
 
   // Password visibility toggles
@@ -153,7 +154,7 @@ export default function CustomerAuthCard({
 
   const handleGoogleUnconfigured = () => {
     setErrorMsg(
-      "Google Sign-In requires GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET configured in .env / Render. Meanwhile, use Email OTP or Mobile OTP below."
+      "Google Sign-In is temporarily updating. Please sign in with your password or register an account below."
     );
     setAuthBannerError(null);
   };
@@ -597,15 +598,13 @@ export default function CustomerAuthCard({
   }
 
   // -------------------------------------------------------------
-  // NOT LOGGED IN: SIGN IN / REGISTER / OTP VIEW
+  // NOT LOGGED IN: SIGN IN / REGISTER / VERIFY / RESET VIEW
   // -------------------------------------------------------------
   const headerTitle =
     mode === "SIGNIN"
       ? "Sign In to Upahar"
       : mode === "SIGNUP"
       ? "Create Upahar Account"
-      : mode === "OTP"
-      ? "Instant OTP Sign In"
       : mode === "VERIFY_EMAIL"
       ? "Verify Email OTP"
       : "Reset Password via Email";
@@ -615,8 +614,6 @@ export default function CustomerAuthCard({
       ? "Welcome back! Enter your details or sign in with Google"
       : mode === "SIGNUP"
       ? "New customer? Register for fast delivery across Tagarapuvalasa"
-      : mode === "OTP"
-      ? "Quick passwordless access using your verified Email or Mobile"
       : mode === "VERIFY_EMAIL"
       ? `Enter the 6-digit verification code sent to ${email || "your inbox"}`
       : "Enter the verification code to set your new password";
@@ -633,8 +630,6 @@ export default function CustomerAuthCard({
             <div className="w-full h-full rounded-[14px] bg-[#2B070E] flex items-center justify-center text-[#DFC17B]">
               {mode === "SIGNUP" ? (
                 <UserPlus className="w-5 h-5 text-[#DFC17B]" />
-              ) : mode === "OTP" ? (
-                <Sparkles className="w-5 h-5 text-[#DFC17B]" />
               ) : (
                 <LogIn className="w-5 h-5 text-[#DFC17B]" />
               )}
@@ -660,14 +655,14 @@ export default function CustomerAuthCard({
         )}
       </div>
 
-      {/* Modern Segmented Tab Switcher (Visible on Main 3 Modes) */}
-      {(mode === "SIGNIN" || mode === "SIGNUP" || mode === "OTP") && (
+      {/* Modern Segmented Tab Switcher (Sign In vs Register) */}
+      {(mode === "SIGNIN" || mode === "SIGNUP") && (
         <div className="p-2.5 bg-[#FAF7F2] border-b border-[#EADBCE] shrink-0">
-          <div className="grid grid-cols-3 gap-1.5 p-1 bg-stone-200/80 rounded-2xl">
+          <div className="grid grid-cols-2 gap-2 p-1 bg-stone-200/80 rounded-2xl">
             <button
               type="button"
               onClick={() => switchMode("SIGNIN")}
-              className={`py-2 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 mode === "SIGNIN"
                   ? "bg-gradient-to-r from-[#580D1A] to-[#74171E] text-white shadow-sm border border-[#D4AF37]/40"
                   : "text-stone-600 hover:text-stone-900 hover:bg-white/60"
@@ -679,7 +674,7 @@ export default function CustomerAuthCard({
             <button
               type="button"
               onClick={() => switchMode("SIGNUP")}
-              className={`py-2 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
+              className={`py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
                 mode === "SIGNUP"
                   ? "bg-gradient-to-r from-[#580D1A] to-[#74171E] text-white shadow-sm border border-[#D4AF37]/40"
                   : "text-stone-600 hover:text-stone-900 hover:bg-white/60"
@@ -689,24 +684,12 @@ export default function CustomerAuthCard({
               <span>Register</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] ring-2 ring-white animate-pulse" />
             </button>
-            <button
-              type="button"
-              onClick={() => switchMode("OTP")}
-              className={`py-2 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                mode === "OTP"
-                  ? "bg-gradient-to-r from-[#580D1A] to-[#74171E] text-white shadow-sm border border-[#D4AF37]/40"
-                  : "text-stone-600 hover:text-stone-900 hover:bg-white/60"
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>OTP</span>
-            </button>
           </div>
         </div>
       )}
 
       {/* Google Sign-In Button */}
-      {(mode === "SIGNIN" || mode === "SIGNUP" || mode === "OTP") && (
+      {(mode === "SIGNIN" || mode === "SIGNUP") && (
         <div className="px-5 pt-3.5 pb-2 bg-[#FAF7F2]/50 border-b border-[#EADBCE]/60 shrink-0">
           {providers.google ? (
             <a
@@ -732,8 +715,6 @@ export default function CustomerAuthCard({
             <span className="bg-[#FAF7F2] px-2.5 text-[9px] font-black uppercase tracking-wider text-stone-400">
               {mode === "SIGNUP"
                 ? "or fill registration details"
-                : mode === "OTP"
-                ? "or sign in with one-time code"
                 : "or sign in with password"}
             </span>
           </div>
@@ -743,9 +724,9 @@ export default function CustomerAuthCard({
       {/* Main Scrollable Form Content */}
       <div className="overflow-y-auto flex-1">
         {/* ============================================================ */}
-        {/* OTP / VERIFY EMAIL / RESET PASSWORD FLOW */}
+        {/* VERIFY EMAIL / RESET PASSWORD FLOW */}
         {/* ============================================================ */}
-        {mode === "OTP" || mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" ? (
+        {mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" ? (
           <form
             onSubmit={otpSent ? handleVerifyOtp : handleSendOtp}
             className="p-5 sm:p-6 space-y-4"
@@ -764,106 +745,33 @@ export default function CustomerAuthCard({
               </div>
             )}
 
-            {/* OTP Channel Selector */}
-            {mode === "OTP" && !otpSent && (
-              <div className="space-y-1.5">
-                <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE]">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpChannel("EMAIL");
-                      resetOtpFlow();
-                    }}
-                    className={`py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      otpChannel === "EMAIL"
-                        ? "bg-[#580D1A] text-white shadow-xs"
-                        : "text-stone-600 hover:text-stone-900"
-                    }`}
-                  >
-                    <Mail className="w-3.5 h-3.5 text-[#DFC17B]" />
-                    <span>Email OTP</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpChannel("SMS");
-                      resetOtpFlow();
-                    }}
-                    className={`py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      otpChannel === "SMS"
-                        ? "bg-[#580D1A] text-white shadow-xs"
-                        : "text-stone-600 hover:text-stone-900"
-                    }`}
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#DFC17B]" />
-                    <span>Mobile OTP</span>
-                  </button>
-                </div>
-                <p className="text-[10px] text-stone-500 text-center">
-                  {otpChannel === "EMAIL"
-                    ? "Instant 6-digit OTP sent straight to your email address"
-                    : "Existing mobile customers only — new users please register or use Email OTP"}
-                </p>
+            {/* Email Target Input */}
+            <div>
+              <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  required
+                  disabled={otpSent}
+                  placeholder="e.g. yourname@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full text-xs pl-10 pr-3 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none disabled:opacity-60"
+                />
               </div>
-            )}
-
-            {/* Email or Phone Target Input */}
-            {mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" || otpChannel === "EMAIL" ? (
-              <div>
-                <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    disabled={otpSent}
-                    placeholder="e.g. yourname@gmail.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full text-xs pl-10 pr-3 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none disabled:opacity-60"
-                  />
-                </div>
-                {otpSent && mode !== "VERIFY_EMAIL" && (
-                  <button
-                    type="button"
-                    onClick={resetOtpFlow}
-                    className="text-[11px] font-bold text-[#580D1A] hover:underline mt-1.5 cursor-pointer flex items-center gap-1"
-                  >
-                    <span>Change email address</span>
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div>
-                <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                  Mobile Number (10 digits) <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="tel"
-                    required
-                    maxLength={10}
-                    disabled={otpSent}
-                    placeholder="e.g. 9885455342"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                    className="w-full text-xs pl-10 pr-3 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none disabled:opacity-60"
-                  />
-                </div>
-                {otpSent && (
-                  <button
-                    type="button"
-                    onClick={resetOtpFlow}
-                    className="text-[11px] font-bold text-[#580D1A] hover:underline mt-1.5 cursor-pointer flex items-center gap-1"
-                  >
-                    <span>Change mobile number</span>
-                  </button>
-                )}
-              </div>
-            )}
+              {otpSent && mode !== "VERIFY_EMAIL" && (
+                <button
+                  type="button"
+                  onClick={resetOtpFlow}
+                  className="text-[11px] font-bold text-[#580D1A] hover:underline mt-1.5 cursor-pointer flex items-center gap-1"
+                >
+                  <span>Change email address</span>
+                </button>
+              )}
+            </div>
 
             {/* OTP Sent: Code Input & Verification */}
             {otpSent && (
@@ -892,21 +800,10 @@ export default function CustomerAuthCard({
                   </div>
                 )}
 
-                {isExistingOtpUser && existingOtpName && mode === "OTP" && (
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-semibold flex items-center space-x-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Welcome back, {existingOtpName}! Enter the code below to sign in.</span>
-                  </div>
-                )}
-
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-[11px] font-bold text-stone-700">
-                      Enter{" "}
-                      {mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" || otpChannel === "EMAIL"
-                        ? "6-Digit Email OTP"
-                        : "4-Digit Mobile OTP"}{" "}
-                      <span className="text-red-500">*</span>
+                      Enter 6-Digit Email OTP <span className="text-red-500">*</span>
                     </label>
                     <button
                       type="button"
@@ -924,17 +821,9 @@ export default function CustomerAuthCard({
                     <input
                       type="text"
                       required
-                      maxLength={
-                        mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" || otpChannel === "EMAIL"
-                          ? 6
-                          : 4
-                      }
+                      maxLength={6}
                       autoFocus
-                      placeholder={
-                        mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD" || otpChannel === "EMAIL"
-                          ? "• • • • • •"
-                          : "• • • •"
-                      }
+                      placeholder="• • • • • •"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                       className="w-full text-center font-mono text-xl font-black tracking-[0.4em] pl-10 pr-3 py-3 rounded-2xl border-2 border-[#D4AF37] bg-[#FAF7F2] text-[#580D1A] focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
@@ -970,70 +859,6 @@ export default function CustomerAuthCard({
                   </div>
                 )}
 
-                {/* If new OTP user (first time sign-in via OTP) */}
-                {mode === "OTP" && !isExistingOtpUser && (
-                  <div className="space-y-3 pt-3 border-t border-stone-200">
-                    <span className="text-[11px] font-black text-[#580D1A] block uppercase tracking-wider">
-                      Complete Your Profile
-                    </span>
-                    <div>
-                      <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                        Full Name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Rahul Sharma"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                      />
-                    </div>
-                    {otpChannel === "EMAIL" && (
-                      <div>
-                        <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                          Mobile (Optional, for doorstep delivery updates)
-                        </label>
-                        <input
-                          type="tel"
-                          maxLength={10}
-                          placeholder="e.g. 9885455342"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                          className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                        />
-                      </div>
-                    )}
-                    <div>
-                      <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                        Tagarapuvalasa Locality
-                      </label>
-                      <select
-                        value={locality}
-                        onChange={(e) => setLocality(e.target.value)}
-                        className="w-full text-xs p-2.5 rounded-xl border border-stone-300 bg-white font-semibold text-stone-800 focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                      >
-                        {TAGARAPUVALASA_LOCALITIES.map((loc) => (
-                          <option key={loc.id} value={loc.name}>
-                            {loc.name} ({loc.area})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                        Default Delivery Address (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Room 304, ANITS Boys Hostel"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                )}
               </>
             )}
 
@@ -1049,35 +874,18 @@ export default function CustomerAuthCard({
                   ? mode === "RESET_PASSWORD"
                     ? "Reset Password & Sign In"
                     : "Verify Code & Continue"
-                  : mode === "RESET_PASSWORD"
-                  ? "Send Password Reset OTP"
-                  : `Send ${otpChannel === "EMAIL" ? "6-Digit Email" : "4-Digit Mobile"} OTP`}
+                  : "Send Password Reset OTP"}
               </span>
               <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
             </button>
 
-            {(mode === "VERIFY_EMAIL" || mode === "RESET_PASSWORD") && (
-              <button
-                type="button"
-                onClick={() => switchMode("SIGNIN")}
-                className="w-full text-center text-xs font-bold text-stone-600 hover:text-[#580D1A] cursor-pointer pt-1"
-              >
-                ← Back to Password Sign In
-              </button>
-            )}
-
-            {mode === "OTP" && (
-              <div className="pt-2 text-center text-xs text-stone-500">
-                <span>Prefer to use password? </span>
-                <button
-                  type="button"
-                  onClick={() => switchMode("SIGNIN")}
-                  className="font-black text-[#580D1A] hover:underline cursor-pointer"
-                >
-                  Sign In with Password
-                </button>
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={() => switchMode("SIGNIN")}
+              className="w-full text-center text-xs font-bold text-stone-600 hover:text-[#580D1A] cursor-pointer pt-1"
+            >
+              ← Back to Sign In
+            </button>
           </form>
         ) : mode === "SIGNIN" ? (
           /* ============================================================ */
@@ -1156,7 +964,7 @@ export default function CustomerAuthCard({
             </button>
 
             {/* Switch to Register */}
-            <div className="pt-2 border-t border-stone-200/80 text-center space-y-1">
+            <div className="pt-2 border-t border-stone-200/80 text-center">
               <p className="text-xs text-stone-600">
                 New to Upahar?{" "}
                 <button
@@ -1166,16 +974,6 @@ export default function CustomerAuthCard({
                 >
                   <span>Create an Account</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </p>
-              <p className="text-[11px] text-stone-500">
-                Forgot your password?{" "}
-                <button
-                  type="button"
-                  onClick={() => switchMode("OTP")}
-                  className="font-bold text-stone-700 hover:underline cursor-pointer"
-                >
-                  Sign in with instant OTP
                 </button>
               </p>
             </div>
