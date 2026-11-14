@@ -18,12 +18,20 @@ import {
   Bike,
   Code2,
   Info,
+  FileDown,
 } from "lucide-react";
-import { usePwa, UPAHAR_PWA_APPS, type PwaAppDefinition } from "@/components/pwa/PwaRegister";
+import {
+  usePwa,
+  UPAHAR_PWA_APPS,
+  downloadWebShortcut,
+  downloadAllPwaShortcuts,
+  type PwaAppDefinition,
+} from "@/components/pwa/PwaRegister";
 
 export default function AppsPage() {
-  const { activeApp, deferredPrompt, installCurrentApp } = usePwa();
+  const { activeApp, deferredPrompt } = usePwa();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [downloadedId, setDownloadedId] = useState<string | null>(null);
 
   const handleCopyLink = (app: PwaAppDefinition) => {
     const url = `${window.location.origin}${app.startUrl}`;
@@ -32,6 +40,12 @@ export default function AppsPage() {
       setCopiedId(app.id);
       setTimeout(() => setCopiedId(null), 2000);
     }
+  };
+
+  const handleDownloadShortcut = (app: PwaAppDefinition) => {
+    downloadWebShortcut(app.name, app.startUrl, app.iconSrc);
+    setDownloadedId(app.id);
+    setTimeout(() => setDownloadedId(null), 2500);
   };
 
   const getAppIcon = (id: string) => {
@@ -65,6 +79,18 @@ export default function AppsPage() {
         <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed font-medium">
           Install lightweight Progressive Web Apps directly onto your Android, iPhone, or Desktop PC. Each panel features its own dedicated icon, offline support, and 1-tap launcher access without app store downloads.
         </p>
+
+        {/* Batch Download Button */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={downloadAllPwaShortcuts}
+            className="btn-maroon-gold px-5 py-3 rounded-2xl text-xs font-black flex items-center gap-2 shadow-md hover:scale-[1.02] transition cursor-pointer"
+          >
+            <FileDown className="w-4 h-4 text-[#DFC17B]" />
+            <span>Download All 5 Windows Shortcuts (.url)</span>
+          </button>
+        </div>
       </div>
 
       {/* Installation Requirement Info Banner */}
@@ -73,7 +99,7 @@ export default function AppsPage() {
         <div className="text-xs leading-relaxed">
           <strong className="font-bold text-amber-950">How Web App Installation Works:</strong>
           <span className="block mt-0.5 text-stone-700">
-            Web browsers install the PWA for the specific URL route you are currently viewing. Click <strong>&quot;Open &amp; Install&quot;</strong> on any app card below to open its specific panel, where your browser will offer the dedicated install option!
+            Browsers install the PWA for the specific URL route you are currently viewing. Click <strong>&quot;Open &amp; Install&quot;</strong> on any app card below to open its specific panel, or click <strong>&quot;Desktop File&quot;</strong> to immediately download a ready-to-run Windows shortcut!
           </span>
         </div>
       </div>
@@ -81,8 +107,6 @@ export default function AppsPage() {
       {/* The 5 Dedicated App Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
         {UPAHAR_PWA_APPS.map((app) => {
-          const isCustomer = app.id === "customer";
-
           return (
             <div
               key={app.id}
@@ -126,12 +150,26 @@ export default function AppsPage() {
               <div className="p-4 bg-stone-50/80 border-t border-stone-100 flex items-center gap-2">
                 <Link
                   href={`${app.startUrl}?pwa=install`}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-[#580D1A] text-white text-xs font-black flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-stone-900 hover:bg-[#580D1A] text-white text-xs font-black flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-[#DFC17B]" />
                   <span>Open &amp; Install</span>
                   <ArrowRight className="w-3 h-3 opacity-70" />
                 </Link>
+
+                <button
+                  type="button"
+                  onClick={() => handleDownloadShortcut(app)}
+                  className="py-2.5 px-3 rounded-xl border border-stone-300 hover:bg-white text-stone-700 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-xs"
+                  title="Download ready-to-run Windows Desktop Shortcut (.url)"
+                >
+                  {downloadedId === app.id ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  ) : (
+                    <FileDown className="w-3.5 h-3.5 text-stone-600" />
+                  )}
+                  <span className="text-[11px]">Shortcut</span>
+                </button>
 
                 <button
                   type="button"
@@ -175,7 +213,7 @@ export default function AppsPage() {
               <li>Open any app panel link above in Chrome or Edge.</li>
               <li>Look at the right side of the address bar at the top for the <strong>Install ⊕</strong> icon.</li>
               <li>Or click the <strong>3 dots ⋮ &gt; &quot;Install app&quot;</strong>.</li>
-              <li>Confirm <strong>Install</strong> to get a desktop shortcut and dedicated window.</li>
+              <li>Or click <strong>&quot;Shortcut&quot;</strong> on any card above to download an instant Windows <code>.url</code> file!</li>
             </ol>
           </div>
 

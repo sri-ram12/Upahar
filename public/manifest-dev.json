@@ -2,14 +2,13 @@
   "name": "UPAHAR Developer Console",
   "short_name": "UPAHAR Dev",
   "description": "Master system control, end-to-end order simulation, live SSE debugger, and panel switchboard for Upahar.",
-  "start_url": "/portal?source=pwa",
+  "start_url": "/portal",
   "scope": "/portal",
-  "id": "/portal?source=pwa_dev",
+  "id": "/portal",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#0B0F19",
   "theme_color": "#1E1B4B",
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/dev-192.png",

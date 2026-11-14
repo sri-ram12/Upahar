@@ -1,5 +1,5 @@
-// UPAHAR Progressive Web App Multi-Panel Service Worker
-const CACHE_NAME = 'upahar-pwa-v3';
+// UPAHAR Multi-Panel Progressive Web App Service Worker
+const CACHE_NAME = 'upahar-pwa-v4';
 
 const STATIC_ASSETS = [
   '/',
@@ -29,9 +29,14 @@ const STATIC_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('PWA: Some static assets failed to cache during install', err);
-      });
+      // Use Promise.allSettled so a network blip or dynamic route never stops the service worker from installing
+      return Promise.allSettled(
+        STATIC_ASSETS.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn('PWA: Cached item warning for:', url, err?.message || err);
+          })
+        )
+      );
     })
   );
   self.skipWaiting();
@@ -55,7 +60,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Never cache API routes, Turbopack/Next.js internals, or live SSE streams
+  // Never cache API routes, Next.js bundler internals, or live SSE streams
   if (
     event.request.method !== 'GET' ||
     url.pathname.startsWith('/api/') ||
@@ -65,7 +70,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first strategy for pages and assets, fallback to cache
+  // Network-first with cache fallback
   event.respondWith(
     fetch(event.request)
       .then((response) => {

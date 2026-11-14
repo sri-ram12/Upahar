@@ -106,6 +106,28 @@ export function getActivePwaApp(pathname: string | null): PwaAppDefinition {
   return UPAHAR_PWA_APPS[0];
 }
 
+export function downloadWebShortcut(appName: string, urlPath: string, iconPath?: string) {
+  if (typeof window === "undefined") return;
+  const fullUrl = `${window.location.origin}${urlPath}`;
+  const iconUrl = iconPath ? `${window.location.origin}${iconPath}` : undefined;
+  const content = `[InternetShortcut]\r\nURL=${fullUrl}\r\nIconIndex=0\r\n${iconUrl ? `IconFile=${iconUrl}\r\n` : ""}`;
+  const blob = new Blob([content], { type: "application/internet-shortcut" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${appName.replace(/[^a-zA-Z0-9_-]/g, "_")}.url`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+export function downloadAllPwaShortcuts() {
+  UPAHAR_PWA_APPS.forEach((app, index) => {
+    setTimeout(() => {
+      downloadWebShortcut(app.name, app.startUrl, app.iconSrc);
+    }, index * 250);
+  });
+}
+
 interface PwaContextType {
   deferredPrompt: BeforeInstallPromptEvent | null;
   isInstalled: boolean;
@@ -142,21 +164,22 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
   const activeApp = getActivePwaApp(pathname);
 
   // 1. Dynamic Manifest Synchronization in Document Head
+  // Re-creates the manifest link element so Chromium's manifest parser re-reads the new panel manifest
   useEffect(() => {
     if (typeof document === "undefined") return;
 
-    // Dynamically update or create <link rel="manifest">
-    let manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement | null;
-    if (!manifestLink) {
-      manifestLink = document.createElement("link");
-      manifestLink.rel = "manifest";
-      document.head.appendChild(manifestLink);
-    }
-    if (manifestLink.getAttribute("href") !== activeApp.manifestUrl) {
-      manifestLink.setAttribute("href", activeApp.manifestUrl);
+    const existing = document.querySelector('link[rel="manifest"]') as HTMLLinkElement | null;
+    if (existing && existing.getAttribute("href") === activeApp.manifestUrl) {
+      // already pointing to current active manifest
+    } else {
+      if (existing) existing.remove();
+      const link = document.createElement("link");
+      link.rel = "manifest";
+      link.href = activeApp.manifestUrl;
+      document.head.appendChild(link);
     }
 
-    // Dynamically update theme color meta tag
+    // Update theme-color meta tag
     let themeMeta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
     if (!themeMeta) {
       themeMeta = document.createElement("meta");
@@ -225,7 +248,6 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
 
   const installCurrentApp = async (): Promise<boolean> => {
     if (!deferredPrompt) {
-      // If browser doesn't offer native prompt (iOS Safari, or already installed, or prompt consumed), open modal guide
       setIsInstallModalOpen(true);
       return false;
     }
@@ -284,6 +306,14 @@ export function PwaPanelBanner({ className = "", variant = "floating" }: PwaPane
 
   if (isInstalled || dismissed) return null;
 
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      installCurrentApp();
+    } else {
+      openAppHub();
+    }
+  };
+
   if (variant === "banner") {
     return (
       <div className={`p-3 bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/30 flex items-center justify-between gap-3 text-xs ${className}`}>
@@ -300,7 +330,7 @@ export function PwaPanelBanner({ className = "", variant = "floating" }: PwaPane
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            onClick={() => installCurrentApp()}
+            onClick={handleInstallClick}
             className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white text-[11px] font-black flex items-center gap-1 hover:brightness-110 cursor-pointer shadow-xs"
           >
             <Download className="w-3.5 h-3.5" />
@@ -352,7 +382,7 @@ export function PwaPanelBanner({ className = "", variant = "floating" }: PwaPane
       <div className="flex items-center gap-1.5 shrink-0">
         <button
           type="button"
-          onClick={() => installCurrentApp()}
+          onClick={handleInstallClick}
           className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white text-[11px] font-black flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-xs"
         >
           <Download className="w-3.5 h-3.5" />
