@@ -12,6 +12,7 @@ import {
 } from "@/lib/store-hours";
 import { ensureSubsitesInitialized, getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
+import { revalidatePath } from "next/cache";
 
 function filterFallbackItems(searchParams: URLSearchParams) {
   const category = searchParams.get("category");
@@ -278,6 +279,9 @@ export async function POST(req: NextRequest) {
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ item }, { status: 201 });
   } catch (error) {

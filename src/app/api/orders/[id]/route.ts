@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   req: NextRequest,
@@ -25,7 +26,9 @@ export async function GET(
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ order });
+    const response = NextResponse.json({ order });
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    return response;
   } catch (error: any) {
     console.error("Error fetching order:", error);
     return NextResponse.json(
@@ -223,7 +226,12 @@ export async function PUT(
     if (paymentConfirmedBy !== undefined) updateData.paymentConfirmedBy = paymentConfirmedBy;
     if (estimatedTime !== undefined) updateData.estimatedTime = estimatedTime;
     if (rejectionReason !== undefined) updateData.rejectionReason = rejectionReason;
-    if (deliveryAgentId !== undefined) updateData.deliveryAgentId = deliveryAgentId;
+    if (deliveryAgentId !== undefined) {
+      updateData.deliveryAgentId =
+        deliveryAgentId && String(deliveryAgentId).trim() !== ""
+          ? String(deliveryAgentId).trim()
+          : null;
+    }
 
     if (status === "DELIVERED") {
       updateData.deliveredAt = new Date();
@@ -243,6 +251,10 @@ export async function PUT(
         deliveryAgent: true,
       },
     });
+
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     // Broadcast instant real-time event to all connected panels (<50ms)
     broadcastRealtimeEvent("ORDER_UPDATED", {

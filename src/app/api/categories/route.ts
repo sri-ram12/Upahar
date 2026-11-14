@@ -4,6 +4,7 @@ import { getAdminSession } from "@/lib/auth";
 import { FALLBACK_CATEGORIES } from "@/lib/fallback-menu";
 import { getDivisionForCategorySlug, isValidDivisionKey } from "@/lib/store-hours";
 import { ensureSubsitesInitialized, clearSubsitesCache } from "@/lib/subsite-data";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
   try {
@@ -81,6 +82,9 @@ export async function POST(req: NextRequest) {
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ category }, { status: 201 });
   } catch (error) {

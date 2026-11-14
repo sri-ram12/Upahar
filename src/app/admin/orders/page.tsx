@@ -72,8 +72,8 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     try {
       const [res, agentsRes] = await Promise.all([
-        fetch("/api/orders?limit=100"),
-        fetch("/api/delivery/agents"),
+        fetch("/api/orders?limit=100", { cache: "no-store" }),
+        fetch("/api/delivery/agents", { cache: "no-store" }),
       ]);
       const data = await res.json();
       const agentsData = await agentsRes.json();
@@ -124,7 +124,7 @@ export default function AdminOrdersPage() {
       setTimeout(() => setRealtimeToast(null), 5000);
     },
     onRiderStatusChanged: () => {
-      fetch("/api/delivery/agents")
+      fetch("/api/delivery/agents", { cache: "no-store" })
         .then((r) => r.json())
         .then((agentsData) => {
           if (Array.isArray(agentsData?.agents)) {
@@ -592,11 +592,15 @@ export default function AdminOrdersPage() {
                               Delivery OTP: <strong>{order.deliveryOtp}</strong>
                             </span>
                           )}
-                          {order.deliveryAgent && (
-                            <span className="text-[10px] text-emerald-800 font-bold block">
-                              Rider: {order.deliveryAgent.name} ({order.deliveryAgent.vehicleNumber})
-                            </span>
-                          )}
+                          {(() => {
+                            const assignedAgent = order.deliveryAgent || agents.find((ag) => ag.id === order.deliveryAgentId);
+                            if (!assignedAgent) return null;
+                            return (
+                              <span className="text-[10px] text-emerald-800 font-bold block bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-0.5">
+                                🛵 Rider: <strong>{assignedAgent.name}</strong> ({assignedAgent.vehicleNumber})
+                              </span>
+                            );
+                          })()}
                         </div>
                         <span className="text-sm font-black text-[#580D1A] font-display">
                           ₹{order.totalAmount}
@@ -622,25 +626,37 @@ export default function AdminOrdersPage() {
                       )}
 
                       {/* Assign Registered Rider Dropdown */}
-                      {order.orderType === "DELIVERY" && !isCompleted && order.status !== "CANCELLED" && agents.length > 0 && (
+                      {order.orderType === "DELIVERY" && order.status !== "CANCELLED" && agents.length > 0 && (
                         <div className="pt-1">
-                          <select
-                            value={order.deliveryAgentId || ""}
-                            onChange={(e) => {
-                              if (!e.target.value) return;
-                              handleUpdateStatus(order.id, undefined, {
-                                deliveryAgentId: e.target.value,
-                              });
-                            }}
-                            className="w-full text-[11px] px-2.5 py-1.5 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-semibold text-stone-700"
-                          >
-                            <option value="">-- Assign Rider Manually --</option>
-                            {agents.map((ag) => (
-                              <option key={ag.id} value={ag.id}>
-                                {ag.name} ({ag.vehicleNumber})
-                              </option>
-                            ))}
-                          </select>
+                          {(() => {
+                            const assignedAgent = order.deliveryAgent || agents.find((ag) => ag.id === order.deliveryAgentId);
+                            return (
+                              <div>
+                                <label className="text-[10px] font-bold text-stone-500 block mb-0.5">
+                                  {assignedAgent ? `Assigned Rider: ${assignedAgent.name}` : "Assign Delivery Rider:"}
+                                </label>
+                                <select
+                                  value={order.deliveryAgentId || ""}
+                                  disabled={isUpdating === order.id}
+                                  onChange={(e) => {
+                                    handleUpdateStatus(order.id, undefined, {
+                                      deliveryAgentId: e.target.value || null,
+                                    });
+                                  }}
+                                  className="w-full text-[11px] px-2.5 py-1.5 rounded-xl border border-[#EADBCE] bg-[#FAF7F2] font-semibold text-stone-700 focus:outline-none focus:ring-1 focus:ring-[#580D1A]"
+                                >
+                                  <option value="">
+                                    {assignedAgent ? `-- Unassign Rider (${assignedAgent.name}) --` : "-- Assign Rider Manually --"}
+                                  </option>
+                                  {agents.map((ag) => (
+                                    <option key={ag.id} value={ag.id}>
+                                      {ag.name} ({ag.vehicleNumber}) {ag.id === order.deliveryAgentId ? "✓ Current" : ""}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            );
+                          })()}
                         </div>
                       )}
 

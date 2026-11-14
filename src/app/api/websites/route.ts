@@ -9,6 +9,7 @@ import {
 } from "@/lib/store-hours";
 import { getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -101,6 +102,9 @@ export async function PUT(req: NextRequest) {
 
     broadcastRealtimeEvent("SUBSITE_UPDATED", { id: updated.id, subsite: updated });
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
     const { subsites } = await getSubsitesAndSettings();
     return NextResponse.json({ success: true, subsite: updated, subsites });
   } catch (error) {

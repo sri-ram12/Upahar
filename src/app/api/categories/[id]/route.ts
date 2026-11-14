@@ -4,6 +4,7 @@ import { getAdminSession } from "@/lib/auth";
 
 import { isValidDivisionKey } from "@/lib/store-hours";
 import { clearSubsitesCache } from "@/lib/subsite-data";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   req: NextRequest,
@@ -32,6 +33,9 @@ export async function PUT(
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ category });
   } catch (error) {
@@ -59,6 +63,9 @@ export async function DELETE(
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ success: true });
   } catch (error) {

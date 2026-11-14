@@ -213,8 +213,8 @@ export default function DeliveryPartnerPage() {
   const fetchDeliveryOrders = async () => {
     try {
       const [ordRes, restRes] = await Promise.all([
-        fetch("/api/orders?limit=60"),
-        fetch("/api/restaurant"),
+        fetch("/api/orders?limit=60", { cache: "no-store" }),
+        fetch("/api/restaurant", { cache: "no-store" }),
       ]);
       const data = await ordRes.json();
       const restData = await restRes.json();
@@ -659,13 +659,15 @@ export default function DeliveryPartnerPage() {
     );
   }
 
-  // Isolate orders: show unassigned waiting orders + orders claimed by THIS rider
+  // Isolate orders: show unassigned waiting orders + orders claimed by/assigned to THIS rider
   const activeDeliveries = orders.filter((o) => {
     const isActiveStatus =
+      o.status === "PENDING" ||
+      o.status === "CONFIRMED" ||
+      o.status === "PREPARING" ||
       o.status === "FOOD_READY" ||
       o.status === "OUT_FOR_DELIVERY" ||
-      o.status === "ARRIVED" ||
-      o.status === "PREPARING";
+      o.status === "ARRIVED";
     if (!isActiveStatus) return false;
     return !o.deliveryAgentId || o.deliveryAgentId === rider?.id;
   });
@@ -933,10 +935,17 @@ export default function DeliveryPartnerPage() {
               >
                 <div className="flex justify-between items-start pb-3 border-b border-[#F4EFE6]">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
-                      Run #{order.orderNumber}
-                    </span>
-                    <h3 className="text-base font-black text-[#2B070E] font-display">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
+                        Run #{order.orderNumber}
+                      </span>
+                      {order.deliveryAgentId === rider?.id && (
+                        <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-[#DFC17B] text-[#580D1A] border border-[#D4AF37]">
+                          Assigned to You
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-base font-black text-[#2B070E] font-display mt-0.5">
                       {order.customerName}
                     </h3>
                   </div>

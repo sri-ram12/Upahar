@@ -62,7 +62,9 @@ export async function GET(req: NextRequest) {
     });
 
     if (!includeStats) {
-      return NextResponse.json({ orders });
+      const response = NextResponse.json({ orders });
+      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      return response;
     }
 
     // Full DB aggregate revenue stats (never capped by limit=50)
@@ -97,7 +99,7 @@ export async function GET(req: NextRequest) {
         prisma.order.count(),
       ]);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       orders,
       stats: {
         totalRevenue: allDelivered._sum.totalAmount || 0,
@@ -111,6 +113,8 @@ export async function GET(req: NextRequest) {
         totalOrdersCount,
       },
     });
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    return response;
   } catch (error: any) {
     console.error("Error fetching orders:", error);
     return NextResponse.json(

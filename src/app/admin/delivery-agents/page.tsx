@@ -15,6 +15,8 @@ import {
   DollarSign,
   UserCheck,
   Lock,
+  KeyRound,
+  Trash2,
 } from "lucide-react";
 import { DeliveryAgent } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
@@ -36,7 +38,7 @@ export default function AdminDeliveryAgentsPage() {
 
   const fetchAgents = async () => {
     try {
-      const res = await fetch("/api/delivery/agents");
+      const res = await fetch("/api/delivery/agents", { cache: "no-store" });
       const data = await res.json();
       if (data.agents) setAgents(data.agents);
     } catch (e) {
@@ -49,6 +51,42 @@ export default function AdminDeliveryAgentsPage() {
   useEffect(() => {
     fetchAgents();
   }, []);
+
+  const handleResetPin = async (agent: DeliveryAgent) => {
+    const newPin = prompt(`Set a new 4-digit login PIN for ${agent.name} (${agent.phone}):`, "1234");
+    if (!newPin || !newPin.trim()) return;
+    try {
+      const res = await fetch("/api/delivery/agents", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: agent.id, pin: newPin.trim() }),
+      });
+      if (res.ok) {
+        alert(`✅ Login PIN for ${agent.name} is now: ${newPin.trim()}`);
+        fetchAgents();
+      } else {
+        alert("Failed to update PIN");
+      }
+    } catch {
+      alert("Error updating PIN");
+    }
+  };
+
+  const handleDeleteAgent = async (agent: DeliveryAgent) => {
+    if (!confirm(`Permanently remove delivery agent ${agent.name} (${agent.vehicleNumber})?`)) return;
+    try {
+      const res = await fetch(`/api/delivery/agents?id=${agent.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        fetchAgents();
+      } else {
+        alert("Failed to remove agent");
+      }
+    } catch {
+      alert("Error removing agent");
+    }
+  };
 
   // Instant real-time update when rider applies, toggles duty, delivers order, or settles cash
   const { isConnected: isRealtimeConnected } = useRealtimeEvents({
@@ -453,11 +491,21 @@ export default function AdminDeliveryAgentsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center space-x-2 w-full sm:w-auto justify-end pt-2 sm:pt-0">
+                  <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-end pt-2 sm:pt-0">
+                    <button
+                      type="button"
+                      onClick={() => handleResetPin(agent)}
+                      className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[#FAF7F2] border border-[#EADBCE] text-stone-700 hover:bg-[#EADBCE] transition flex items-center space-x-1"
+                      title="Reset Rider 4-digit PIN"
+                    >
+                      <KeyRound className="w-3.5 h-3.5 text-amber-700" />
+                      <span>PIN</span>
+                    </button>
+
                     {agent.cashInHand > 0 && (
                       <button
                         onClick={() => handleSettleCash(agent.id)}
-                        className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-100 text-amber-900 hover:bg-amber-200 transition"
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 hover:bg-amber-200 transition"
                         title="Settle cash collected"
                       >
                         Settle Cash
@@ -473,6 +521,15 @@ export default function AdminDeliveryAgentsPage() {
                       }`}
                     >
                       {agent.isActive ? "Pause Access" : "Activate"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteAgent(agent)}
+                      className="p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 transition"
+                      title="Remove Agent"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>

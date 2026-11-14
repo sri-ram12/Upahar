@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 import { clearSubsitesCache } from "@/lib/subsite-data";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   req: NextRequest,
@@ -89,6 +90,9 @@ export async function PUT(
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ item });
   } catch (error) {
@@ -121,6 +125,9 @@ export async function DELETE(
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ success: true });
   } catch (error) {

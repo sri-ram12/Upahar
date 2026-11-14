@@ -4,6 +4,7 @@ import { getAdminSession } from "@/lib/auth";
 import { calculateStoreStatus, getDiningSessions } from "@/lib/store-hours";
 import { getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -129,6 +130,9 @@ export async function PUT(req: NextRequest) {
     });
 
     clearSubsitesCache();
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({ settings, storeStatus });
   } catch (error) {
