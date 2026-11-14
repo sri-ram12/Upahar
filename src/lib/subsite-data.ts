@@ -31,29 +31,9 @@ const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
 let initPromise: Promise<void> | null = null;
 let hasInitialized = false;
 
-interface CachedSettingsPayload {
-  settings: Awaited<ReturnType<typeof prisma.restaurantSetting.findUnique>>;
-  storeStatus: ReturnType<typeof calculateStoreStatus>;
-  subsites: any[];
-  subsiteMap: Record<DivisionKey, SubsiteDbConfigLike | null>;
-}
-
-let cachedSubsiteSettings: {
-  payload: CachedSettingsPayload;
-  cachedAt: number;
-} | null = null;
-
-let cachedCatalog: {
-  categories: any[];
-  items: any[];
-  cachedAt: number;
-} | null = null;
-
-const CACHE_TTL_MS = 20000; // 20s in-memory edge cache
-
+// Zero in-memory staleness: always fetch live from Supabase PostgreSQL
 export function clearSubsitesCache() {
-  cachedSubsiteSettings = null;
-  cachedCatalog = null;
+  // Maintained as a safe no-op for backward compatibility with mutation routes
 }
 
 /**
@@ -230,11 +210,6 @@ export async function ensureSubsitesInitialized(): Promise<void> {
 }
 
 export async function getSubsitesAndSettings() {
-  const now = Date.now();
-  if (cachedSubsiteSettings && now - cachedSubsiteSettings.cachedAt < CACHE_TTL_MS) {
-    return cachedSubsiteSettings.payload;
-  }
-
   await ensureSubsitesInitialized();
 
   let settings: Awaited<ReturnType<typeof prisma.restaurantSetting.findUnique>> = null;
@@ -306,13 +281,7 @@ export async function getSubsitesAndSettings() {
     };
   });
 
-  const result = { settings, storeStatus, subsites, subsiteMap };
-  cachedSubsiteSettings = {
-    payload: result,
-    cachedAt: Date.now(),
-  };
-
-  return result;
+  return { settings, storeStatus, subsites, subsiteMap };
 }
 
 export async function getSubsitePageData(divisionKey: DivisionKey) {
@@ -329,42 +298,31 @@ export async function getSubsitePageData(divisionKey: DivisionKey) {
   let allCategories: typeof FALLBACK_CATEGORIES = [];
   let allItems: typeof FALLBACK_MENU_ITEMS = [];
 
-  const now = Date.now();
-  if (cachedCatalog && now - cachedCatalog.cachedAt < CACHE_TTL_MS) {
-    allCategories = cachedCatalog.categories;
-    allItems = cachedCatalog.items;
-  } else {
-    try {
-      const [dbCats, dbItems] = await Promise.all([
-        prisma.category.findMany({
-          where: { isActive: true },
-          include: {
-            _count: { select: { items: true } },
-          },
-          orderBy: { displayOrder: "asc" },
-        }),
-        prisma.foodItem.findMany({
-          include: { category: true },
-          orderBy: [
-            { isAvailable: "desc" },
-            { isSignature: "desc" },
-            { isBestseller: "desc" },
-            { displayOrder: "asc" },
-          ],
-        }),
-      ]);
-      allCategories = dbCats && dbCats.length > 0 ? dbCats : FALLBACK_CATEGORIES;
-      allItems = dbItems && dbItems.length > 0 ? dbItems : FALLBACK_MENU_ITEMS;
-      cachedCatalog = {
-        categories: allCategories,
-        items: allItems,
-        cachedAt: Date.now(),
-      };
-    } catch (err) {
-      console.error("Failed loading subsite catalog, using fallbacks:", err);
-      allCategories = FALLBACK_CATEGORIES;
-      allItems = FALLBACK_MENU_ITEMS;
-    }
+  try {
+    const [dbCats, dbItems] = await Promise.all([
+      prisma.category.findMany({
+        where: { isActive: true },
+        include: {
+          _count: { select: { items: true } },
+        },
+        orderBy: { displayOrder: "asc" },
+      }),
+      prisma.foodItem.findMany({
+        include: { category: true },
+        orderBy: [
+          { isAvailable: "desc" },
+          { isSignature: "desc" },
+          { isBestseller: "desc" },
+          { displayOrder: "asc" },
+        ],
+      }),
+    ]);
+    allCategories = dbCats && dbCats.length > 0 ? dbCats : FALLBACK_CATEGORIES;
+    allItems = dbItems && dbItems.length > 0 ? dbItems : FALLBACK_MENU_ITEMS;
+  } catch (err) {
+    console.error("Failed loading subsite catalog, using fallbacks:", err);
+    allCategories = FALLBACK_CATEGORIES;
+    allItems = FALLBACK_MENU_ITEMS;
   }
 
   let divisionCategories = allCategories
