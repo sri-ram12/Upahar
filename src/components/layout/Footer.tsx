@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
   MessageSquare,
   QrCode,
+  Download,
 } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/Icons";
 import {
@@ -146,6 +147,12 @@ export default function Footer() {
                 <Link href="/qr" className={`${headingAccent} hover:opacity-80 font-bold transition flex items-center space-x-1`}>
                   <QrCode className="w-3.5 h-3.5" />
                   <span>Scan QR Code</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/apps" className={`${headingAccent} hover:opacity-80 font-bold transition flex items-center space-x-1`}>
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Web Apps (5 PWAs)</span>
                 </Link>
               </li>
               <li>

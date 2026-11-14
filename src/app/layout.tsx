@@ -65,7 +65,7 @@ import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 import FloatingCartBar from "@/components/cart/FloatingCartBar";
 import CustomerAuthModal from "@/components/auth/CustomerAuthModal";
-import { PwaRegister } from "@/components/pwa/PwaRegister";
+import { PwaProvider } from "@/components/pwa/PwaRegister";
 
 export default function RootLayout({
   children,
@@ -199,19 +199,22 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <ThemeSync />
         </Suspense>
-        <CustomerAuthProvider>
-          <CartProvider>
-            <PwaRegister />
-            <Navbar />
-            <div className="flex-1 w-full min-w-0 overflow-x-clip">{children}</div>
-            <Footer />
-            <CustomCursor />
-            <FloatingCartBar />
-            <CartDrawer />
-            <CustomerAuthModal />
-            <FloatingWhatsAppButton />
-          </CartProvider>
-        </CustomerAuthProvider>
+        <Suspense fallback={null}>
+          <PwaProvider>
+            <CustomerAuthProvider>
+              <CartProvider>
+                <Navbar />
+                <div className="flex-1 w-full min-w-0 overflow-x-clip">{children}</div>
+                <Footer />
+                <CustomCursor />
+                <FloatingCartBar />
+                <CartDrawer />
+                <CustomerAuthModal />
+                <FloatingWhatsAppButton />
+              </CartProvider>
+            </CustomerAuthProvider>
+          </PwaProvider>
+        </Suspense>
       </body>
     </html>
   );

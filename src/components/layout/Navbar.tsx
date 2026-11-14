@@ -36,7 +36,7 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { installApp } = usePwa();
+  const { installApp, openAppHub } = usePwa();
   const { totalCount, toggleCart } = useCart();
   const { customer, setIsAuthModalOpen, logout } = useCustomerAuth();
   const [openForPath, setOpenForPath] = useState<string | null>(null);
@@ -516,12 +516,12 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={installApp}
+              onClick={openAppHub}
               className="px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 transition bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white hover:brightness-110 shadow-xs cursor-pointer whitespace-nowrap"
-              title="Install Upahar Food App on your device (PWA)"
+              title="Install Upahar Food App & Staff Panels (PWA)"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden xl:inline">Install App</span>
+              <span className="hidden xl:inline">Install Apps</span>
             </button>
           </div>
 
@@ -759,12 +759,12 @@ export default function Navbar() {
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  installApp();
+                  openAppHub();
                 }}
                 className="w-full py-2.5 rounded-xl text-xs font-black text-center flex items-center justify-center space-x-2 bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white shadow-md transition cursor-pointer"
               >
                 <Download className="w-4 h-4 text-white" />
-                <span>Install Upahar App (PWA)</span>
+                <span>Install Upahar Web Apps (PWA)</span>
               </button>
 
               <button

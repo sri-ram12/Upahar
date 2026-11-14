@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
+import { PwaPanelBanner } from "@/components/pwa/PwaRegister";
 
 export const metadata: Metadata = {
   title: "Kitchen Display System (KDS) | UPAHAR TIFFINS",
@@ -24,6 +25,7 @@ export default function KitchenLayout({
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100">
       {children}
+      <PwaPanelBanner />
     </div>
   );
 }

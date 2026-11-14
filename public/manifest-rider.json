@@ -2,13 +2,14 @@
   "name": "UPAHAR Delivery Rider",
   "short_name": "UPAHAR Rider",
   "description": "Live order pickup, customer delivery route navigation, and delivery OTP confirmation for riders.",
-  "start_url": "/delivery",
+  "start_url": "/delivery?source=pwa",
   "scope": "/delivery",
-  "id": "upahar-rider-pwa",
+  "id": "/delivery?source=pwa_rider",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FEF2F2",
   "theme_color": "#DC2626",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/rider-192.png",

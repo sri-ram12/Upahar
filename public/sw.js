@@ -1,5 +1,6 @@
-// UPAHAR Progressive Web App Service Worker
-const CACHE_NAME = 'upahar-pwa-v1';
+// UPAHAR Progressive Web App Multi-Panel Service Worker
+const CACHE_NAME = 'upahar-pwa-v3';
+
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -8,10 +9,20 @@ const STATIC_ASSETS = [
   '/manifest-rider.json',
   '/manifest-dev.json',
   '/icons/customer-192.png',
+  '/icons/customer-512.png',
+  '/icons/customer-maskable.png',
   '/icons/admin-192.png',
+  '/icons/admin-512.png',
+  '/icons/admin-maskable.png',
   '/icons/kitchen-192.png',
+  '/icons/kitchen-512.png',
+  '/icons/kitchen-maskable.png',
   '/icons/rider-192.png',
+  '/icons/rider-512.png',
+  '/icons/rider-maskable.png',
   '/icons/dev-192.png',
+  '/icons/dev-512.png',
+  '/icons/dev-maskable.png',
   '/images/upahar_logo.jpg'
 ];
 
@@ -44,10 +55,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Never cache API routes, Server-Sent Events, or non-GET requests
+  // Never cache API routes, Turbopack/Next.js internals, or live SSE streams
   if (
     event.request.method !== 'GET' ||
     url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/_next/') ||
     url.pathname.includes('/stream')
   ) {
     return;
@@ -57,8 +69,11 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Clone and cache successful response for static assets
-        if (response.status === 200 && (url.pathname.startsWith('/icons/') || url.pathname.startsWith('/images/'))) {
+        if (
+          response &&
+          response.status === 200 &&
+          (url.pathname.startsWith('/icons/') || url.pathname.endsWith('.json') || url.pathname.startsWith('/images/'))
+        ) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }

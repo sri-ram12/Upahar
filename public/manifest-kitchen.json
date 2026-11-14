@@ -2,13 +2,14 @@
   "name": "UPAHAR Kitchen Display System",
   "short_name": "UPAHAR Kitchen",
   "description": "Live order tickets, cooking timers, audio chimes, and 1-click food ready dispatch for Upahar chefs.",
-  "start_url": "/kitchen",
+  "start_url": "/kitchen?source=pwa",
   "scope": "/kitchen",
-  "id": "upahar-kitchen-pwa",
+  "id": "/kitchen?source=pwa_kitchen",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#18181B",
   "theme_color": "#EA580C",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/kitchen-192.png",

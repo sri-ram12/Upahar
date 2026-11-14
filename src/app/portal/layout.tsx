@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
+import { PwaPanelBanner } from "@/components/pwa/PwaRegister";
 
 export const metadata: Metadata = {
   title: "Developer Console | UPAHAR TIFFINS",
@@ -24,6 +25,7 @@ export default function PortalLayout({
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-slate-950 text-slate-100">
       {children}
+      <PwaPanelBanner />
     </div>
   );
 }

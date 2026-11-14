@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
+import { PwaPanelBanner } from "@/components/pwa/PwaRegister";
 
 export const metadata: Metadata = {
   title: "Delivery Rider Panel | UPAHAR TIFFINS",
@@ -24,6 +25,7 @@ export default function DeliveryLayout({
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-stone-900 text-stone-100">
       {children}
+      <PwaPanelBanner />
     </div>
   );
 }
