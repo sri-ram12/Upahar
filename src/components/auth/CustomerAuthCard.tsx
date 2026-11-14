@@ -621,24 +621,35 @@ export default function CustomerAuthCard({
       : "Enter the code to set your new password";
 
   return (
-    <div className="relative w-full max-w-md bg-black/45 backdrop-blur-2xl rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border border-white/20 overflow-hidden my-4 max-h-[92vh] flex flex-col text-white">
-      {/* Top Subtle Specular Highlight */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-white/40 to-transparent shrink-0" />
+    <div className="relative w-full max-w-md bg-white rounded-[28px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5),0_0_0_1px_rgba(212,175,55,0.25)] border border-[#D4AF37]/30 overflow-hidden my-4 max-h-[92vh] flex flex-col text-stone-800">
+      {/* Decorative Top Accent Bar */}
+      <div className="h-1.5 w-full bg-gradient-to-r from-[#D4AF37] via-[#FFF2B2] to-[#DFC17B] shrink-0" />
 
       {/* Header */}
-      <div className="p-6 sm:p-8 pb-3 flex items-start justify-between gap-3 shrink-0">
-        <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-display">
-            {headerTitle}
-          </h2>
-          <p className="text-xs sm:text-sm text-white/80 font-normal mt-1.5">{headerSubtitle}</p>
+      <div className="p-5 sm:p-6 bg-gradient-to-br from-[#4A0E17] via-[#380A11] to-[#2B070E] text-white flex items-center justify-between gap-2 shrink-0 border-b border-[#D4AF37]/30 relative">
+        <div className="flex items-center space-x-3 min-w-0">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#A37F38] p-0.5 shadow-md flex-shrink-0">
+            <div className="w-full h-full rounded-[14px] bg-[#2B070E] flex items-center justify-center text-[#DFC17B]">
+              {mode === "SIGNUP" ? (
+                <UserPlus className="w-5 h-5 text-[#DFC17B]" />
+              ) : (
+                <LogIn className="w-5 h-5 text-[#DFC17B]" />
+              )}
+            </div>
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-lg font-black font-display text-white tracking-tight truncate">
+              {headerTitle}
+            </h3>
+            <p className="text-[11px] text-[#DFC17B] font-medium truncate">{headerSubtitle}</p>
+          </div>
         </div>
 
         {isModal && (
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/25 text-white/80 hover:text-white transition flex-shrink-0 cursor-pointer border border-white/20"
+            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition flex-shrink-0 cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -646,17 +657,17 @@ export default function CustomerAuthCard({
         )}
       </div>
 
-      {/* Modern Segmented Tab Switcher (Login vs Register) */}
+      {/* Segmented Tab Switcher (Login vs Register) */}
       {(mode === "SIGNIN" || mode === "SIGNUP") && (
-        <div className="px-6 sm:px-8 pb-2 shrink-0">
-          <div className="grid grid-cols-2 gap-1.5 p-1 bg-white/10 rounded-2xl border border-white/15 backdrop-blur-md">
+        <div className="p-2.5 bg-[#FAF7F2] border-b border-[#EADBCE] shrink-0">
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-stone-200/70 rounded-2xl">
             <button
               type="button"
               onClick={() => switchMode("SIGNIN")}
               className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 mode === "SIGNIN"
-                  ? "bg-white/25 text-white shadow-sm font-black border border-white/30"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-[#580D1A] shadow-xs font-black border border-stone-200"
+                  : "text-stone-600 hover:text-stone-900"
               }`}
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -667,8 +678,8 @@ export default function CustomerAuthCard({
               onClick={() => switchMode("SIGNUP")}
               className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 mode === "SIGNUP"
-                  ? "bg-white/25 text-white shadow-sm font-black border border-white/30"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-[#580D1A] shadow-xs font-black border border-stone-200"
+                  : "text-stone-600 hover:text-stone-900"
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
@@ -680,38 +691,38 @@ export default function CustomerAuthCard({
 
       {/* Google Sign-In Button */}
       {(mode === "SIGNIN" || mode === "SIGNUP") && (
-        <div className="px-6 sm:px-8 pt-1 pb-2 shrink-0">
+        <div className="px-5 sm:px-6 pt-3 pb-1 shrink-0">
           {providers.google ? (
             <a
               href={`/api/auth/google?redirect=${encodeURIComponent(pathname || "/")}`}
-              className="w-full py-3 px-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-2.5 transition backdrop-blur-md shadow-xs group cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 text-xs font-bold flex items-center justify-center gap-2.5 transition shadow-xs group cursor-pointer"
             >
               <GoogleLogoSvg />
-              <span className="group-hover:text-white">Continue with Google Account</span>
+              <span className="group-hover:text-stone-900">Continue with Google Account</span>
             </a>
           ) : (
             <button
               type="button"
               onClick={handleGoogleUnconfigured}
-              className="w-full py-3 px-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-2.5 transition backdrop-blur-md shadow-xs group cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 text-xs font-bold flex items-center justify-center gap-2.5 transition shadow-xs group cursor-pointer"
             >
               <GoogleLogoSvg />
-              <span className="group-hover:text-white">Continue with Google Account</span>
+              <span className="group-hover:text-stone-900">Continue with Google Account</span>
             </button>
           )}
 
           <div className="relative flex items-center justify-center my-3">
-            <div className="border-t border-white/15 w-full" />
-            <span className="bg-transparent px-2.5 text-[9px] font-black uppercase tracking-wider text-white/50">
+            <div className="border-t border-stone-200 w-full" />
+            <span className="bg-white px-2 text-[10px] font-bold uppercase tracking-wider text-stone-400">
               {mode === "SIGNUP" ? "or register with details" : "or login with credentials"}
             </span>
-            <div className="border-t border-white/15 w-full" />
+            <div className="border-t border-stone-200 w-full" />
           </div>
         </div>
       )}
 
       {/* Main Scrollable Form Content */}
-      <div className="overflow-y-auto flex-1 px-6 sm:px-8 pb-6">
+      <div className="overflow-y-auto flex-1 p-5 sm:p-6 space-y-4">
         {/* ============================================================ */}
         {/* VERIFY EMAIL / RESET PASSWORD FLOW */}
         {/* ============================================================ */}
@@ -721,38 +732,41 @@ export default function CustomerAuthCard({
             className="space-y-4 pt-1"
           >
             {activeError && (
-              <div className="p-3.5 rounded-2xl bg-red-950/60 border border-red-500/40 text-red-200 text-xs font-semibold flex items-start space-x-2 backdrop-blur-md">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-start space-x-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                 <span>{activeError}</span>
               </div>
             )}
 
             {otpInfoMsg && (
-              <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-start space-x-2 backdrop-blur-md">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-400" />
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-start space-x-2">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-600" />
                 <span>{otpInfoMsg}</span>
               </div>
             )}
 
             {/* Email Target Input with Icon on Right */}
             <div>
+              <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
                 <input
                   type="email"
                   required
                   disabled={otpSent}
-                  placeholder="Email Address"
+                  placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all disabled:opacity-50"
+                  className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 disabled:bg-stone-100 disabled:text-stone-500"
                 />
-                <Mail className="w-5 h-5 text-white/60 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Mail className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               {otpSent && mode !== "VERIFY_EMAIL" && (
                 <button
                   type="button"
                   onClick={resetOtpFlow}
-                  className="text-xs font-bold text-[#DFC17B] hover:underline mt-1.5 cursor-pointer flex items-center gap-1"
+                  className="text-[11px] font-bold text-[#580D1A] hover:underline mt-1 cursor-pointer flex items-center gap-1"
                 >
                   <span>Change email address</span>
                 </button>
@@ -764,14 +778,14 @@ export default function CustomerAuthCard({
               <>
                 {/* Sandbox OTP Auto-Fill Banner */}
                 {sandboxOtp && (
-                  <div className="p-3.5 rounded-2xl bg-white/10 border border-amber-400/40 text-white text-xs flex items-center justify-between gap-2 backdrop-blur-md">
+                  <div className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200 text-stone-800 text-xs flex items-center justify-between gap-2">
                     <div>
-                      <span className="font-black text-[10px] uppercase tracking-wider text-amber-300 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-amber-300" /> Dev OTP Preview
+                      <span className="font-black text-[10px] uppercase tracking-wider text-amber-800 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-amber-600" /> Dev OTP Preview
                       </span>
-                      <span className="block mt-0.5 text-white/80">
+                      <span className="block mt-0.5 text-stone-600">
                         Verification code:{" "}
-                        <strong className="font-mono text-sm tracking-widest text-[#DFC17B]">
+                        <strong className="font-mono text-sm tracking-widest text-[#580D1A]">
                           {sandboxOtp}
                         </strong>
                       </span>
@@ -779,7 +793,7 @@ export default function CustomerAuthCard({
                     <button
                       type="button"
                       onClick={() => setOtpCode(sandboxOtp)}
-                      className="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-[11px] font-black cursor-pointer border border-white/30"
+                      className="px-2.5 py-1 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-900 text-[10px] font-black cursor-pointer transition"
                     >
                       Auto-Fill
                     </button>
@@ -787,15 +801,15 @@ export default function CustomerAuthCard({
                 )}
 
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-medium text-white/80">
-                      Enter 6-Digit Email OTP <span className="text-red-400">*</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[11px] font-bold text-stone-700">
+                      Enter 6-Digit Email OTP <span className="text-red-500">*</span>
                     </label>
                     <button
                       type="button"
                       disabled={cooldownSec > 0 || loading}
                       onClick={() => handleSendOtp()}
-                      className="text-xs font-bold text-[#DFC17B] hover:underline disabled:text-white/40 inline-flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] font-bold text-[#580D1A] hover:underline disabled:text-stone-400 inline-flex items-center gap-1 cursor-pointer"
                     >
                       <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
                       <span>{cooldownSec > 0 ? `Resend in ${cooldownSec}s` : "Resend OTP"}</span>
@@ -811,30 +825,33 @@ export default function CustomerAuthCard({
                       placeholder="• • • • • •"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                      className="w-full text-center font-mono text-xl font-black tracking-[0.4em] px-4 py-3.5 rounded-2xl border border-white/40 bg-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:bg-white/15 transition-all"
+                      className="w-full text-center font-mono text-xl font-black tracking-[0.4em] py-2.5 rounded-xl border-2 border-[#D4AF37] bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#580D1A]"
                     />
                   </div>
                 </div>
 
                 {mode === "RESET_PASSWORD" && (
                   <div>
+                    <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                      New Password <span className="text-red-500">*</span>
+                    </label>
                     <div className="relative">
                       <input
                         type={showNewPassword ? "text" : "password"}
                         required
                         minLength={4}
-                        placeholder="New Password (min 4 chars)"
+                        placeholder="At least 4 characters"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                        className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800"
                       />
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-1"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-0.5 cursor-pointer"
                         aria-label={showNewPassword ? "Hide password" : "Show password"}
                       >
-                        {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                   </div>
@@ -845,24 +862,24 @@ export default function CustomerAuthCard({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] hover:brightness-110 active:scale-[0.99] text-white font-extrabold text-base tracking-wide shadow-[0_10px_25px_-5px_rgba(46,139,87,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+              className="btn-maroon-gold w-full py-3.5 rounded-2xl text-xs font-black flex items-center justify-center space-x-2 shadow-md hover:scale-[1.01] transition cursor-pointer disabled:opacity-50"
             >
               <span>
                 {loading
                   ? "Processing..."
                   : otpSent
                   ? mode === "RESET_PASSWORD"
-                    ? "Reset Password & Login"
+                    ? "Reset Password & Sign In"
                     : "Verify Code & Continue"
-                  : "Send Password Reset Code"}
+                  : "Send Password Reset OTP"}
               </span>
-              <ArrowRight className="w-5 h-5 text-white" />
+              <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
             </button>
 
             <button
               type="button"
               onClick={() => switchMode("SIGNIN")}
-              className="w-full text-center text-xs font-bold text-white/80 hover:text-white cursor-pointer pt-1"
+              className="w-full text-center text-xs font-bold text-stone-600 hover:text-[#580D1A] cursor-pointer pt-1"
             >
               ← Back to Login
             </button>
@@ -873,14 +890,17 @@ export default function CustomerAuthCard({
           /* ============================================================ */
           <form onSubmit={handleSubmitPasswordAuth} className="space-y-4 pt-1">
             {activeError && (
-              <div className="p-3.5 rounded-2xl bg-red-950/60 border border-red-500/40 text-red-200 text-xs font-semibold flex items-start space-x-2 backdrop-blur-md">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-start space-x-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                 <span>{activeError}</span>
               </div>
             )}
 
-            {/* User Name Input with Icon on Right (Exact reference alignment) */}
+            {/* User Name Input with Icon on Right */}
             <div>
+              <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                User Name
+              </label>
               <div className="relative">
                 <input
                   type="text"
@@ -888,14 +908,17 @@ export default function CustomerAuthCard({
                   placeholder="User Name"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                  className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                 />
-                <User className="w-5 h-5 text-white/60 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <User className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
 
-            {/* Password Input with Eye Icon on Right (Exact reference alignment) */}
+            {/* Password Input with Eye Icon on Right */}
             <div>
+              <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -904,27 +927,27 @@ export default function CustomerAuthCard({
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                  className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-1 transition cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-0.5 transition cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me Checkbox & Forgot Password Row (Exact reference alignment) */}
-            <div className="flex items-center justify-between pt-0.5 px-0.5">
-              <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-white/85 hover:text-white">
+            {/* Remember Me Checkbox on Left & Forgot Password on Right */}
+            <div className="flex items-center justify-between text-xs pt-0.5">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-stone-600 hover:text-stone-800 font-medium">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/40 bg-white/10 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#2BA84A]"
+                  className="w-3.5 h-3.5 rounded border-stone-300 text-[#580D1A] focus:ring-[#D4AF37] cursor-pointer accent-[#580D1A]"
                 />
                 <span>Remember me</span>
               </label>
@@ -932,29 +955,30 @@ export default function CustomerAuthCard({
               <button
                 type="button"
                 onClick={() => switchMode("RESET_PASSWORD")}
-                className="text-xs text-white/85 hover:text-white hover:underline transition cursor-pointer"
+                className="text-stone-600 hover:text-[#580D1A] hover:underline font-semibold transition cursor-pointer"
               >
                 Forgot password?
               </button>
             </div>
 
-            {/* Vibrant Green Login Action Button (Exact reference style) */}
+            {/* Action Button: Original Upahar maroon-gold style and size */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] hover:brightness-110 active:scale-[0.99] text-white font-extrabold text-base tracking-wide shadow-[0_10px_25px_-5px_rgba(46,139,87,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+              className="btn-maroon-gold w-full py-3.5 rounded-2xl text-xs font-black flex items-center justify-center space-x-2 shadow-md hover:scale-[1.01] transition cursor-pointer disabled:opacity-50"
             >
               <span>{loading ? "Logging in..." : "Login"}</span>
+              <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
             </button>
 
-            {/* Bottom Switch to Signup (Exact reference alignment) */}
+            {/* Bottom Switch to Signup */}
             <div className="pt-2 text-center">
-              <p className="text-xs text-white/80">
+              <p className="text-xs text-stone-600">
                 Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("SIGNUP")}
-                  className="font-bold text-white hover:underline cursor-pointer"
+                  className="font-black text-[#580D1A] hover:underline cursor-pointer"
                 >
                   Signup
                 </button>
@@ -967,8 +991,8 @@ export default function CustomerAuthCard({
           /* ============================================================ */
           <form onSubmit={handleSubmitPasswordAuth} className="space-y-4 pt-1">
             {activeError && (
-              <div className="p-3.5 rounded-2xl bg-red-950/60 border border-red-500/40 text-red-200 text-xs font-semibold flex items-start space-x-2 backdrop-blur-md">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-start space-x-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                 <span>{activeError}</span>
               </div>
             )}
@@ -977,6 +1001,9 @@ export default function CustomerAuthCard({
             <div className="space-y-3">
               {/* Full Name */}
               <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
                   <input
                     type="text"
@@ -984,14 +1011,17 @@ export default function CustomerAuthCard({
                     placeholder="Full Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                   />
-                  <User className="w-5 h-5 text-white/60 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <User className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
 
               {/* Email Address */}
               <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
                   <input
                     type="email"
@@ -999,14 +1029,17 @@ export default function CustomerAuthCard({
                     placeholder="Email Address (OTP will be sent)"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                   />
-                  <Mail className="w-5 h-5 text-white/60 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Mail className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
 
               {/* Mobile Number */}
               <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Mobile Number (Optional)
+                </label>
                 <div className="relative">
                   <input
                     type="tel"
@@ -1014,14 +1047,17 @@ export default function CustomerAuthCard({
                     placeholder="Mobile Number (Optional, 10 digits)"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                    className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                   />
-                  <Phone className="w-5 h-5 text-white/60 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Phone className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
 
               {/* Password */}
               <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Password <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -1030,39 +1066,42 @@ export default function CustomerAuthCard({
                     placeholder="Create Password or PIN (min 4 chars)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full text-sm px-4 py-3.5 pr-12 rounded-2xl border border-white/30 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#8CC63F] focus:border-transparent focus:bg-white/15 transition-all"
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-1 transition cursor-pointer"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-0.5 transition cursor-pointer"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Section 2: Delivery Location (Tagarapuvalasa) */}
-            <div className="p-3.5 rounded-2xl bg-white/10 border border-white/20 space-y-3 backdrop-blur-md">
+            <div className="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EADBCE] space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-white/80 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#2B070E] flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#580D1A]" />
                   <span>Delivery Location (Tagarapuvalasa)</span>
                 </span>
-                <span className="text-[9px] font-bold text-white/60">Fast Doorstep Delivery</span>
+                <span className="text-[9px] font-bold text-[#580D1A]/70">Fast Doorstep Delivery</span>
               </div>
 
               {/* Locality Dropdown */}
               <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Tagarapuvalasa Locality
+                </label>
                 <select
                   value={locality}
                   onChange={(e) => setLocality(e.target.value)}
-                  className="w-full text-xs p-3 rounded-xl border border-white/30 bg-black/40 text-white font-medium focus:ring-2 focus:ring-[#8CC63F] focus:outline-none"
+                  className="w-full text-xs p-2.5 rounded-xl border border-stone-300 bg-white font-semibold text-stone-800 focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                 >
                   {TAGARAPUVALASA_LOCALITIES.map((loc) => (
-                    <option key={loc.id} value={loc.name} className="bg-stone-900 text-white">
+                    <option key={loc.id} value={loc.name}>
                       {loc.name} ({loc.area})
                     </option>
                   ))}
@@ -1070,50 +1109,60 @@ export default function CustomerAuthCard({
               </div>
 
               {/* Room / Flat / Address */}
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Room No. / Flat / Street Address (Optional)"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 pr-10 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-[#8CC63F] focus:outline-none"
-                />
-                <Home className="w-4 h-4 text-white/50 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Default Delivery Address (Optional)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Room No. / Flat / Street Address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
+                  />
+                  <Home className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
               </div>
 
               {/* Landmark */}
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Nearby Landmark (Optional)"
-                  value={landmark}
-                  onChange={(e) => setLandmark(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 pr-10 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-[#8CC63F] focus:outline-none"
-                />
-                <MapPin className="w-4 h-4 text-white/50 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <div>
+                <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                  Nearby Landmark (Optional)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Nearby Landmark (Optional)"
+                    value={landmark}
+                    onChange={(e) => setLandmark(e.target.value)}
+                    className="w-full text-xs pl-3.5 pr-10 py-2.5 rounded-xl border border-stone-300 bg-white font-medium focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent focus:outline-none text-stone-800 placeholder-stone-400"
+                  />
+                  <MapPin className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button: Original Upahar maroon-gold style and size */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] hover:brightness-110 active:scale-[0.99] text-white font-extrabold text-base tracking-wide shadow-[0_10px_25px_-5px_rgba(46,139,87,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+              className="btn-maroon-gold w-full py-3.5 rounded-2xl text-xs font-black flex items-center justify-center space-x-2 shadow-md hover:scale-[1.01] transition cursor-pointer disabled:opacity-50"
             >
               <span>{loading ? "Registering..." : "Create Account & Send Verification Code"}</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <ArrowRight className="w-4 h-4 text-[#DFC17B]" />
             </button>
 
-            {/* Switch to Sign In */}
+            {/* Bottom Switch to Sign In */}
             <div className="pt-2 text-center">
-              <p className="text-xs text-white/80">
+              <p className="text-xs text-stone-600">
                 Already have an account?{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("SIGNIN")}
-                  className="font-bold text-white hover:underline cursor-pointer"
+                  className="font-black text-[#580D1A] hover:underline cursor-pointer"
                 >
-                  Login
+                  Sign In
                 </button>
               </p>
             </div>
