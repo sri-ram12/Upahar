@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Bike,
   MapPin,
@@ -20,14 +21,17 @@ import {
   Radio,
   Wallet,
   Volume2,
+  Download,
 } from "lucide-react";
 import { Order, DeliveryAgent, RestaurantSetting } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import PaymentQRCard from "@/components/payment/PaymentQRCard";
+import { usePwa } from "@/components/pwa/PwaRegister";
 
 const RIDER_STORAGE_KEY = "upahar_rider_session_v1";
 
 export default function DeliveryPartnerPage() {
+  const { installApp } = usePwa();
   const [rider, setRider] = useState<DeliveryAgent | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authTab, setAuthTab] = useState<"LOGIN" | "APPLY">("LOGIN");
@@ -461,16 +465,30 @@ export default function DeliveryPartnerPage() {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-[#EADBCE] overflow-hidden">
-          <div className="bg-[#580D1A] text-white p-6 sm:p-8 text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-[#2B070E] border border-[#D4AF37]/50 flex items-center justify-center text-[#DFC17B] mx-auto shadow-md">
-              <Bike className="w-8 h-8" />
+          <div className="bg-[#580D1A] text-white p-6 sm:p-8 text-center space-y-3">
+            <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/60 shadow-xl bg-white mx-auto">
+              <Image src="/icons/rider-192.png" alt="Rider App Icon" fill className="object-cover" sizes="64px" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black font-display text-white">
-              Upahar Rider Portal
-            </h1>
-            <p className="text-xs text-[#DFC17B] font-semibold">
-              Authorized Delivery Boys • Tagarapuvalasa 7km
-            </p>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black font-display text-white">
+                Upahar Rider Portal
+              </h1>
+              <p className="text-xs text-[#DFC17B] font-semibold mt-0.5">
+                Authorized Delivery Boys • Tagarapuvalasa 7km
+              </p>
+            </div>
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={installApp}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-[11px] font-bold transition shadow-xs cursor-pointer"
+                title="Install Rider App to Phone Home Screen"
+              >
+                <Download className="w-3.5 h-3.5 text-[#DFC17B]" />
+                <span>Install Rider App (PWA)</span>
+              </button>
+            </div>
           </div>
 
           <div className="flex border-b border-[#EADBCE] bg-[#FAF7F2]">
@@ -682,8 +700,8 @@ export default function DeliveryPartnerPage() {
       {/* Top Rider Header */}
       <div className="bg-[#580D1A] text-white p-5 sm:p-6 rounded-3xl shadow-xl border border-[#D4AF37]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-[#2B070E] border border-[#D4AF37]/40 flex items-center justify-center text-[#DFC17B] shadow-md">
-            <Bike className="w-6 h-6" />
+          <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-[#D4AF37]/50 shadow-md bg-white shrink-0">
+            <Image src="/icons/rider-192.png" alt="Rider Icon" fill className="object-cover" sizes="48px" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
@@ -701,6 +719,16 @@ export default function DeliveryPartnerPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={installApp}
+            className="px-3 py-1.5 rounded-xl text-[11px] font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-stone-100 flex items-center space-x-1 transition cursor-pointer"
+            title="Install Rider App to Home Screen"
+          >
+            <Download className="w-3.5 h-3.5 text-[#DFC17B]" />
+            <span>Install App</span>
+          </button>
+
           <button
             onClick={handleToggleDutyStatus}
             className={`px-3 py-1.5 rounded-xl text-[11px] font-black border transition ${

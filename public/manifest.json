@@ -1,0 +1,33 @@
+{
+  "name": "UPAHAR Pickles & Food Delivery",
+  "short_name": "UPAHAR Food",
+  "description": "Order authentic Andhra homemade pickles, hot tiffins, fast food & royal biryanis in Tagarapuvalasa.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "upahar-customer-pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#580D1A",
+  "icons": [
+    {
+      "src": "/icons/customer-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/customer-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/customer-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["food", "shopping", "lifestyle"]
+}

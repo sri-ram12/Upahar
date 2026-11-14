@@ -1,8 +1,19 @@
 import React from "react";
+import type { Metadata } from "next";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Admin Dashboard | UPAHAR TIFFINS",
+  manifest: "/manifest-admin.json",
+  icons: {
+    icon: "/icons/admin-192.png",
+    apple: "/icons/apple-touch-admin.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "UPAHAR Admin",
+  },
 };
 
 export default function AdminLayout({

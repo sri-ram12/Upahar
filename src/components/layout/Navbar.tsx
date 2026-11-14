@@ -18,10 +18,12 @@ import {
   Home,
   Sun,
   Moon,
+  Download,
 } from "lucide-react";
 import QRModal from "@/components/qr/QRModal";
 import { useCart } from "@/context/CartContext";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { usePwa } from "@/components/pwa/PwaRegister";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
 import {
   getWebsiteTheme,
@@ -34,6 +36,7 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { installApp } = usePwa();
   const { totalCount, toggleCart } = useCart();
   const { customer, setIsAuthModalOpen, logout } = useCustomerAuth();
   const [openForPath, setOpenForPath] = useState<string | null>(null);
@@ -510,6 +513,16 @@ export default function Navbar() {
               <QrCode className="w-4 h-4" />
               <span className="hidden xl:inline text-xs font-bold">QR</span>
             </button>
+
+            <button
+              type="button"
+              onClick={installApp}
+              className="px-2.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 transition bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white hover:brightness-110 shadow-xs cursor-pointer whitespace-nowrap"
+              title="Install Upahar Food App on your device (PWA)"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">Install App</span>
+            </button>
           </div>
 
           {/* Mobile & Tablet Top Actions (All options: Account, Orders, Bag, QR & Sidebar visible together without scrolling) */}
@@ -742,6 +755,18 @@ export default function Navbar() {
 
             {/* Mobile Action CTAs */}
             <div className={`pt-3 border-t flex flex-col gap-2 ${isDarkHub ? "border-[#332A23]" : "border-[#E7E0D3]"}`}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  installApp();
+                }}
+                className="w-full py-2.5 rounded-xl text-xs font-black text-center flex items-center justify-center space-x-2 bg-gradient-to-r from-[#A0CB2A] via-[#65B741] to-[#2E8B57] text-white shadow-md transition cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-white" />
+                <span>Install Upahar App (PWA)</span>
+              </button>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

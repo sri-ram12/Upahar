@@ -47,6 +47,16 @@ export const metadata: Metadata = {
     description: "The Soul of South Indian Tiffins & Street Classics.",
     images: ["https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1200&q=80"],
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icons/customer-192.png",
+    apple: "/icons/apple-touch-customer.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "UPAHAR Food",
+  },
 };
 
 import FloatingWhatsAppButton from "@/components/layout/FloatingWhatsAppButton";
@@ -55,6 +65,7 @@ import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 import FloatingCartBar from "@/components/cart/FloatingCartBar";
 import CustomerAuthModal from "@/components/auth/CustomerAuthModal";
+import { PwaRegister } from "@/components/pwa/PwaRegister";
 
 export default function RootLayout({
   children,
@@ -190,6 +201,7 @@ export default function RootLayout({
         </Suspense>
         <CustomerAuthProvider>
           <CartProvider>
+            <PwaRegister />
             <Navbar />
             <div className="flex-1 w-full min-w-0 overflow-x-clip">{children}</div>
             <Footer />

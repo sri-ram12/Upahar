@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   UtensilsCrossed,
   ChefHat,
@@ -22,11 +23,16 @@ import {
   Play,
   Check,
   AlertTriangle,
+  Download,
+  Smartphone,
+  Layers,
 } from "lucide-react";
 import { Order } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
+import { usePwa } from "@/components/pwa/PwaRegister";
 
 export default function PortalHubPage() {
+  const { installApp, isInstalled } = usePwa();
   const [latestOrder, setLatestOrder] = useState<Order | null>(null);
   const [simLoading, setSimLoading] = useState(false);
   const [simStep, setSimStep] = useState<string | null>(null);
@@ -266,6 +272,73 @@ export default function PortalHubPage() {
     }
   };
 
+  const pwaWebApps = [
+    {
+      id: "customer-app",
+      number: "1",
+      name: "Customer Web App",
+      title: "UPAHAR Food & Pickles",
+      scope: "/",
+      manifest: "/manifest.json",
+      iconSrc: "/images/upahar_logo.jpg",
+      badge: "Customer PWA",
+      color: "from-amber-500/15 via-rose-500/10 to-transparent",
+      borderColor: "border-amber-400/40",
+      accentBadge: "bg-amber-100 text-amber-900 border-amber-300",
+      btnGrad: "from-[#580D1A] to-[#2B070E] text-white",
+      desc: "Authentic Andhra homemade pickles, hot tiffins, fast food & royal biryanis in Tagarapuvalasa.",
+      url: "/",
+    },
+    {
+      id: "admin-app",
+      number: "2",
+      name: "Admin Panel Web App",
+      title: "UPAHAR Owner Command",
+      scope: "/admin",
+      manifest: "/manifest-admin.json",
+      iconSrc: "/icons/admin-192.png",
+      badge: "Admin PWA",
+      color: "from-sky-500/15 via-blue-500/10 to-transparent",
+      borderColor: "border-sky-400/40",
+      accentBadge: "bg-sky-100 text-sky-900 border-sky-300",
+      btnGrad: "from-[#0F172A] to-[#1E293B] text-white",
+      desc: "Live order desk, menu catalog dishes, 4 sub-websites control, rider management, and store settings.",
+      url: "/admin",
+    },
+    {
+      id: "rider-app",
+      number: "3",
+      name: "Delivery Rider Web App",
+      title: "UPAHAR Rider Console",
+      scope: "/delivery",
+      manifest: "/manifest-rider.json",
+      iconSrc: "/icons/rider-192.png",
+      badge: "Rider PWA",
+      color: "from-red-500/15 via-orange-500/10 to-transparent",
+      borderColor: "border-red-400/40",
+      accentBadge: "bg-red-100 text-red-900 border-red-300",
+      btnGrad: "from-[#DC2626] to-[#991B1B] text-white",
+      desc: "Order dispatch, turn-by-turn navigation, cash/UPI collection & customer OTP delivery verification.",
+      url: "/delivery",
+    },
+    {
+      id: "developer-app",
+      number: "4",
+      name: "Developer Master Web App",
+      title: "Master Console (All Controls)",
+      scope: "/portal",
+      manifest: "/manifest-dev.json",
+      iconSrc: "/icons/dev-192.png",
+      badge: "Developer PWA",
+      color: "from-indigo-500/15 via-purple-500/10 to-transparent",
+      borderColor: "border-indigo-400/40",
+      accentBadge: "bg-indigo-100 text-indigo-900 border-indigo-300",
+      btnGrad: "from-[#1E1B4B] to-[#312E81] text-white",
+      desc: "Master system control over all panels, 1-click end-to-end lifecycle simulator, live SSE stream & kill-switch.",
+      url: "/portal",
+    },
+  ];
+
   const panels = [
     {
       id: "customer",
@@ -273,6 +346,7 @@ export default function PortalHubPage() {
       title: "Public Website & Online Orders",
       desc: "Menu browsing, dish steppers, customer login/signup, cart drawer, Tagarapuvalasa 7km geofencing, COD/UPI checkout, and live order tracking with secret Delivery OTP.",
       icon: UtensilsCrossed,
+      imageIcon: "/images/upahar_logo.jpg",
       color: "from-amber-600 to-amber-700",
       badge: "Public Access",
       primaryLink: { label: "Open Menu & Order", href: "/menu" },
@@ -293,6 +367,7 @@ export default function PortalHubPage() {
       title: "Executive Owner Command Center",
       desc: "Manage live orders, total revenue generation analytics, catalog dishes CRUD, categories, and add new delivery agents to grant them system access.",
       icon: LayoutDashboard,
+      imageIcon: "/icons/admin-192.png",
       color: "from-[#580D1A] to-[#2B070E]",
       badge: "Heart of System",
       primaryLink: { label: "Open Admin Dashboard", href: "/admin" },
@@ -323,6 +398,7 @@ export default function PortalHubPage() {
       title: "Delivery Partner Console",
       desc: "Delivery boy login (authorized by admin), pickup ready orders, Google Maps turn-by-turn navigation, enter customer OTP, collect cash/UPI, and confirm delivery.",
       icon: Bike,
+      imageIcon: "/icons/rider-192.png",
       color: "from-emerald-700 to-teal-800",
       badge: "Rider App",
       primaryLink: { label: "Open Rider App", href: "/delivery" },
@@ -336,6 +412,7 @@ export default function PortalHubPage() {
       title: "Engineering Control Hub",
       desc: "Complete multi-role system test suite, database inspection, emergency kill-switch, API routes, and 1-click lifecycle simulator.",
       icon: Code2,
+      imageIcon: "/icons/dev-192.png",
       color: "from-slate-800 to-stone-900",
       badge: "Engineering",
       primaryLink: { label: "API Orders Endpoint", href: "/api/orders" },
@@ -439,6 +516,104 @@ export default function PortalHubPage() {
                 ? "Resume Online Orders"
                 : "Emergency Stop Orders"}
             </button>
+          </div>
+        </div>
+
+        {/* ============================================================ */}
+        {/* 4 DEDICATED PROGRESSIVE WEB APPS (PWAs) & MASTER CONTROL */}
+        {/* ============================================================ */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#EADBCE] pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-5 h-5 text-[#580D1A]" />
+                <h2 className="text-xl sm:text-2xl font-black text-[#2B070E] font-display">
+                  Four Dedicated Progressive Web Apps (PWAs)
+                </h2>
+              </div>
+              <p className="text-xs text-stone-500 mt-1">
+                Installable on Android, iPhone, Mac & Windows desktop with custom scopes, dedicated icons & isolated sessions.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>PWA Manifests & Service Worker Ready</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {pwaWebApps.map((app) => (
+              <div
+                key={app.id}
+                className={`bg-white rounded-3xl p-5 border ${app.borderColor} shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4 relative overflow-hidden group`}
+              >
+                {/* Background Tint Gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${app.color} pointer-events-none opacity-40 group-hover:opacity-70 transition`} />
+
+                <div className="relative z-10 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-white shrink-0 group-hover:scale-105 transition">
+                      <Image
+                        src={app.iconSrc}
+                        alt={app.name}
+                        fill
+                        className="object-cover"
+                        sizes="56px"
+                      />
+                    </div>
+                    <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${app.accentBadge}`}>
+                      App {app.number}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-stone-500 block">
+                      {app.name}
+                    </span>
+                    <h3 className="text-base font-black text-[#2B070E] font-display leading-tight mt-0.5">
+                      {app.title}
+                    </h3>
+                    <p className="text-[11px] text-stone-600 leading-relaxed mt-1 line-clamp-2">
+                      {app.desc}
+                    </p>
+                  </div>
+
+                  <div className="text-[10px] font-mono text-stone-500 space-y-0.5 pt-1 border-t border-stone-200/60">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-stone-400">Start URL:</span>
+                      <strong className="text-stone-700">{app.url}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-stone-400">Manifest:</span>
+                      <strong className="text-stone-700">{app.manifest}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative z-10 pt-2 space-y-2 border-t border-stone-200/60">
+                  <Link
+                    href={app.url}
+                    className={`w-full py-2.5 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-sm transition hover:brightness-110 active:scale-[0.99] bg-gradient-to-r ${app.btnGrad}`}
+                  >
+                    <span>Launch Web App</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={installApp}
+                    className="w-full py-2 px-3 rounded-xl text-[11px] font-bold border border-stone-300 bg-white/80 hover:bg-stone-50 text-stone-700 flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    title={`Install ${app.name} to Home Screen`}
+                  >
+                    <Download className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Install PWA to Device</span>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -578,11 +753,23 @@ export default function PortalHubPage() {
               >
                 <div>
                   <div className="flex items-center justify-between pb-4 border-b border-[#F4EFE6]">
-                    <div
-                      className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${panel.color} flex items-center justify-center text-white shadow-md`}
-                    >
-                      <Icon className="w-6 h-6" />
-                    </div>
+                    {panel.imageIcon ? (
+                      <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-[#D4AF37]/50 shadow-md bg-white shrink-0 group-hover:scale-105 transition">
+                        <Image
+                          src={panel.imageIcon}
+                          alt={panel.title}
+                          fill
+                          className="object-cover"
+                          sizes="48px"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${panel.color} flex items-center justify-center text-white shadow-md`}
+                      >
+                        <Icon className="w-6 h-6" />
+                      </div>
+                    )}
 
                     <span className="text-[10px] font-black uppercase tracking-wider bg-stone-100 text-stone-700 px-2.5 py-1 rounded-full">
                       {panel.badge}
