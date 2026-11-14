@@ -550,6 +550,30 @@ export default function OrderTrackingPage({ params }: PageProps) {
                   riderLocationUpdatedAt={order.riderLocationUpdatedAt}
                   distanceKm={order.distanceKm}
                   riderName={order.deliveryAgent?.name}
+                  riderPhone={order.deliveryAgent?.phone}
+                  riderVehicleNumber={order.deliveryAgent?.vehicleNumber}
+                  deliveryOtp={order.deliveryOtp}
+                  orderNumber={order.orderNumber}
+                  orderId={order.id}
+                  estimatedTime={order.estimatedTime}
+                  onCustomerLocationUpdate={async (lat, lng) => {
+                    try {
+                      const res = await fetch(`/api/orders/${order.id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          action: "UPDATE_CUSTOMER_LOCATION",
+                          customerLat: lat,
+                          customerLng: lng,
+                        }),
+                      });
+                      if (res.ok) {
+                        setOrder((prev) => (prev ? { ...prev, lat, lng } : prev));
+                      }
+                    } catch (e) {
+                      console.error("Failed to calibrate doorstep GPS:", e);
+                    }
+                  }}
                 />
               </div>
 

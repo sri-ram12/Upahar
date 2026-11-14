@@ -184,6 +184,30 @@ export async function PUT(
       return NextResponse.json({ success: true });
     }
 
+    // 4b. Customer Live GPS Coordinate Update (Doorstep calibration)
+    if (
+      action === "UPDATE_CUSTOMER_LOCATION" &&
+      body.customerLat !== undefined &&
+      body.customerLng !== undefined
+    ) {
+      const custUpdated = await prisma.order.update({
+        where: { id: existing.id },
+        data: {
+          lat: Number(body.customerLat),
+          lng: Number(body.customerLng),
+        },
+      });
+
+      broadcastRealtimeEvent("ORDER_UPDATED", {
+        orderId: custUpdated.id,
+        orderNumber: custUpdated.orderNumber,
+        customerLat: custUpdated.lat,
+        customerLng: custUpdated.lng,
+      });
+
+      return NextResponse.json({ success: true, order: custUpdated });
+    }
+
     // 5. Prevent two riders from simultaneously claiming the same delivery run
     if (
       status === "OUT_FOR_DELIVERY" &&
