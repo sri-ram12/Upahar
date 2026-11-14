@@ -4,10 +4,12 @@ const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/manifest-admin.json',
+  '/manifest-kitchen.json',
   '/manifest-rider.json',
   '/manifest-dev.json',
   '/icons/customer-192.png',
   '/icons/admin-192.png',
+  '/icons/kitchen-192.png',
   '/icons/rider-192.png',
   '/icons/dev-192.png',
   '/images/upahar_logo.jpg'

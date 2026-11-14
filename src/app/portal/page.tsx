@@ -306,8 +306,24 @@ export default function PortalHubPage() {
       url: "/admin",
     },
     {
-      id: "rider-app",
+      id: "kitchen-app",
       number: "3",
+      name: "Kitchen Display Web App",
+      title: "UPAHAR Cooking Station (KDS)",
+      scope: "/kitchen",
+      manifest: "/manifest-kitchen.json",
+      iconSrc: "/icons/kitchen-192.png",
+      badge: "Kitchen PWA",
+      color: "from-orange-500/15 via-red-500/10 to-transparent",
+      borderColor: "border-orange-400/40",
+      accentBadge: "bg-orange-100 text-orange-900 border-orange-300",
+      btnGrad: "from-orange-600 to-red-700 text-white",
+      desc: "Live order tickets, high-contrast cooking timers, audio chime & 1-click food ready dispatch.",
+      url: "/kitchen",
+    },
+    {
+      id: "rider-app",
+      number: "4",
       name: "Delivery Rider Web App",
       title: "UPAHAR Rider Console",
       scope: "/delivery",
@@ -323,7 +339,7 @@ export default function PortalHubPage() {
     },
     {
       id: "developer-app",
-      number: "4",
+      number: "5",
       name: "Developer Master Web App",
       title: "Master Console (All Controls)",
       scope: "/portal",
@@ -385,6 +401,7 @@ export default function PortalHubPage() {
       title: "Chefs Cooking Station",
       desc: "High-contrast cooking tickets for stove cooks. Loud chime on new orders, timer display, and 1-click 'Food Cooked → Ready for Rider Pickup'.",
       icon: ChefHat,
+      imageIcon: "/icons/kitchen-192.png",
       color: "from-orange-600 to-red-700",
       badge: "Kitchen Counter",
       primaryLink: { label: "Open Kitchen KDS", href: "/kitchen" },
@@ -520,7 +537,7 @@ export default function PortalHubPage() {
         </div>
 
         {/* ============================================================ */}
-        {/* 4 DEDICATED PROGRESSIVE WEB APPS (PWAs) & MASTER CONTROL */}
+        {/* 5 DEDICATED PROGRESSIVE WEB APPS (PWAs) & MASTER CONTROL */}
         {/* ============================================================ */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#EADBCE] pb-3">
@@ -528,7 +545,7 @@ export default function PortalHubPage() {
               <div className="flex items-center gap-2">
                 <Smartphone className="w-5 h-5 text-[#580D1A]" />
                 <h2 className="text-xl sm:text-2xl font-black text-[#2B070E] font-display">
-                  Four Dedicated Progressive Web Apps (PWAs)
+                  Five Dedicated Progressive Web Apps (PWAs)
                 </h2>
               </div>
               <p className="text-xs text-stone-500 mt-1">
@@ -544,7 +561,7 @@ export default function PortalHubPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {pwaWebApps.map((app) => (
               <div
                 key={app.id}

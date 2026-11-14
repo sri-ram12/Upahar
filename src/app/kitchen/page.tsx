@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   UtensilsCrossed,
   Clock,
@@ -16,11 +17,14 @@ import {
   ExternalLink,
   SlidersHorizontal,
   X,
+  Download,
 } from "lucide-react";
 import { Order, FoodItem } from "@/types";
 import { useRealtimeEvents } from "@/hooks/useRealtimeEvents";
+import { usePwa } from "@/components/pwa/PwaRegister";
 
 export default function KitchenDisplayPage() {
+  const { installApp } = usePwa();
   const [orders, setOrders] = useState<Order[]>([]);
   const [menuItems, setMenuItems] = useState<FoodItem[]>([]);
   const [showStockDrawer, setShowStockDrawer] = useState(false);
@@ -190,8 +194,8 @@ export default function KitchenDisplayPage() {
       {/* Top KDS Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-800 pb-4 mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 rounded-2xl bg-[#580D1A] border border-[#D4AF37]/40 flex items-center justify-center text-[#DFC17B] shadow-lg">
-            <ChefHat className="w-7 h-7" />
+          <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-orange-500/50 shadow-lg bg-stone-900 shrink-0">
+            <Image src="/icons/kitchen-192.png" alt="Kitchen Chef Icon" fill className="object-cover" sizes="48px" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
@@ -255,6 +259,16 @@ export default function KitchenDisplayPage() {
             title="Refresh Tickets"
           >
             <RefreshCw className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={installApp}
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-amber-600 hover:brightness-110 text-white flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+            title="Install Kitchen Display System to tablet / screen"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Install KDS App</span>
           </button>
 
           <Link
