@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ coupons });
+    const response = NextResponse.json({ coupons });
+    response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+    return response;
   } catch (error) {
     console.error("Error fetching coupons:", error);
     return NextResponse.json({ error: "Failed to load coupons" }, { status: 500 });

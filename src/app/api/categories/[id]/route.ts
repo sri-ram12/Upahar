@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 
 import { isValidDivisionKey } from "@/lib/store-hours";
+import { clearSubsitesCache } from "@/lib/subsite-data";
 
 export async function PUT(
   req: NextRequest,
@@ -30,6 +31,8 @@ export async function PUT(
       },
     });
 
+    clearSubsitesCache();
+
     return NextResponse.json({ category });
   } catch (error) {
     console.error("Error updating category:", error);
@@ -54,6 +57,8 @@ export async function DELETE(
     await prisma.category.delete({
       where: { id },
     });
+
+    clearSubsitesCache();
 
     return NextResponse.json({ success: true });
   } catch (error) {

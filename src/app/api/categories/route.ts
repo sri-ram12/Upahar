@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { FALLBACK_CATEGORIES } from "@/lib/fallback-menu";
 import { getDivisionForCategorySlug, isValidDivisionKey } from "@/lib/store-hours";
-import { ensureSubsitesInitialized } from "@/lib/subsite-data";
+import { ensureSubsitesInitialized, clearSubsitesCache } from "@/lib/subsite-data";
 
 export async function GET(req: NextRequest) {
   try {
@@ -31,10 +31,14 @@ export async function GET(req: NextRequest) {
         divisionParam && isValidDivisionKey(divisionParam)
           ? FALLBACK_CATEGORIES.filter((c) => c.division === divisionParam)
           : FALLBACK_CATEGORIES;
-      return NextResponse.json({ categories: filteredFallback });
+      const res = NextResponse.json({ categories: filteredFallback });
+      res.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+      return res;
     }
 
-    return NextResponse.json({ categories });
+    const response = NextResponse.json({ categories });
+    response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+    return response;
   } catch (error) {
     console.error("Error fetching categories, using fallback:", error);
     return NextResponse.json({ categories: FALLBACK_CATEGORIES });
@@ -75,6 +79,8 @@ export async function POST(req: NextRequest) {
         displayOrder: Number(displayOrder),
       },
     });
+
+    clearSubsitesCache();
 
     return NextResponse.json({ category }, { status: 201 });
   } catch (error) {

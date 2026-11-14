@@ -698,6 +698,7 @@ export default function Navbar() {
               <div className="flex items-center space-x-2 flex-shrink-0">
                 <Link
                   href="/orders"
+                  onClick={() => setMobileMenuOpen(false)}
                   className={`px-3 py-1.5 rounded-xl ${drawerAccentBg} text-xs font-bold`}
                 >
                   My Orders
@@ -723,6 +724,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
                     className={`px-3.5 py-2.5 rounded-xl text-sm font-bold flex items-center justify-between ${
                       isActive
                         ? drawerAccentBg

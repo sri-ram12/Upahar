@@ -7,13 +7,15 @@ import {
   parseTimeWindows,
   UPAHAR_DIVISIONS,
 } from "@/lib/store-hours";
-import { getSubsitesAndSettings } from "@/lib/subsite-data";
+import { getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 export async function GET() {
   try {
     const { subsites, settings, storeStatus } = await getSubsitesAndSettings();
-    return NextResponse.json({ subsites, settings, storeStatus });
+    const response = NextResponse.json({ subsites, settings, storeStatus });
+    response.headers.set("Cache-Control", "public, s-maxage=15, stale-while-revalidate=59");
+    return response;
   } catch (error) {
     console.error("Error fetching subsites:", error);
     return NextResponse.json({ error: "Failed to fetch sub-websites" }, { status: 500 });
@@ -98,6 +100,7 @@ export async function PUT(req: NextRequest) {
     });
 
     broadcastRealtimeEvent("SUBSITE_UPDATED", { id: updated.id, subsite: updated });
+    clearSubsitesCache();
     const { subsites } = await getSubsitesAndSettings();
     return NextResponse.json({ success: true, subsite: updated, subsites });
   } catch (error) {

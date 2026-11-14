@@ -943,6 +943,7 @@ export default function DivisionSubsiteClient({
             <Link
               key={sib.key}
               href={sib.route}
+              prefetch={true}
               className="group bg-white rounded-2xl border border-stone-200/90 hover:border-amber-400 p-4 flex items-center gap-4 shadow-xs hover:shadow-md transition"
             >
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#D4AF37]/60 flex-shrink-0">

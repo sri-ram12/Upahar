@@ -291,6 +291,7 @@ export default function HomeLandingClient({
               <Link
                 key={site.key}
                 href={site.route}
+                prefetch={true}
                 className={`group relative rounded-2xl border-2 ${accent.border} shadow-md transition-all duration-300 sm:hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between h-[88px] min-[375px]:h-[96px] min-[400px]:h-[106px] sm:h-[250px] lg:h-[340px] bg-stone-900`}
               >
                 {/* Full-Bleed Food Photography Background */}
@@ -298,6 +299,7 @@ export default function HomeLandingClient({
                   src={site.heroImage}
                   alt={site.title}
                   fill
+                  priority={true}
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
@@ -476,6 +478,7 @@ export default function HomeLandingClient({
               <>
                 <Link
                   href="/orders"
+                  prefetch={true}
                   className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#580D1A] hover:bg-[#74171E] border border-[#D4AF37]/35 text-white text-xs font-bold inline-flex items-center justify-center space-x-2 shadow-sm transition"
                 >
                   <ShoppingBag className="w-4 h-4 text-[#DFC17B]" />
@@ -483,6 +486,7 @@ export default function HomeLandingClient({
                 </Link>
                 <Link
                   href="/menu"
+                  prefetch={true}
                   className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[var(--hub-card-sub-bg)] hover:bg-[var(--hub-card-sub-hover)] border border-[var(--hub-card-border)] text-[var(--hub-heading)] text-xs font-bold inline-flex items-center justify-center transition"
                 >
                   Browse All Menu

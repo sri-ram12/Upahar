@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
+import { clearSubsitesCache } from "@/lib/subsite-data";
 
 export async function GET(
   req: NextRequest,
@@ -87,6 +88,8 @@ export async function PUT(
       price: item.price,
     });
 
+    clearSubsitesCache();
+
     return NextResponse.json({ item });
   } catch (error) {
     console.error("Error updating food item:", error);
@@ -116,6 +119,8 @@ export async function DELETE(
       action: "DELETED",
       itemId: id,
     });
+
+    clearSubsitesCache();
 
     return NextResponse.json({ success: true });
   } catch (error) {

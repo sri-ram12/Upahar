@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getSubsitePageData } from "@/lib/subsite-data";
 import DivisionSubsiteClient from "@/components/subsites/DivisionSubsiteClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title: "UPAHAR FAST FOODS | High-Flame Wok Noodles, Fried Rice & Starters",

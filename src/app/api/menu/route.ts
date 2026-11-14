@@ -10,7 +10,7 @@ import {
   getItemSessionAvailability,
   isValidDivisionKey,
 } from "@/lib/store-hours";
-import { ensureSubsitesInitialized, getSubsitesAndSettings } from "@/lib/subsite-data";
+import { ensureSubsitesInitialized, getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 function filterFallbackItems(searchParams: URLSearchParams) {
@@ -195,10 +195,14 @@ export async function GET(req: NextRequest) {
         });
       }
 
-      return NextResponse.json({ items: visible });
+      const res = NextResponse.json({ items: visible });
+      res.headers.set("Cache-Control", "public, s-maxage=20, stale-while-revalidate=59");
+      return res;
     }
 
-    return NextResponse.json({ items });
+    const response = NextResponse.json({ items });
+    response.headers.set("Cache-Control", "public, s-maxage=20, stale-while-revalidate=59");
+    return response;
   } catch (error) {
     console.error("Error fetching menu items, using fallback:", error);
     const { searchParams } = new URL(req.url);
@@ -272,6 +276,8 @@ export async function POST(req: NextRequest) {
       isAvailable: item.isAvailable,
       price: item.price,
     });
+
+    clearSubsitesCache();
 
     return NextResponse.json({ item }, { status: 201 });
   } catch (error) {

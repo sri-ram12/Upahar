@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import { calculateStoreStatus, getDiningSessions } from "@/lib/store-hours";
-import { getSubsitesAndSettings } from "@/lib/subsite-data";
+import { getSubsitesAndSettings, clearSubsitesCache } from "@/lib/subsite-data";
 import { broadcastRealtimeEvent } from "@/lib/realtime-bus";
 
 export async function GET() {
@@ -18,12 +18,14 @@ export async function GET() {
 
     const diningSessions = getDiningSessions();
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       settings,
       storeStatus,
       diningSessions,
       subsites,
     });
+    response.headers.set("Cache-Control", "public, s-maxage=15, stale-while-revalidate=59");
+    return response;
   } catch (error) {
     console.error("Error fetching restaurant settings:", error);
     return NextResponse.json(
@@ -125,6 +127,8 @@ export async function PUT(req: NextRequest) {
       isEmergencyClosed: settings.isEmergencyClosed,
       isOnlineOrderingEnabled: settings.isOnlineOrderingEnabled,
     });
+
+    clearSubsitesCache();
 
     return NextResponse.json({ settings, storeStatus });
   } catch (error) {

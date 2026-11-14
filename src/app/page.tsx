@@ -2,7 +2,7 @@ import React from "react";
 import { getSubsitesAndSettings } from "@/lib/subsite-data";
 import HomeLandingClient from "@/components/home/HomeLandingClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default async function HomePage() {
   const { settings, subsites } = await getSubsitesAndSettings();
