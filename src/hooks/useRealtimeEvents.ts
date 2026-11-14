@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { RealtimeEventType, RealtimeMessage } from "@/lib/realtime-bus";
 
-interface RealtimeHookOptions {
+export interface RealtimeHookOptions {
   onEvent?: (event: RealtimeEventType, payload: any, fullMsg: RealtimeMessage) => void;
   onOrderCreated?: (payload: any) => void;
   onOrderUpdated?: (payload: any) => void;
@@ -14,6 +14,149 @@ interface RealtimeHookOptions {
   onMenuItemUpdated?: (payload: any) => void;
   onSubsiteUpdated?: (payload: any) => void;
   enabled?: boolean;
+}
+
+type EventCallback = (msg: RealtimeMessage) => void;
+
+// ============================================================================
+// SINGLETON EVENTSOURCE CONNECTION MANAGER
+// Consolidates multiple hook calls (Navbar, CartContext, Orders) into 1 connection
+// ============================================================================
+class RealtimeConnectionManager {
+  private static instance: RealtimeConnectionManager | null = null;
+  private eventSource: EventSource | null = null;
+  private subscribers = new Set<EventCallback>();
+  private reconnectTimeout: any = null;
+  private closeTimeout: any = null;
+  private _isConnected = false;
+  private _lastEventTime: Date | null = null;
+  private connectionChangeListeners = new Set<(connected: boolean) => void>();
+
+  static getInstance(): RealtimeConnectionManager {
+    if (!RealtimeConnectionManager.instance) {
+      RealtimeConnectionManager.instance = new RealtimeConnectionManager();
+    }
+    return RealtimeConnectionManager.instance;
+  }
+
+  get isConnected(): boolean {
+    return this._isConnected;
+  }
+
+  get lastEventTime(): Date | null {
+    return this._lastEventTime;
+  }
+
+  subscribe(callback: EventCallback, onConnectionChange?: (connected: boolean) => void): () => void {
+    if (this.closeTimeout) {
+      clearTimeout(this.closeTimeout);
+      this.closeTimeout = null;
+    }
+
+    this.subscribers.add(callback);
+    if (onConnectionChange) {
+      this.connectionChangeListeners.add(onConnectionChange);
+      onConnectionChange(this._isConnected);
+    }
+
+    if (!this.eventSource) {
+      this.connect();
+    }
+
+    return () => {
+      this.subscribers.delete(callback);
+      if (onConnectionChange) {
+        this.connectionChangeListeners.delete(onConnectionChange);
+      }
+
+      // If no active subscribers remain, close connection after 5 seconds to avoid churn
+      if (this.subscribers.size === 0) {
+        this.closeTimeout = setTimeout(() => {
+          if (this.subscribers.size === 0) {
+            this.disconnect();
+          }
+        }, 5000);
+      }
+    };
+  }
+
+  private connect() {
+    if (typeof window === "undefined" || this.eventSource) return;
+
+    try {
+      this.eventSource = new EventSource("/api/realtime/stream");
+
+      this.eventSource.onopen = () => {
+        this._isConnected = true;
+        this.notifyConnection(true);
+      };
+
+      this.eventSource.onmessage = (event) => {
+        try {
+          const data: RealtimeMessage = JSON.parse(event.data);
+          this._lastEventTime = new Date();
+          // Dispatch to all subscribers
+          this.subscribers.forEach((cb) => {
+            try {
+              cb(data);
+            } catch (err) {
+              console.error("Error in realtime subscriber callback:", err);
+            }
+          });
+        } catch {
+          // Heartbeat ping or cycle signal
+        }
+      };
+
+      this.eventSource.onerror = () => {
+        this._isConnected = false;
+        this.notifyConnection(false);
+
+        if (this.eventSource) {
+          this.eventSource.close();
+          this.eventSource = null;
+        }
+
+        // Reconnect after 1.5 seconds if subscribers are still waiting
+        if (this.subscribers.size > 0 && !this.reconnectTimeout) {
+          this.reconnectTimeout = setTimeout(() => {
+            this.reconnectTimeout = null;
+            if (this.subscribers.size > 0) {
+              this.connect();
+            }
+          }, 1500);
+        }
+      };
+    } catch (err) {
+      this._isConnected = false;
+      this.notifyConnection(false);
+      this.reconnectTimeout = setTimeout(() => {
+        this.reconnectTimeout = null;
+        this.connect();
+      }, 3000);
+    }
+  }
+
+  private disconnect() {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+    if (this.eventSource) {
+      this.eventSource.close();
+      this.eventSource = null;
+    }
+    this._isConnected = false;
+    this.notifyConnection(false);
+  }
+
+  private notifyConnection(connected: boolean) {
+    this.connectionChangeListeners.forEach((fn) => {
+      try {
+        fn(connected);
+      } catch {}
+    });
+  }
 }
 
 export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
@@ -32,7 +175,6 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
 
   const [isConnected, setIsConnected] = useState(false);
   const [lastEventTime, setLastEventTime] = useState<Date | null>(null);
-  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   // Keep references to callbacks so they don't trigger re-subscriptions
   const callbacksRef = useRef({
@@ -64,106 +206,65 @@ export function useRealtimeEvents(options: RealtimeHookOptions = {}) {
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
 
-    let eventSource: EventSource | null = null;
-    let reconnectTimeout: any = null;
-    let isDisposed = false;
+    const manager = RealtimeConnectionManager.getInstance();
 
-    const connect = () => {
-      if (isDisposed) return;
+    const handleMessage = (data: RealtimeMessage) => {
+      setLastEventTime(new Date());
 
-      try {
-        eventSource = new EventSource("/api/realtime/stream");
+      const {
+        onEvent,
+        onOrderCreated,
+        onOrderUpdated,
+        onOrderDelivered,
+        onEmergencyStopChanged,
+        onRiderStatusChanged,
+        onRiderLocationUpdated,
+        onMenuItemUpdated,
+        onSubsiteUpdated,
+      } = callbacksRef.current;
 
-        eventSource.onopen = () => {
-          if (isDisposed) return;
-          setIsConnected(true);
-          setConnectionError(null);
-        };
+      if (onEvent) onEvent(data.event, data.payload, data);
 
-        eventSource.onmessage = (event) => {
-          if (isDisposed) return;
-          try {
-            const data: RealtimeMessage = JSON.parse(event.data);
-            setLastEventTime(new Date());
-
-            const {
-              onEvent,
-              onOrderCreated,
-              onOrderUpdated,
-              onOrderDelivered,
-              onEmergencyStopChanged,
-              onRiderStatusChanged,
-              onRiderLocationUpdated,
-              onMenuItemUpdated,
-              onSubsiteUpdated,
-            } = callbacksRef.current;
-
-            if (onEvent) onEvent(data.event, data.payload, data);
-
-            switch (data.event) {
-              case "ORDER_CREATED":
-                if (onOrderCreated) onOrderCreated(data.payload);
-                break;
-              case "ORDER_UPDATED":
-                if (onOrderUpdated) onOrderUpdated(data.payload);
-                break;
-              case "ORDER_DELIVERED":
-                if (onOrderDelivered) onOrderDelivered(data.payload);
-                break;
-              case "EMERGENCY_STOP_CHANGED":
-                if (onEmergencyStopChanged) onEmergencyStopChanged(data.payload);
-                break;
-              case "RIDER_STATUS_CHANGED":
-                if (onRiderStatusChanged) onRiderStatusChanged(data.payload);
-                break;
-              case "RIDER_LOCATION_UPDATED":
-                if (onRiderLocationUpdated) onRiderLocationUpdated(data.payload);
-                break;
-              case "MENU_ITEM_UPDATED":
-                if (onMenuItemUpdated) onMenuItemUpdated(data.payload);
-                break;
-              case "SUBSITE_UPDATED":
-                if (onSubsiteUpdated) onSubsiteUpdated(data.payload);
-                break;
-            }
-          } catch (err) {
-            // Non-JSON message like ping/heartbeat
-          }
-        };
-
-        eventSource.onerror = (e) => {
-          if (isDisposed) return;
-          setIsConnected(false);
-          setConnectionError("Connection lost, reconnecting...");
-          if (eventSource) {
-            eventSource.close();
-            eventSource = null;
-          }
-          // Exponential retry in 3 seconds
-          reconnectTimeout = setTimeout(connect, 3000);
-        };
-      } catch (err: any) {
-        setIsConnected(false);
-        setConnectionError(err.message || "Failed to establish SSE stream");
-        reconnectTimeout = setTimeout(connect, 5000);
+      switch (data.event) {
+        case "ORDER_CREATED":
+          if (onOrderCreated) onOrderCreated(data.payload);
+          break;
+        case "ORDER_UPDATED":
+          if (onOrderUpdated) onOrderUpdated(data.payload);
+          break;
+        case "ORDER_DELIVERED":
+          if (onOrderDelivered) onOrderDelivered(data.payload);
+          break;
+        case "EMERGENCY_STOP_CHANGED":
+          if (onEmergencyStopChanged) onEmergencyStopChanged(data.payload);
+          break;
+        case "RIDER_STATUS_CHANGED":
+          if (onRiderStatusChanged) onRiderStatusChanged(data.payload);
+          break;
+        case "RIDER_LOCATION_UPDATED":
+          if (onRiderLocationUpdated) onRiderLocationUpdated(data.payload);
+          break;
+        case "MENU_ITEM_UPDATED":
+          if (onMenuItemUpdated) onMenuItemUpdated(data.payload);
+          break;
+        case "SUBSITE_UPDATED":
+          if (onSubsiteUpdated) onSubsiteUpdated(data.payload);
+          break;
       }
     };
 
-    connect();
+    const unsubscribe = manager.subscribe(handleMessage, (connected) => {
+      setIsConnected(connected);
+    });
 
     return () => {
-      isDisposed = true;
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      if (eventSource) {
-        eventSource.close();
-      }
+      unsubscribe();
     };
   }, [enabled]);
 
   return {
     isConnected,
     lastEventTime,
-    connectionError,
+    connectionError: null,
   };
 }
-
